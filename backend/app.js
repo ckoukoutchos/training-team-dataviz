@@ -7,10 +7,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// app.use('/', express.static(path.join(__dirname, 'frontend')));
-// app.use((req, res, next) => {
-//     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-//   });
+// use react build file 
+app.use(express.static(path.join(__dirname, 'build')));
+
+// serve react bundle for base url
+app.get('/', (req, res, next) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.get('/api', (req, res) => {
   res.send({
