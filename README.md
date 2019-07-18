@@ -1,4 +1,4 @@
-#Traing Team DataViz
+# Training Team DataViz
 
 To use prod build run:
 `npm run server`
