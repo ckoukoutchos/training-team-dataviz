@@ -1,6 +1,8 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const csv = require('csvtojson');
+const multer = require('multer');
 
 const app = express();
 
@@ -15,35 +17,49 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
+// get route for parsed csv data
 app.get('/api', (req, res) => {
   res.send({
     data: [
       {
         id: 'Basics',
-        ranges: [8, 16],
+        ranges: [6, 10],
         measures: [7],
-        markers: [5, 10]
+        markers: [5, 9]
       },
       {
         id: 'Databases',
-        ranges: [4, 8],
+        ranges: [4, 6],
         measures: [3],
-        markers: [2, 6]
+        markers: [2, 5]
       },
       {
         id: 'Java',
-        ranges: [10, 20],
-        measures: [9],
-        markers: [6, 13]
+        ranges: [10, 16],
+        measures: [9.7],
+        markers: [6.7, 13.7]
       },
       {
         id: 'React',
-        ranges: [8, 16],
+        ranges: [8, 14],
         measures: [11],
         markers: [6, 13]
       }
     ]
   });
 });
+
+const upload = multer({ dest: 'files/' });
+
+// post route for csv file
+app.post('/api', upload.single('file'), (req, res, next) => {
+  const file = req.file;
+
+  csv()
+    .fromFile(file.path)
+    .then(jsonObj => {
+      res.send(jsonObj)
+    });
+})
 
 module.exports = app;
