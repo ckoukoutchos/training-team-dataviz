@@ -35,6 +35,7 @@ export default function (state = initialState, action) {
       };
     }
     case POST_CYCLE_METRICS_SUCCESS: {
+      console.log(action.cycleMetrics);
       return {
         ...state,
         loading: false,
