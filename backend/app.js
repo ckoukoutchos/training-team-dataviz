@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const csv = require('csvtojson');
 const multer = require('multer');
+const fs = require('fs');
 
 const app = express();
 
@@ -18,47 +19,46 @@ app.get('/', (req, res, next) => {
 });
 
 // get route for parsed csv data
-app.get('/api', (req, res) => {
-  res.send({
-    data: [
-      {
-        id: 'Basics',
-        ranges: [6, 10],
-        measures: [7],
-        markers: [5, 9]
-      },
-      {
-        id: 'Databases',
-        ranges: [4, 6],
-        measures: [3],
-        markers: [2, 5]
-      },
-      {
-        id: 'Java',
-        ranges: [10, 16],
-        measures: [9.7],
-        markers: [6.7, 13.7]
-      },
-      {
-        id: 'React',
-        ranges: [8, 14],
-        measures: [11],
-        markers: [6, 13]
-      }
-    ]
-  });
+app.get('/api/:fileName', (req, res, next) => {
+  const filePath = `files/${req.params.fileName}.csv`;
+
+  if (fs.existsSync(filePath)) {
+    csv()
+    .fromFile(filePath)
+    .then(jsonObj => {
+      res.send(jsonObj)
+    }).catch(err => {
+      res.status(500).send('Error parsing CSV');
+    });
+  } else {
+    res.status(404).send('File does not exist');
+  }
 });
 
-const upload = multer({ dest: 'files/' });
+// multer storage config
+const storage = multer.diskStorage({
+  // location to store csv files
+  destination: (req, file, cb) => {
+    cb(null, 'files/');
+  },
+  // uses original file name for storage file name
+  filename: (req, file, cb) => {
+    cb(null, file.originalname)
+  }
+})
+
+// pass config to multer
+const upload = multer({ storage });
 
 // post route for csv file
 app.post('/api', upload.single('file'), (req, res, next) => {
-  const file = req.file;
-
+  // parse csv file to json object
   csv()
-    .fromFile(file.path)
+    .fromFile(req.file.path)
     .then(jsonObj => {
       res.send(jsonObj)
+    }).catch(err => {
+      res.status(500).send('Error parsing CSV');
     });
 })
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import axios from 'axios';
 import Card from '@material-ui/core/Card';
 import { ResponsiveBullet } from '@nivo/bullet';
 import Button from '@material-ui/core/Button';
@@ -12,32 +13,31 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.fetchData()
-      .then(res => {
-        this.setState({ data: res.data });
-      }).catch(err => console.log('Error', err));
+    this.fetchData();
   }
 
   fetchData = async () => {
-    const res = await fetch('/api');
-    const body = await res.json();
-
-    if (res.status !== 200) {
-      throw Error(body.message)
+    try {
+      const res = await axios.get('/api/mlPortland2019');
+      this.setState({ data: res.data });
+      console.log(res.data);
+    } catch(err) {
+      console.log(err.message);
     }
-    return body;
   }
 
-  uploadFileHandler = () => {
+  uploadFileHandler = async () => {
     const data = new FormData();
     data.append('file', this.uploadInput.files[0]);
-    data.append('name', 'ML');
+    data.append('name', 'mlPortland2019');
 
-    fetch('/api', { method: 'POST', body: data }).then((response) => {
-      response.json().then((body) => {
-        console.log(body);
-      });
-    });
+    try {
+      const res = await axios.post('/api', data);
+      this.setState({ data: res.data });
+    } catch(err) {
+      console.log(err.message);
+    }
+    
   }
 
   render() {
@@ -50,7 +50,7 @@ class App extends Component {
           <Typography variant='h6' style={{ paddingTop: '8px' }}>Training Team DataViz</Typography>
         </AppBar>
       </div>
-      <div style={{ height: '500px', width: '500px' }}>
+      {/* <div style={{ height: '500px', width: '500px' }}>
         {this.state.data ?
           <ResponsiveBullet
             data={this.state.data}
@@ -64,7 +64,7 @@ class App extends Component {
             measureColors='rgb(233, 233, 233)'
             markerColors={['rgb(56, 121, 61)', 'rgb(117, 55, 55)']}
           /> : <CircularProgress />}
-      </div>
+      </div> */}
       <Card>
         <CardHeader title='Upload a CSV File:' />
         <CardContent>
