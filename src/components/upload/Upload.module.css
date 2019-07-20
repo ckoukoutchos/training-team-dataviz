@@ -1,0 +1,11 @@
+.Card {
+  margin: auto;
+  margin-top: 24px;
+  width: 50%;
+}
+
+.Error {
+  color: red;
+  margin: 0;
+  padding: 0px 16px;
+}

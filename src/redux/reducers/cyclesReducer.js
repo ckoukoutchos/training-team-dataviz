@@ -11,6 +11,7 @@ export default function (state = initialState, action) {
     case FETCH_CYCLE_METRICS: {
       return {
         ...state,
+        error: false,
         loading: true
       };
     }
@@ -18,7 +19,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        mlPortland2019: [...action.cycleMetrics]
+        mlPortland2019: action.cycleMetrics
       };
     }
     case FETCH_CYCLE_METRICS_FAIL: {
@@ -31,15 +32,15 @@ export default function (state = initialState, action) {
     case POST_CYCLE_METRICS: {
       return {
         ...state,
+        error: false,
         loading: true
       };
     }
     case POST_CYCLE_METRICS_SUCCESS: {
-      console.log(action.cycleMetrics);
       return {
         ...state,
         loading: false,
-        mlPortland2019: [...action.cycleMetrics]
+        mlPortland2019: action.cycleMetrics
       };
     }
     case POST_CYCLE_METRICS_FAIL: {

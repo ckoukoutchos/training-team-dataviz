@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { AppBar, Drawer,  IconButton, List, ListItem, ListItemText, Typography } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { Link } from 'react-router-dom';
+import styles from './NavBar.module.css';
+import { AppBar, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import { ArrowUpward, Autorenew, Home, Menu, Person } from '@material-ui/icons';
 
 class NavBar extends Component {
-  state ={
+  state = {
     sideDrawerOpen: false
   }
 
@@ -21,7 +23,7 @@ class NavBar extends Component {
               aria-label='Menu'
               style={{ margin: '0 16px' }}
               onClick={this.clickHandler}>
-              <MenuIcon />
+              <Menu />
             </IconButton>
             <Typography variant='h6' style={{ paddingTop: '8px' }}>Training Team DataViz</Typography>
           </AppBar>
@@ -35,18 +37,41 @@ class NavBar extends Component {
             onKeyDown={this.clickHandler}
           >
             <List>
-              <ListItem button>
-                <ListItemText primary='Overview' />
-              </ListItem>
-              <ListItem button>
-                <ListItemText primary='Cycles' />
-              </ListItem>
-              <ListItem button>
-                <ListItemText primary='Associates' />
-              </ListItem>
-              <ListItem button>
-                <ListItemText primary='Upload' />
-              </ListItem>
+              <Link to='/' className={styles.Link}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Home />
+                  </ListItemIcon>
+                  <ListItemText primary='Overview' />
+                </ListItem>
+              </Link>
+
+              <Link to='/cycles' className={styles.Link}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Autorenew />
+                  </ListItemIcon>
+                  <ListItemText primary='Cycles' />
+                </ListItem>
+              </Link>
+
+              <Link to='/associates' className={styles.Link}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <Person />
+                  </ListItemIcon>
+                  <ListItemText primary='Associates' />
+                </ListItem>
+              </Link>
+
+              <Link to='/upload' className={styles.Link}>
+                <ListItem button>
+                  <ListItemIcon>
+                    <ArrowUpward />
+                  </ListItemIcon>
+                  <ListItemText primary='Upload' />
+                </ListItem>
+              </Link>
             </List>
           </div>
         </Drawer>

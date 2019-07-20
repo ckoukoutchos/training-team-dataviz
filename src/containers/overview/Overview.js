@@ -1,13 +1,5 @@
-import React, { Component } from 'react';
-import Upload from '../../components/upload/Upload';
-import { ResponsiveBullet } from '@nivo/bullet';
+import React from 'react';
 
-class Overview extends Component {
-  render() {
-    return (
-      <Upload />
-    )
-  }
-}
+const Overview = (props) => (<h1>Overview stuff to go heres abouts</h1>)
 
 export default Overview;

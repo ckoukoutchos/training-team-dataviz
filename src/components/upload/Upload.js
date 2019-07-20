@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Card, CardContent, CardActions, CardHeader, CircularProgress } from '@material-ui/core';
 import { postCycleMetrics } from '../../redux/actions';
+import { Button, Card, CardContent, CardActions, CardHeader, CircularProgress } from '@material-ui/core';
+import styles from './Upload.module.css';
 
 class Upload extends Component {
   uploadFileHandler = () => {
+    console.log('here?');
     const formData = new FormData();
     formData.append('file', this.uploadInput.files[0]);
     formData.append('name', 'mlPortland2019');
@@ -13,24 +15,26 @@ class Upload extends Component {
   }
 
   render() {
-    return this.props.loading ?
-      <CircularProgress />
-      : <Card>
-          <CardHeader title='Upload a CSV File:' />
-          <CardContent>
-            <input accept='.csv'
-              ref={(ref) => { this.uploadInput = ref; }}
-              type='file' />
-          </CardContent>
+    return !this.props.loading ?
+      <Card className={styles.Card}>
+        <CardHeader title='Upload a CSV File:' />
+        {this.props.error ? <p className={styles.Error}>{this.props.error}</p> : null}
 
-          <CardActions>
-            <Button variant="contained"
-              color="primary"
-              onClick={this.uploadFileHandler}>
-                Upload
-            </Button>
-          </CardActions>
-        </Card>
+        <CardContent>
+          <input accept='.csv'
+            ref={(ref) => { this.uploadInput = ref; }}
+            type='file' />
+        </CardContent>
+
+        <CardActions>
+          <Button variant="contained"
+            color="primary"
+            onClick={this.uploadFileHandler}>
+            Upload
+          </Button>
+        </CardActions>
+      </Card>
+      : <CircularProgress />;
   }
 }
 

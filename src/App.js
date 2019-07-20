@@ -1,39 +1,24 @@
-import React, { Component } from 'react';
-import './App.css';
-import { connect } from 'react-redux';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import { fetchCycleMetrics } from './redux/actions';
+import './App.css';
 
+import Associate from './containers/associate/Associate';
+import Cycle from './containers/cycle/Cycle';
 import Overview from './containers/overview/Overview';
 import NavBar from './components/NavBar/NavBar';
+import Upload from './components/upload/Upload';
 
-class App extends Component {
-  componentDidMount() {
-    this.props.fetchCycle();
-  }
+const App = (props) =>
+  <>
+    <NavBar />
+    <Switch>
+      {/* <Route path='/cycles' component={Cycles} /> */}
+      <Route path='/cycles/:cycle' exact component={Cycle} />
+      {/* <Route path='/cycles/:cycle/associates' component={Associates} /> */}
+      <Route path='/cycles/:cycle/associates/:associateName' exact component={Associate} />
+      <Route path='/upload' exact component={Upload} />
+      <Route path='/' component={Overview} />
+    </Switch>
+  </>;
 
-  render() {
-    return (
-      <>
-        <NavBar />
-        <Switch>
-          {/* <Route path='/associates' component={Associates} /> */}
-          {/* <Route path='/associates/:associateName' component={Associate} /> */}
-          {/* <Route path='/cycles' component={Cycles} /> */}
-          {/* <Route path='/cycles/:cycleName' component={Cycle} /> */}
-          <Route path='/' component={Overview} />
-        </Switch>
-      </>
-    );
-  }
-}
-
-const mapStateToProps = state => ({
-  mlPortland2019: state.cycles.mlPortland2019
-});
-
-const mapDispatchToProps = dispatch => ({
-  fetchCycle: () => dispatch(fetchCycleMetrics())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
