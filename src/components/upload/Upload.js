@@ -6,7 +6,6 @@ import styles from './Upload.module.css';
 
 class Upload extends Component {
   uploadFileHandler = () => {
-    console.log('here?');
     const formData = new FormData();
     formData.append('file', this.uploadInput.files[0]);
     formData.append('name', 'mlPortland2019');
