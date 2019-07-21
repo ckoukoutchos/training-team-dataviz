@@ -80,6 +80,7 @@ export default {
     Quiz_Introductory_v2: {
       'Max Score': 14,
       Module: 'Development Basics & Frontend',
-    },
-  }
+    }
+  },
+  staff: ['Eric Queen', 'Corbin Koukoutchos', 'Dan Reuther', 'Katlyn Beck', 'Greg Fisher']
 }

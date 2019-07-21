@@ -4,6 +4,7 @@ import { fetchCycleMetrics } from '../../redux/actions';
 
 import styles from './Cycle.module.css';
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import MetricsRollUp from '../../components/metricsRollUp/MetricsRollUp';
 
 class Cycle extends Component {
   componentDidMount() {
@@ -13,33 +14,10 @@ class Cycle extends Component {
   }
 
   render() {
+    // console.log(this.props.mlPortland2019);
     return (
       !this.props.loading ?
-        <Paper className={styles.Container}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Person</TableCell>
-                <TableCell align='right'>Interaction</TableCell>
-                <TableCell align='right'>Interaction Type</TableCell>
-                <TableCell align='right'>Score</TableCell>
-                <TableCell align='right'>Date</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {this.props.mlPortland2019.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell align='right'>{row.Person}</TableCell>
-                  <TableCell align='right'>{row.Interaction}</TableCell>
-                  <TableCell align='right'>{row['Interaction Type']}</TableCell>
-                  <TableCell align='right'>{row.Score}</TableCell>
-                  <TableCell align='right'>{row.Date}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
+        <MetricsRollUp associates={this.props.mlPortland2019} cycleName='mlPortland2019' showName />
         : <CircularProgress />
     );
   }

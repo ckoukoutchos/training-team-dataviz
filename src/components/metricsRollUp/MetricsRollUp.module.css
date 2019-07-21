@@ -4,6 +4,11 @@
   overflow-x: auto;
 }
 
+.Link {
+  color: #1976d2;
+  text-decoration: none;
+}
+
 .Table {
   min-width: 650px;
 }
