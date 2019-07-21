@@ -1,7 +1,7 @@
 .Container {
-  width: 80%;
-  margin: 24px auto;
+  margin: 16px auto;
   overflow-x: auto;
+  width: 900px;
 }
 
 .Link {

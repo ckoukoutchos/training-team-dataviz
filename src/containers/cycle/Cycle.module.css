@@ -3,3 +3,8 @@
   margin: 8px auto;
   overflow-x: auto;
 }
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+}

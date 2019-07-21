@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
 
-import styles from './Cycle.module.css';
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
+import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import MetricsRollUp from '../../components/metricsRollUp/MetricsRollUp';
+import styles from './Cycle.module.css';
 
 class Cycle extends Component {
   componentDidMount() {
@@ -17,7 +18,10 @@ class Cycle extends Component {
     // console.log(this.props.mlPortland2019);
     return (
       !this.props.loading ?
-        <MetricsRollUp associates={this.props.mlPortland2019} cycleName='mlPortland2019' showName />
+        <div div className={styles.Wrapper}>
+          <Breadcrumbs path={this.props.history.location.pathname.split('/')} />
+          <MetricsRollUp associates={this.props.mlPortland2019} cycleName='mlPortland2019' showName />
+        </div>
         : <CircularProgress />
     );
   }

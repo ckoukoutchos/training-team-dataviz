@@ -1,9 +1,14 @@
 .Container {
-  width: 80%;
-  margin: 24px auto;
+  margin: 16px auto;
   overflow-x: auto;
+  width: 900px;
 }
 
 .Table {
   min-width: 650px;
+}
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
 }

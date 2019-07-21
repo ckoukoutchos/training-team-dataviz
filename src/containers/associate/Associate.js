@@ -4,6 +4,7 @@ import { fetchCycleMetrics } from '../../redux/actions';
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associateInfo/AssociateInfo';
+import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import MetricsRollUp from '../../components/metricsRollUp/MetricsRollUp';
 
 class Associate extends Component {
@@ -21,10 +22,10 @@ class Associate extends Component {
     // find associate data
     const associate = this.props.mlPortland2019.find(associate => associate[0].Person === associateName);
 
-    console.log(this.props.history);
     return (
       !this.props.loading && associate ?
-        <>
+        <div className={styles.Wrapper}>
+          <Breadcrumbs path={associateUrl} />
           <AssociateInfo cycle='Mastery Learning Portland 2019' associate={associate} />
           <MetricsRollUp associate={associate} />
           <Paper className={styles.Container}>
@@ -50,7 +51,7 @@ class Associate extends Component {
               </TableBody>
             </Table>
           </Paper>
-        </>
+        </div>
         : <CircularProgress />
     );
   }

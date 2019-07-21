@@ -1,0 +1,18 @@
+.BreadcrumbsLong {
+  display: inline-block;
+  justify-content: center;
+  margin: 16px auto;
+  padding: 8px 16px;
+}
+
+.BreadcrumbsShort {
+  display: inline-block;
+  justify-content: center;
+  margin: 16px auto;
+  padding: 8px 16px;
+}
+
+.Link {
+  color: #888888;
+  text-decoration: none;
+}
