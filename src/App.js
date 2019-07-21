@@ -12,10 +12,10 @@ const App = (props) =>
   <>
     <NavBar />
     <Switch>
-      {/* <Route path='/cycles' component={Cycles} /> */}
-      <Route path='/cycles/:cycle' exact component={Cycle} />
-      {/* <Route path='/cycles/:cycle/associates' component={Associates} /> */}
-      <Route path='/cycles/:cycle/associates/:associateName' exact component={Associate} />
+      {/* <Route path='/cycle' exact component={Cycle} /> */}
+      <Route path='/cycle/:cycle' exact component={Cycle} />
+      {/* <Route path='/cycle/:cycle/associate' exact component={Associates} /> */}
+      <Route path='/cycle/:cycle/associate/:associateName' exact component={Associate} />
       <Route path='/upload' exact component={Upload} />
       <Route path='/' component={Overview} />
     </Switch>

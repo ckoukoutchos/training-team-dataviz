@@ -16,7 +16,7 @@ class Cycle extends Component {
     return (
       !this.props.loading ?
         <Paper className={styles.Container}>
-          <Table className={styles.Table}>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Person</TableCell>

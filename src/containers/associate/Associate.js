@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { fetchCycleMetrics } from '../../redux/actions';
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import styles from './Associate.module.css';
-import { fetchCycleMetrics } from '../../redux/actions';
+import AssociateInfo from '../../components/associateInfo/AssociateInfo';
 
 class Associate extends Component {
   componentDidMount() {
@@ -19,31 +20,35 @@ class Associate extends Component {
     // find associate data
     const associate = this.props.mlPortland2019.find(associate => associate[0].Person === associateName);
 
+    console.log(associate);
     return (
       !this.props.loading && associate ?
-        <Paper className={styles.Container}>
-          <Table className={styles.Table}>
-            <TableHead>
-              <TableRow>
-                <TableCell align='left'>Interaction</TableCell>
-                <TableCell align='left'>Interaction Type</TableCell>
-                <TableCell align='left'>Score</TableCell>
-                <TableCell align='left'>Date</TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {associate.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell align='left'>{row.Interaction}</TableCell>
-                  <TableCell align='left'>{row['Interaction Type']}</TableCell>
-                  <TableCell align='left'>{row.Score}</TableCell>
-                  <TableCell align='left'>{row.Date}</TableCell>
+        <>
+          <AssociateInfo cycle='Mastery Learning Portland 2019' associate={associate} />
+          <Paper className={styles.Container}>
+            <Table className={styles.Table}>
+              <TableHead>
+                <TableRow>
+                  <TableCell align='left'>Interaction</TableCell>
+                  <TableCell align='left'>Interaction Type</TableCell>
+                  <TableCell align='left'>Score</TableCell>
+                  <TableCell align='left'>Date</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
+              </TableHead>
+
+              <TableBody>
+                {associate.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell align='left'>{row.Interaction}</TableCell>
+                    <TableCell align='left'>{row['Interaction Type']}</TableCell>
+                    <TableCell align='left'>{row.Score}</TableCell>
+                    <TableCell align='left'>{row.Date}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </>
         : <CircularProgress />
     );
   }
