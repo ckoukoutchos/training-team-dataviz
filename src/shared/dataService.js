@@ -18,7 +18,55 @@ export const calcDaysSince = (startDate, endDate) => {
   }
 }
 
-export const calcProjectScoreAvg = (associate) => {
+export const calcProjectScoreMinMax = associates => {
+  let max = 0;
+  let min = 100;
+
+  for (const associate of associates) {
+    const avg = calcProjectScoreAvg(associate);
+    if (avg > max) {
+      max = avg;
+    }
+    if (avg < min && avg !== 0) {
+      min = avg;
+    }
+  }
+  return [min, max];
+}
+
+export const calcQuizScoreMinMax = associates => {
+  let max = 0;
+  let min = 100;
+
+  for (const associate of associates) {
+    const avg = calcQuizScoreAvg(associate);
+    if (avg > max) {
+      max = avg;
+    }
+    if (avg < min && avg !== 0) {
+      min = avg;
+    }
+  }
+  return [min, max];
+}
+
+export const calcSoftSkillsScoreMinMax = associates => {
+  let max = 0;
+  let min = 100;
+
+  for (const associate of associates) {
+    const avg = calcSoftSkillsScoreAvg(associate);
+    if (avg > max) {
+      max = avg;
+    }
+    if (avg < min && avg !== 0) {
+      min = avg;
+    }
+  }
+  return [min, max];
+}
+
+export const calcProjectScoreAvg = associate => {
   // filter out associate projects
   const projects = associate.filter(item => item['Interaction Type'] === 'Project (Score)');
 
@@ -36,7 +84,7 @@ export const calcProjectScoreAvg = (associate) => {
   return Math.round((projectAvgs[0] / projectAvgs[1]) * 100);
 }
 
-export const calcQuizScoreAvg = (associate) => {
+export const calcQuizScoreAvg = associate => {
   // filter out associate quizzes
   const quizzes = associate.filter(item => item['Interaction Type'] === 'Quiz');
 
@@ -54,7 +102,7 @@ export const calcQuizScoreAvg = (associate) => {
   return Math.round((quizAvgs[0] / quizAvgs[1]) * 100);
 }
 
-export const calcSoftSkillsScoreAvg = (associate) => {
+export const calcSoftSkillsScoreAvg = associate => {
   // filter out associate softSkills
   const softSkills = associate.filter(item => item['Interaction Type'] === 'Soft Skill Assessment');
 
@@ -72,7 +120,7 @@ export const calcSoftSkillsScoreAvg = (associate) => {
   return Math.round((softSkillsAvgs[0] / softSkillsAvgs[1]) * 100);
 }
 
-export const sortCycleByAssociate = (data) => {
+export const sortCycleByAssociate = data => {
   const associates = {};
   for (const item of data) {
     // ignore training staff and empty Person
