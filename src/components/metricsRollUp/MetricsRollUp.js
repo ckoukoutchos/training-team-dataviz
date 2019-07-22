@@ -13,9 +13,9 @@ const MetricsRollUp = props => {
         <TableHead>
           <TableRow>
             {showName ? <TableCell align='left'>Associate</TableCell> : null}
-            <TableCell align='left'>Project Average</TableCell>
-            <TableCell align='left'>Quiz Average</TableCell>
-            <TableCell align='left'>Soft Skill Average</TableCell>
+            <TableCell align='center'>Project Average</TableCell>
+            <TableCell align='center'>Quiz Average</TableCell>
+            <TableCell align='center'>Soft Skill Average</TableCell>
           </TableRow>
         </TableHead>
 
@@ -29,14 +29,14 @@ const MetricsRollUp = props => {
                     {row[0].Person}
                   </Link>
                 </TableCell>
-                <TableCell align='left'>{calcProjectScoreAvg(row)}%</TableCell>
-                <TableCell align='left'>{calcQuizScoreAvg(row)}%</TableCell>
-                <TableCell align='left'>{calcSoftSkillsScoreAvg(row)}%</TableCell>
+                <TableCell align='center'>{calcProjectScoreAvg(row)}%</TableCell>
+                <TableCell align='center'>{calcQuizScoreAvg(row)}%</TableCell>
+                <TableCell align='center'>{calcSoftSkillsScoreAvg(row)}%</TableCell>
               </TableRow>
             }) : <TableRow>
-              <TableCell align='left'>{calcProjectScoreAvg(associate)}%</TableCell>
-              <TableCell align='left'>{calcQuizScoreAvg(associate)}%</TableCell>
-              <TableCell align='left'>{calcSoftSkillsScoreAvg(associate)}%</TableCell>
+              <TableCell align='center'>{calcProjectScoreAvg(associate)}%</TableCell>
+              <TableCell align='center'>{calcQuizScoreAvg(associate)}%</TableCell>
+              <TableCell align='center'>{calcSoftSkillsScoreAvg(associate)}%</TableCell>
             </TableRow>
           }
         </TableBody>

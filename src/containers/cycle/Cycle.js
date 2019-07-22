@@ -15,11 +15,11 @@ class Cycle extends Component {
   }
 
   render() {
-    // console.log(this.props.mlPortland2019);
     return (
       !this.props.loading ?
-        <div div className={styles.Wrapper}>
+        <div className={styles.Wrapper}>
           <Breadcrumbs path={this.props.history.location.pathname.split('/')} />
+          <MetricsRollUp associate={[].concat(...this.props.mlPortland2019)} />
           <MetricsRollUp associates={this.props.mlPortland2019} cycleName='mlPortland2019' showName />
         </div>
         : <CircularProgress />
