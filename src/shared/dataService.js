@@ -1,4 +1,81 @@
-import MasterData from './masterData';
+import Metadata from './metadata';
+import CONSTS from './constants';
+
+export const calcAssociateAggr = associates => {
+  const avgs = {};
+  associates.forEach(associate => {
+    avgs[associate[0].Person] = {
+      projectAvg: calcMetricAvg(associate, CONSTS.projectScore, Metadata['Project (Score)']),
+      quizAvg: calcMetricAvg(associate, CONSTS.quiz, Metadata.Quiz),
+      softSkillsAvg: calcMetricAvg(associate, CONSTS.softSkills, Metadata['Soft Skill Assessment'])
+    };
+  });
+  return avgs;
+}
+
+export const calcCycleAggr = associates => {
+  let projectAvg = 0;
+  let projectMax = 0;
+  let projectMin = 100;
+  let quizAvg = 0;
+  let quizMax = 0;
+  let quizMin = 100;
+  let softSkillsAvg = 0;
+  let softSkillsMax = 0;
+  let softSkillsMin = 100;
+  let numProjects = Object.keys(associates).length;
+  let numQuizzes = Object.keys(associates).length;
+  let numSoftSkills = Object.keys(associates).length;
+
+  for (const associate in associates) {
+    projectAvg += associates[associate].projectAvg;
+
+    if (associates[associate].projectAvg === 0) {
+      numProjects--;
+    }
+    quizAvg += associates[associate].quizAvg;
+
+    if (associates[associate].quizAvg === 0) {
+      numQuizzes--;
+    }
+    softSkillsAvg += associates[associate].softSkillsAvg;
+
+    if (associates[associate].softSkillsAvg === 0) {
+      numSoftSkills--;
+    }
+
+    if (associates[associate].projectAvg > projectMax) {
+      projectMax = associates[associate].projectAvg;
+    }
+    if (associates[associate].projectAvg < projectMin && associates[associate].projectAvg !== 0) {
+      projectMin = associates[associate].projectAvg;
+    }
+    if (associates[associate].quizAvg > quizMax) {
+      quizMax = associates[associate].quizAvg;
+    }
+    if (associates[associate].quizAvg < quizMin && associates[associate].quizAvg !== 0) {
+      quizMin = associates[associate].quizAvg;
+    }
+    if (associates[associate].softSkillsAvg > softSkillsMax) {
+      softSkillsMax = associates[associate].softSkillsAvg;
+    }
+    if (associates[associate].softSkillsAvg < softSkillsMin && associates[associate].softSkillsAvg !== 0) {
+      softSkillsMin = associates[associate].softSkillsAvg;
+    }
+  };
+
+  return {
+    projectAvg: Math.round(projectAvg / numProjects),
+    projectMax,
+    projectMin,
+    quizAvg: Math.round(quizAvg / numQuizzes),
+    quizMax,
+    quizMin,
+    softSkillsMax,
+    softSkillsMin,
+    softSkillsAvg: Math.round(softSkillsAvg / numSoftSkills)
+  }
+}
 
 export const calcDaysSince = (startDate, endDate) => {
   // format as Date object
@@ -18,120 +95,48 @@ export const calcDaysSince = (startDate, endDate) => {
   }
 }
 
-export const calcProjectScoreMinMax = associates => {
-  let max = 0;
-  let min = 100;
+export const calcMetricAvg = (associate, metric, maxScores) => {
+  const metrics = associate.filter(event => event['Interaction Type'] === metric);
 
-  for (const associate of associates) {
-    const avg = calcProjectScoreAvg(associate);
-    if (avg > max) {
-      max = avg;
-    }
-    if (avg < min && avg !== 0) {
-      min = avg;
-    }
-  }
-  return [min, max];
-}
-
-export const calcQuizScoreMinMax = associates => {
-  let max = 0;
-  let min = 100;
-
-  for (const associate of associates) {
-    const avg = calcQuizScoreAvg(associate);
-    if (avg > max) {
-      max = avg;
-    }
-    if (avg < min && avg !== 0) {
-      min = avg;
-    }
-  }
-  return [min, max];
-}
-
-export const calcSoftSkillsScoreMinMax = associates => {
-  let max = 0;
-  let min = 100;
-
-  for (const associate of associates) {
-    const avg = calcSoftSkillsScoreAvg(associate);
-    if (avg > max) {
-      max = avg;
-    }
-    if (avg < min && avg !== 0) {
-      min = avg;
-    }
-  }
-  return [min, max];
-}
-
-export const calcProjectScoreAvg = associate => {
-  // filter out associate projects
-  const projects = associate.filter(item => item['Interaction Type'] === 'Project (Score)');
-
-  // return 0 if no projects were taken
-  if (!projects.length) {
+  // return 0 if no metrics were taken
+  if (!metrics.length) {
     return 0;
   }
 
-  // adds up score of all associate projects and Max Scores for those projects
-  const projectAvgs = projects.reduce((acc, curr) => {
-    return [acc[0] + Number(curr.Score), acc[1] + 30];
+  // adds up scores of all associate metrics and Max Scores for those metrics
+  const metricAvg = metrics.reduce((acc, curr) => {
+    return [acc[0] + Number(curr.Score), acc[1] + maxScores[curr.Interaction]['Max Score']];
   }, [0, 0]);
 
   // convert to percent and round to nearest int
-  return Math.round((projectAvgs[0] / projectAvgs[1]) * 100);
+  return Math.round((metricAvg[0] / metricAvg[1]) * 100);
 }
 
-export const calcQuizScoreAvg = associate => {
-  // filter out associate quizzes
-  const quizzes = associate.filter(item => item['Interaction Type'] === 'Quiz');
-
-  // return 0 if no quizzes were taken
-  if (!quizzes.length) {
-    return 0;
-  }
-
-  // adds up score of all associate quizzes and Max Scores for those quizzes
-  const quizAvgs = quizzes.reduce((acc, curr) => {
-    return [acc[0] + Number(curr.Score), acc[1] + MasterData.Quizzes[curr.Interaction]['Max Score']];
-  }, [0, 0]);
-
-  // convert to percent and round to nearest int
-  return Math.round((quizAvgs[0] / quizAvgs[1]) * 100);
-}
-
-export const calcSoftSkillsScoreAvg = associate => {
-  // filter out associate softSkills
-  const softSkills = associate.filter(item => item['Interaction Type'] === 'Soft Skill Assessment');
-
-  // return 0 if no soft skills were taken
-  if (!softSkills.length) {
-    return 0;
-  }
-
-  // adds up score of all associate softSkills and Max Scores for those soft skills
-  const softSkillsAvgs = softSkills.reduce((acc, curr) => {
-    return [acc[0] + Number(curr.Score), acc[1] + 5];
-  }, [0, 0]);
-
-  // convert to percent and round to nearest int
-  return Math.round((softSkillsAvgs[0] / softSkillsAvgs[1]) * 100);
-}
-
-export const sortCycleByAssociate = data => {
+export const sortMetircsByAssociate = data => {
   const associates = {};
+
   for (const item of data) {
     // ignore training staff and empty Person
-    if (!MasterData.staff.includes(item.Person) && item.Person !== '') {
-      // if field doesn't exist, add one
+    if (!Metadata.staff.includes(item.Person) && item.Person !== '') {
+
+      // if associate already added, push item
       if (associates[item.Person]) {
         associates[item.Person].push(item);
       } else {
+        // if field doesn't exist, add one
         associates[item.Person] = [item];
       }
     }
   }
   return Object.values(associates);
+}
+
+export const getUrlParams = urlHistory => {
+  const url = urlHistory.location.pathname.split('/');
+  // get associate name from url and format to use ' ' instead of '-'
+  const associate = url[url.length - 1].split('-').join(' ');
+  // get cycle name
+  const cycle = url[2];
+
+  return { url, cycle, associate };
 }

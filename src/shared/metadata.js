@@ -1,14 +1,65 @@
 // eventually to be moved to config file/DB
 
 export default {
-  'Soft Skill Assessment': {
-    'Problem Solving': 5,
-    'Self Awareness and Self Improvement': 5,
-    'Project Execution': 5,
-    'Professionalism': 5,
-    'Communication': 5
+  'Interaction Type': {
+    quiz: 'Quiz',
+    projectScore: 'Project (Score)',
+    softSkills: 'Soft Skill Assesment'
   },
-  Quizzes: {
+  'Soft Skill Assessment': {
+    'Problem Solving': { 'Max Score': 5 },
+    'Self Awareness and Self Improvement': { 'Max Score': 5 },
+    'Project Execution': { 'Max Score': 5 },
+    'Professionalism': { 'Max Score': 5 },
+    'Communication': { 'Max Score': 5 },
+  },
+  'Project (Score)': {
+    HTML_CSS_Page_Match_Project_v2: {
+      'Max Score': 30,
+      Module: 'Development Basics & Frontend'
+    },
+    JavaScript_Form_Validation_Project_v2: {
+      'Max Score': 30,
+      Module: 'Development Basics & Frontend'
+    },
+    MongoDB_Database_Project_v3: {
+      'Max Score': 30,
+      Module: 'Databases'
+    },
+    PostgreSQL_Database_Project_v3: {
+      'Max Score': 30,
+      Module: 'Databases'
+    },
+    Garden_Center_API_Project_v4: {
+      'Max Score': 30,
+      Module: 'Logic Layer (Java)'
+    },
+    Catalyte_Pet_Emporium_API_Project_v2: {
+      'Max Score': 30,
+      Module: 'Logic Layer (Java)'
+    },
+    Garden_Center_Front_End_Project_v2: {
+      'Max Score': 30,
+      Module: 'Frontend Frameworks (React)'
+    },
+    Redux_Garden_Center_Front_End_Project_v2: {
+      'Max Score': 30,
+      Module: 'Frontend Frameworks (React)'
+    },
+    E_Commerce_Group_Project_v1: {
+      'Max Score': 81,
+      Module: 'Group Project'
+    },
+    Final_Health_Project_v3: {
+      'Max Score': 30,
+      Module: 'Final Project'
+    },
+    Garden_Center_API_Project_v5: {
+      'Max Score': 30,
+      Module: 'Logic Layer (Java)'
+    }
+  },
+  'Quiz': {
     Quiz_Introductory_v1: {
       'Max Score': 17,
       Module: 'Development Basics & Frontend',
