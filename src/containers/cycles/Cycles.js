@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Paper, Typography } from '@material-ui/core';
 import styles from './Cycles.module.css';
@@ -13,9 +12,6 @@ class Cycles extends Component {
         <Typography variant="h5" component="h3">
           <Link to={'/cycle/' + cycle} className={styles.Link}>{CONSTS[cycle]}</Link>
         </Typography>
-        <Typography component="p">
-          Start Date
-        </Typography>
       </Paper>
     ));
 
@@ -27,8 +23,4 @@ class Cycles extends Component {
   };
 }
 
-const mapStateToProps = state => ({
-  cycleMetrics: state.cycles.cycleMetrics
-});
-
-export default connect(mapStateToProps)(Cycles);
+export default Cycles;

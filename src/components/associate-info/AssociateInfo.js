@@ -1,7 +1,8 @@
 import React from 'react';
-import { Avatar, Card, CardContent, CardHeader, Typography } from '@material-ui/core';
+import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
 import styles from './AssociateInfo.module.css';
 import { calcDaysSince } from '../../shared/dataService';
+import CONSTS from '../../shared/constants';
 
 const AssociateInfo = (props) => {
   const { Date: startDate, Person } = props.associate.find(item => item['Interaction Type'] === 'Associate Start');
@@ -10,7 +11,7 @@ const AssociateInfo = (props) => {
 
   return (
     <Card className={styles.Card}>
-      <CardHeader avatar={<Avatar>{Person[0]}</Avatar>} title={Person} subheader={props.cycle} />
+      <CardHeader component='h1' title={Person} subheader={CONSTS[props.cycle]} />
       <CardContent>
         <Typography variant='body2' component='p'>
           <strong>Start Date:</strong> {startDate}

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
 import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import styles from './Associate.module.css';
-import AssociateInfo from '../../components/associateInfo/AssociateInfo';
+import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import { getUrlParams } from '../../shared/dataService';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumbs, Paper, Typography } from '@material-ui/core';
+import CONSTS from '../../shared/constants';
 import styles from './Breadcrumbs.module.css';
 
 const breadcrumbs = props => {
@@ -14,7 +15,7 @@ const breadcrumbs = props => {
             Cycles
           </Link>
           <Link to={'/cycle/' + path[2]} className={styles.Link}>
-            {path[2]}
+            {CONSTS[path[2]]}
           </Link>
           <Typography color='textPrimary'>{path[4]}</Typography>
         </Breadcrumbs>
@@ -22,7 +23,7 @@ const breadcrumbs = props => {
           <Link to='/cycle' className={styles.Link}>
             Cycles
             </Link>
-          <Typography color='textPrimary'>{path[2]}</Typography>
+          <Typography color='textPrimary'>{CONSTS[path[2]]}</Typography>
         </Breadcrumbs>}
     </Paper>
   );

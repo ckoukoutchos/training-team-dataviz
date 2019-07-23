@@ -80,12 +80,12 @@ export const calcCycleAggr = associates => {
 export const calcDaysSince = (startDate, endDate) => {
   // format as Date object
   const startDateSplit = startDate.split('/');
-  const startDateObj = new Date('20' + startDateSplit[2], startDateSplit[0], startDateSplit[1]);
+  const startDateObj = new Date('20' + startDateSplit[2], startDateSplit[0] - 1, startDateSplit[1]);
 
   if (endDate) {
     // if end date provided, format as Date object and calc time btw start and end
     const endDateSplit = endDate.split('/');
-    const endDateObj = new Date('20' + endDateSplit[2], endDateSplit[0], endDateSplit[1]);
+    const endDateObj = new Date('20' + endDateSplit[2], endDateSplit[0] - 1, endDateSplit[1]);
     const cycleLength = (endDateObj - startDateObj) / 86400000;
     return Math.round(cycleLength);
   } else {
