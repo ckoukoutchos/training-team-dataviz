@@ -10,8 +10,8 @@ const breadcrumbs = props => {
     <Paper className={path.length === 5 ? styles.BreadcrumbsLong : styles.BreadcrumbsShort}>
       {path.length === 5 ?
         <Breadcrumbs separator='›' aria-label='Breadcrumb'>
-          <Link to='/' className={styles.Link}>
-            Home
+          <Link to='/cycle' className={styles.Link}>
+            Cycles
           </Link>
           <Link to={'/cycle/' + path[2]} className={styles.Link}>
             {path[2]}
@@ -19,8 +19,8 @@ const breadcrumbs = props => {
           <Typography color='textPrimary'>{path[4]}</Typography>
         </Breadcrumbs>
         : <Breadcrumbs separator='›' aria-label='Breadcrumb'>
-          <Link to='/' className={styles.Link}>
-            Home
+          <Link to='/cycle' className={styles.Link}>
+            Cycles
             </Link>
           <Typography color='textPrimary'>{path[2]}</Typography>
         </Breadcrumbs>}

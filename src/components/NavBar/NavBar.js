@@ -46,7 +46,7 @@ class NavBar extends Component {
                 </ListItem>
               </Link>
 
-              <Link to='/cycles' className={styles.Link}>
+              <Link to='/cycle' className={styles.Link}>
                 <ListItem button>
                   <ListItemIcon>
                     <Autorenew />
@@ -55,7 +55,7 @@ class NavBar extends Component {
                 </ListItem>
               </Link>
 
-              <Link to='/associates' className={styles.Link}>
+              <Link to='/associate' className={styles.Link}>
                 <ListItem button>
                   <ListItemIcon>
                     <Person />

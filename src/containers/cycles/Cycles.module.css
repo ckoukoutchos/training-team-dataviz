@@ -1,0 +1,17 @@
+.Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 24px;
+}
+
+.Link {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.Paper {
+  margin: 16px;
+  padding: 16px;
+  width: 600px;
+}

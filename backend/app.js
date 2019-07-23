@@ -44,7 +44,7 @@ const storage = multer.diskStorage({
   },
   // uses original file name for storage file name
   filename: (req, file, cb) => {
-    cb(null, file.originalname)
+    cb(null, req.params.cycleName + '.csv')
   }
 })
 
@@ -52,7 +52,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // post route for csv file
-app.post('/api', upload.single('file'), (req, res, next) => {
+app.post('/api/:cycleName', upload.single('file'), (req, res, next) => {
   // parse csv file to json object
   csv()
     .fromFile(req.file.path)

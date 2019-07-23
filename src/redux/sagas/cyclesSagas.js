@@ -28,10 +28,19 @@ function* fetchCycleMetrics({ cycleName }) {
   }
 }
 
-function* postCycleMetrics({ formData }) {
+function* postCycleMetrics({ formData, cycleName, history }) {
   try {
-    const res = yield axios.post('/api', formData);
-    yield put(postCycleMetricsSuccess(res.data));
+    const res = yield axios.post('/api/' + cycleName, formData);
+    // sort by associate
+    const sortedMetrics = yield sortMetircsByAssociate(res.data);
+    // calculate avg for projects, quizzes, soft skills
+    const associateAggr = yield calcAssociateAggr(sortedMetrics);
+    // calculate avgs for whole cycle
+    const cycleAggr = yield calcCycleAggr(associateAggr);
+    // combine into one object
+    associateAggr[cycleName] = cycleAggr;
+    yield put(postCycleMetricsSuccess(associateAggr, sortedMetrics, cycleName));
+    history.push('/cycles')
   } catch (err) {
     yield put(postCycleMetricsFail(err.message));
   }

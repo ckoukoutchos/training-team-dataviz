@@ -1,23 +1,54 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { postCycleMetrics } from '../../redux/actions';
-import { Button, Card, CardContent, CardActions, CardHeader, CircularProgress } from '@material-ui/core';
+import { Button, Card, CardContent, CardActions, CardHeader, CircularProgress, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import styles from './Upload.module.css';
+import Metadata from '../../shared/metadata';
+import CONSTS from '../../shared/constants';
 
 class Upload extends Component {
+  state = {
+    selectedCycle: ''
+  }
+
   uploadFileHandler = () => {
     const formData = new FormData();
     formData.append('file', this.uploadInput.files[0]);
-    formData.append('name', 'mlPortland2019');
 
-    this.props.postCycle(formData);
+    this.props.postCycle(formData, this.state.selectedCycle, this.props.history);
+  }
+
+  selectHandler = evt => {
+    this.setState({ selectedCycle: evt.target.value });
   }
 
   render() {
-    return !this.props.loading ?
+    const { selectedCycle } = this.state;
+    const { error, loading } = this.props;
+
+    const cycleList = Metadata.cycles.map((cycle, index) => {
+      return <MenuItem key={index} value={cycle}>{CONSTS[cycle]}</MenuItem>
+    });
+
+    return !loading ?
       <Card className={styles.Card}>
         <CardHeader title='Upload a CSV File:' />
-        {this.props.error ? <p className={styles.Error}>{this.props.error}</p> : null}
+        {error ? <p className={styles.Error}>{error}</p> : null}
+
+        <div className={styles.Container}>
+          <FormControl className={styles.Select}>
+            <InputLabel htmlFor='cycles'>Select Cycle</InputLabel>
+            <Select
+              value={selectedCycle}
+              onChange={this.selectHandler}
+              inputProps={{
+                id: 'cycles',
+              }}
+            >
+              {cycleList}
+            </Select>
+          </FormControl>
+        </div>
 
         <CardContent>
           <input accept='.csv'
@@ -28,7 +59,8 @@ class Upload extends Component {
         <CardActions>
           <Button variant="contained"
             color="primary"
-            onClick={this.uploadFileHandler}>
+            onClick={this.uploadFileHandler}
+            disabled={selectedCycle === ''}>
             Upload
           </Button>
         </CardActions>
@@ -43,7 +75,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  postCycle: (formData) => dispatch(postCycleMetrics(formData))
+  postCycle: (formData, cycleName, history) => dispatch(postCycleMetrics(formData, cycleName, history))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Upload);

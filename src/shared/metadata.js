@@ -1,17 +1,17 @@
 // eventually to be moved to config file/DB
 
 export default {
+  cycles: [
+    'mlPortland2019',
+    'tradChicagoApril2019',
+    'tradDenverJanuary2019',
+    'tradBostonJune2019',
+    'tradBaltimoreJuly2019'
+  ],
   'Interaction Type': {
     quiz: 'Quiz',
     projectScore: 'Project (Score)',
     softSkills: 'Soft Skill Assesment'
-  },
-  'Soft Skill Assessment': {
-    'Problem Solving': { 'Max Score': 5 },
-    'Self Awareness and Self Improvement': { 'Max Score': 5 },
-    'Project Execution': { 'Max Score': 5 },
-    'Professionalism': { 'Max Score': 5 },
-    'Communication': { 'Max Score': 5 },
   },
   'Project (Score)': {
     HTML_CSS_Page_Match_Project_v2: {
@@ -133,5 +133,12 @@ export default {
       Module: 'Development Basics & Frontend',
     }
   },
-  staff: ['Eric Queen', 'Corbin Koukoutchos', 'Dan Reuther', 'Katlyn Beck', 'Greg Fisher']
+  'Soft Skill Assessment': {
+    'Problem Solving': { 'Max Score': 5 },
+    'Self Awareness and Self Improvement': { 'Max Score': 5 },
+    'Project Execution': { 'Max Score': 5 },
+    'Professionalism': { 'Max Score': 5 },
+    'Communication': { 'Max Score': 5 },
+  },
+  staff: ['Eric Queen', 'Corbin Koukoutchos', 'Dan Reuther', 'Katlyn Beck', 'Greg Fisher', 'Taylor Elam', 'Tony Richards', 'Dan Lawless', 'William Newman', 'Hayes McCardell', 'Josh Tucker']
 }

@@ -21,16 +21,9 @@ export default function (state = initialState, action) {
     case FETCH_CYCLE_METRICS_SUCCESS: {
       return {
         ...state,
-        cycleAggr: {
-          ...state.cycleAggr,
-          [action.cycleName]: action.cycleAggr,
-        },
-        cycleMetrics: {
-          ...state.cycleMetrics,
-          [action.cycleName]: action.cycleMetrics
-        },
+        cycleAggr: newCycleAggr(state, action),
+        cycleMetrics: newCycleMetrics(state, action),
         loading: false,
-        mlPortland2019: action.cycleMetrics
       };
     }
     case FETCH_CYCLE_METRICS_FAIL: {
@@ -50,8 +43,9 @@ export default function (state = initialState, action) {
     case POST_CYCLE_METRICS_SUCCESS: {
       return {
         ...state,
+        cycleAggr: newCycleAggr(state, action),
+        cycleMetrics: newCycleMetrics(state, action),
         loading: false,
-        mlPortland2019: action.cycleMetrics
       };
     }
     case POST_CYCLE_METRICS_FAIL: {
@@ -64,4 +58,22 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
+}
+
+const newCycleAggr = (state, action) => {
+  const newCycleAggr = {};
+  for (let [key, value] of Object.entries(state.cycleAggr)) {
+    newCycleAggr[key] = value;
+  }
+  newCycleAggr[action.cycleName] = action.cycleAggr
+  return newCycleAggr;
+}
+
+const newCycleMetrics = (state, action) => {
+  const newCycleMetrics = {};
+  for (let [key, value] of Object.entries(state.cycleMetrics)) {
+    newCycleMetrics[key] = value;
+  }
+  newCycleMetrics[action.cycleName] = action.cycleMetrics
+  return newCycleMetrics;
 }

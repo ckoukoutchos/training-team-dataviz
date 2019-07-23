@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-
 import { CircularProgress } from '@material-ui/core';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import MetricsRollUp from '../../components/metricsRollUp/MetricsRollUp';
@@ -11,13 +10,15 @@ import styles from './Cycle.module.css';
 
 class Cycle extends Component {
   componentDidMount() {
-    if (!Object.keys(this.props.cycleAggr).length) {
-      this.props.fetchCycle();
+    const { cycle } = getUrlParams(this.props.history);
+    // only fetches if not already in memory
+    if (!Object.keys(this.props.cycleAggr).includes(cycle)) {
+      this.props.fetchCycle(cycle);
     }
   }
 
   render() {
-    const { cycleAggr, history } = this.props;
+    const { cycleAggr, error, history } = this.props;
     const { url, cycle } = getUrlParams(history);
 
     return (
@@ -52,19 +53,22 @@ class Cycle extends Component {
           <MetricsRollUp associate={cycleAggr[cycle][cycle]} />
           <MetricsRollUp associates={cycleAggr[cycle]} cycle={cycle} />
         </div>
-        : <CircularProgress />
+        : <div className={styles.Wrapper}>
+          {error ? <p style={{ color: 'red' }}>{error}</p> : null}
+          <CircularProgress />
+        </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
   cycleAggr: state.cycles.cycleAggr,
-  loading: state.cycles.loading,
-  mlPortland2019: state.cycles.mlPortland2019
+  error: state.cycles.error,
+  loading: state.cycles.loading
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchCycle: () => dispatch(fetchCycleMetrics('mlPortland2019'))
+  fetchCycle: (cycleName) => dispatch(fetchCycleMetrics(cycleName))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cycle);

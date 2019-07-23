@@ -10,8 +10,10 @@ import { getUrlParams } from '../../shared/dataService';
 
 class Associate extends Component {
   componentDidMount() {
-    if (!this.props.cycleMetrics.length) {
-      this.props.fetchCycle();
+    const { cycle } = getUrlParams(this.props.history);
+    // only fetches if not already in memory
+    if (!Object.keys(this.props.cycleAggr).includes(cycle)) {
+      this.props.fetchCycle(cycle);
     }
   }
 
@@ -83,7 +85,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchCycle: () => dispatch(fetchCycleMetrics('mlPortland2019'))
+  fetchCycle: (cycleName) => dispatch(fetchCycleMetrics(cycleName))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Associate);

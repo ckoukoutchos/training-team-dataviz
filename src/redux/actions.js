@@ -17,14 +17,18 @@ export const fetchCycleMetricsFail = error => ({
     error
 });
 
-export const postCycleMetrics = formData => ({
+export const postCycleMetrics = (formData, cycleName, history) => ({
     type: POST_CYCLE_METRICS,
-    formData
+    formData,
+    cycleName,
+    history
 });
 
-export const postCycleMetricsSuccess = cycleMetrics => ({
+export const postCycleMetricsSuccess = (cycleAggr, cycleMetrics, cycleName) => ({
     type: POST_CYCLE_METRICS_SUCCESS,
-    cycleMetrics
+    cycleAggr,
+    cycleMetrics,
+    cycleName
 });
 
 export const postCycleMetricsFail = error => ({
