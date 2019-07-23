@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-import { Paper, Typography } from '@material-ui/core';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import MetricsRollUp from '../../components/metrics-roll-up/MetricsRollUp';
@@ -32,6 +31,8 @@ class Cycle extends Component {
           <CycleInfo cycleName={CONSTS[cycle]} metadata={cycleMetadata[cycle]} />
 
           <RadarGraph
+            title='Running Averages of Projects, Quizzes, and Soft Skills'
+            subtitle='Including the Max and Min Associate Running Average'
             data={[
               {
                 avg: 'Projects',

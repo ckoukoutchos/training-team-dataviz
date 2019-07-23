@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
+import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
+import MetricsRollUp from '../../components/metrics-roll-up/MetricsRollUp';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
-import CONSTS from '../../shared/constants';
 import { getUrlParams } from '../../shared/dataService';
+import BulletGraph from '../../components/bullet-graph/BulletGraph';
 
 class Associate extends Component {
   componentDidMount() {
@@ -30,6 +31,8 @@ class Associate extends Component {
           <AssociateInfo cycle={cycle} associate={cycleMetrics[cycle].find(row => row[0].Person === associate)} />
 
           <RadarGraph
+            title='Running Averages of Projects, Quizzes, and Soft Skills'
+            subtitle='Compared to Cycle Averages'
             keys={['Cycle Average', associate]}
             data={[
               {
@@ -49,6 +52,10 @@ class Associate extends Component {
               }
             ]}
           />
+          
+          <BulletGraph title='Title' subtitle='Subtitle' />
+
+          <MetricsRollUp associate={cycleAggr[cycle][associate]} />
 
           <Paper className={styles.Container}>
             <Table className={styles.Table}>

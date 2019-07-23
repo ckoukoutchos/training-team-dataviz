@@ -24,7 +24,7 @@ function* postCycleMetrics({ formData, cycleName, history }) {
   try {
     const res = yield axios.post('/api/' + cycleName, formData);
     yield put(postCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
-    history.push('/cycles')
+    history.push('/cycle')
   } catch (err) {
     yield put(postCycleMetricsFail(err.message));
   }

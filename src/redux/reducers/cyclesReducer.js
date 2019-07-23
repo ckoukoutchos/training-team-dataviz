@@ -3,7 +3,6 @@ import { FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_F
 const initialState = {
   cycleAggr: {},
   cycleMetadata: [],
-  cycleMetadata: [],
   cycleMetrics: [],
   error: null,
   loading: false,
