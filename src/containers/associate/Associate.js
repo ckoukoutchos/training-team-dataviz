@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
+import CONSTS from '../../shared/constants';
 import { getUrlParams } from '../../shared/dataService';
 
 class Associate extends Component {
@@ -25,10 +26,6 @@ class Associate extends Component {
       !this.props.loading && cycleMetrics[cycle] && cycleAggr[cycle] ?
         <div className={styles.Wrapper}>
           <Breadcrumbs path={url} />
-
-          <Paper className={styles.Associate}>
-
-          </Paper>
 
           <AssociateInfo cycle={cycle} associate={cycleMetrics[cycle].find(row => row[0].Person === associate)} />
 

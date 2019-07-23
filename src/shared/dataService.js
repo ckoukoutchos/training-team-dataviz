@@ -131,6 +131,41 @@ export const sortMetircsByAssociate = data => {
   return Object.values(associates);
 }
 
+export const getCycleMetadata = data => {
+  const metadata = {};
+  data.forEach(event => {
+    // check for interaction type
+    if (Metadata.cycleMetadate.includes(event['Interaction Type']) || RegExp('Cycle Exit').test(event['Interaction Type'])) {
+      // because our data entry is wonky
+      let field;
+      if (event.Interaction === '') {
+        field = event['Interaction Type'];
+      } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
+        field = 'Associate Leave';
+      } else {
+        field = event.Interaction
+      }
+      // if not already a field, create one
+      if (!metadata[field]) {
+        // staff change need name and date
+        if (field !== 'Cycle Start Date' && field !== 'Cycle End Date') {
+          metadata[field] = [{ name: event.Person, date: event.Date }];
+        } else {
+          metadata[field] = [event.Date];
+        }
+        // otherwise, add to list
+      } else {
+        if (field !== 'Cycle Start Date' && field !== 'Cycle End Date') {
+          metadata[field].push({ name: event.Person, date: event.Date });
+        } else {
+          metadata[field].push(event.Date);
+        }
+      }
+    }
+  });
+  return metadata;
+}
+
 export const getUrlParams = urlHistory => {
   const url = urlHistory.location.pathname.split('/');
   // get associate name from url and format to use ' ' instead of '-'

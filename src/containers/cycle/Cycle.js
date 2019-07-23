@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-import { CircularProgress } from '@material-ui/core';
+import { Paper, Typography } from '@material-ui/core';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
-import MetricsRollUp from '../../components/metricsRollUp/MetricsRollUp';
+import CycleInfo from '../../components/cycle-info/CycleInfo';
+import MetricsRollUp from '../../components/metrics-roll-up/MetricsRollUp';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
+import Spinner from '../../components/spinner/Spinner';
 import { getUrlParams } from '../../shared/dataService';
+import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 
 class Cycle extends Component {
@@ -18,13 +21,15 @@ class Cycle extends Component {
   }
 
   render() {
-    const { cycleAggr, error, history } = this.props;
+    const { cycleAggr, cycleMetadata, cycleMetrics, history } = this.props;
     const { url, cycle } = getUrlParams(history);
 
-    return (
-      !this.props.loading && cycleAggr[cycle] ?
+    return ( 
+      !this.props.loading && cycleAggr[cycle] && cycleMetadata[cycle] && cycleMetrics[cycle] ?
         <div className={styles.Wrapper}>
           <Breadcrumbs path={url} />
+
+          <CycleInfo cycleName={CONSTS[cycle]} metadata={cycleMetadata[cycle]} />
 
           <RadarGraph
             data={[
@@ -53,17 +58,15 @@ class Cycle extends Component {
           <MetricsRollUp associate={cycleAggr[cycle][cycle]} />
           <MetricsRollUp associates={cycleAggr[cycle]} cycle={cycle} />
         </div>
-        : <div className={styles.Wrapper}>
-          {error ? <p style={{ color: 'red' }}>{error}</p> : null}
-          <CircularProgress />
-        </div>
+        : <Spinner />
     );
   }
 }
 
 const mapStateToProps = state => ({
   cycleAggr: state.cycles.cycleAggr,
-  error: state.cycles.error,
+  cycleMetadata: state.cycles.cycleMetadata,
+  cycleMetrics: state.cycles.cycleMetrics,
   loading: state.cycles.loading
 });
 

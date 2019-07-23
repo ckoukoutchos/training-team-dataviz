@@ -3,10 +3,10 @@ import { FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_F
 const initialState = {
   cycleAggr: {},
   cycleMetadata: [],
+  cycleMetadata: [],
   cycleMetrics: [],
   error: null,
   loading: false,
-  mlPortland2019: []
 };
 
 export default function (state = initialState, action) {
@@ -22,6 +22,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         cycleAggr: newCycleAggr(state, action),
+        cycleMetadata: newCycleMetadata(state, action),
         cycleMetrics: newCycleMetrics(state, action),
         loading: false,
       };
@@ -44,6 +45,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         cycleAggr: newCycleAggr(state, action),
+        cycleMetadata: newCycleMetadata(state, action),
         cycleMetrics: newCycleMetrics(state, action),
         loading: false,
       };
@@ -58,7 +60,8 @@ export default function (state = initialState, action) {
     case RESET_ERROR: {
       return {
         ...state,
-        error: null
+        error: null,
+        loading: false
       }
     }
     default:
@@ -73,6 +76,15 @@ const newCycleAggr = (state, action) => {
   }
   newCycleAggr[action.cycleName] = action.cycleAggr
   return newCycleAggr;
+}
+
+const newCycleMetadata = (state, action) => {
+  const newCycleMetadata = {};
+  for (let [key, value] of Object.entries(state.cycleMetadata)) {
+    newCycleMetadata[key] = value;
+  }
+  newCycleMetadata[action.cycleName] = action.cycleMetadata
+  return newCycleMetadata;
 }
 
 const newCycleMetrics = (state, action) => {

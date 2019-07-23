@@ -1,3 +1,7 @@
+.Button {
+  margin: 8px;
+}
+
 .Main {
   display: flex;
   flex-direction: column;

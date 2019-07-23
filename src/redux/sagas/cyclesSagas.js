@@ -2,7 +2,7 @@ import { put, all, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { FETCH_CYCLE_METRICS, POST_CYCLE_METRICS } from "../actionTypes";
 import { fetchCycleMetricsSuccess, fetchCycleMetricsFail, postCycleMetricsSuccess, postCycleMetricsFail } from "../actions";
-import { calcAssociateAggr, calcCycleAggr, sortMetircsByAssociate } from '../../shared/dataService';
+import { calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate } from '../../shared/dataService';
 
 export default function* watchCycle() {
   yield all([
@@ -14,15 +14,7 @@ export default function* watchCycle() {
 function* fetchCycleMetrics({ cycleName }) {
   try {
     const res = yield axios.get('/api/' + cycleName);
-    // sort by associate
-    const sortedMetrics = yield sortMetircsByAssociate(res.data);
-    // calculate avg for projects, quizzes, soft skills
-    const associateAggr = yield calcAssociateAggr(sortedMetrics);
-    // calculate avgs for whole cycle
-    const cycleAggr = yield calcCycleAggr(associateAggr);
-    // combine into one object
-    associateAggr[cycleName] = cycleAggr;
-    yield put(fetchCycleMetricsSuccess(associateAggr, sortedMetrics, cycleName));
+    yield put(fetchCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
   } catch (err) {
     yield put(fetchCycleMetricsFail(err.message));
   }
@@ -31,17 +23,24 @@ function* fetchCycleMetrics({ cycleName }) {
 function* postCycleMetrics({ formData, cycleName, history }) {
   try {
     const res = yield axios.post('/api/' + cycleName, formData);
-    // sort by associate
-    const sortedMetrics = yield sortMetircsByAssociate(res.data);
-    // calculate avg for projects, quizzes, soft skills
-    const associateAggr = yield calcAssociateAggr(sortedMetrics);
-    // calculate avgs for whole cycle
-    const cycleAggr = yield calcCycleAggr(associateAggr);
-    // combine into one object
-    associateAggr[cycleName] = cycleAggr;
-    yield put(postCycleMetricsSuccess(associateAggr, sortedMetrics, cycleName));
+    yield put(postCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
     history.push('/cycles')
   } catch (err) {
     yield put(postCycleMetricsFail(err.message));
   }
+}
+
+const formatCycleData = (data, cycleName) => {
+  // sort by associate
+  const sortedMetrics = sortMetircsByAssociate(data);
+  // calculate avg for projects, quizzes, soft skills
+  const associateAggr = calcAssociateAggr(sortedMetrics);
+  // calculate avgs for whole cycle
+  const cycleAggr = calcCycleAggr(associateAggr);
+  // combine into one object
+  associateAggr[cycleName] = cycleAggr;
+  // collect cycle metadata
+  const metadata = getCycleMetadata(data);
+  
+  return [associateAggr, metadata, sortedMetrics, cycleName];
 }

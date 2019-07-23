@@ -4,6 +4,13 @@
   overflow-x: auto;
 }
 
+.Paper {
+  margin: 16px auto;
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 800px;
+}
+
 .Wrapper {
   display: flex;
   flex-direction: column;

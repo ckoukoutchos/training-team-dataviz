@@ -4,6 +4,13 @@
   width: 800px;
 }
 
+.Paper {
+  margin: 16px auto;
+  padding: 16px 24px;
+  text-align: center;
+  min-width: 800px;
+}
+
 .Table {
   min-width: 650px;
 }

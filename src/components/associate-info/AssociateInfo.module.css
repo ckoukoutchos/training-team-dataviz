@@ -1,4 +1,19 @@
-.Card {
+.Body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Divider {
+  margin: 16px;
+}
+
+.Header {
+  text-align: center;
+}
+
+.Paper {
   margin: 16px auto;
+  padding: 16px 24px;
   width: 800px;
 }

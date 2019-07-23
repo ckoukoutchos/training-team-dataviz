@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
+import { resetError } from './redux/actions';
 import styles from './App.module.css';
-import { Modal } from '@material-ui/core';
+import { Button, Modal } from '@material-ui/core';
 import Associate from './containers/associate/Associate';
 import Cycle from './containers/cycle/Cycle';
 import Cycles from './containers/cycles/Cycles';
@@ -11,12 +12,9 @@ import NavBar from './components/NavBar/NavBar';
 import Upload from './components/upload/Upload';
 
 class App extends Component {
-  state = {
-    showModal: false
-  }
 
   toggleModal = () => {
-    this.setState(prevState => ({ showModal: !prevState.showModal }));
+    this.props.resetError();
   }
 
   render() {
@@ -36,10 +34,10 @@ class App extends Component {
           </Switch>
         </main>
 
-        {error || this.state.showModal ? <Modal
+        {error ? <Modal
           aria-labelledby='simple-modal-title'
           aria-describedby='simple-modal-description'
-          open={this.state.showModal || !!error}
+          open={!!error}
           onClose={this.toggleModal}
         >
           <div className={styles.Modal}>
@@ -47,6 +45,12 @@ class App extends Component {
             <p id='simple-modal-description'>
               {error}
             </p>
+            <Button
+              variant="contained"
+              className={styles.Button}
+              onClick={this.toggleModal}>
+              Close
+            </Button>
           </div>
         </Modal> : null}
       </>
@@ -58,5 +62,9 @@ const mapStateToProps = state => ({
   error: state.cycles.error
 });
 
+const mapDispatchToProps = dispatch => ({
+  resetError: () => dispatch(resetError())
+});
 
-export default connect(mapStateToProps)(App);
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

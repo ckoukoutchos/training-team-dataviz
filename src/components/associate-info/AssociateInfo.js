@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, Typography } from '@material-ui/core';
+import { Divider, Paper, Typography } from '@material-ui/core';
 import styles from './AssociateInfo.module.css';
 import { calcDaysSince } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
@@ -10,27 +10,45 @@ const AssociateInfo = (props) => {
   const endDate = props.associate.find(item => exitRegex.test(item['Interaction Type']));
 
   return (
-    <Card className={styles.Card}>
-      <CardHeader component='h1' title={Person} subheader={CONSTS[props.cycle]} />
-      <CardContent>
-        <Typography variant='body2' component='p'>
-          <strong>Start Date:</strong> {startDate}
+    <Paper className={styles.Paper}>
+      <div className={styles.Header}>
+        <Typography variant='h3'>
+          {Person}
         </Typography>
-        <Typography variant='body2' component='p'>
-          <strong>Days in Cycle:</strong> {endDate ? calcDaysSince(startDate, endDate.Date) : calcDaysSince(startDate)}
+        <Typography variant='h6' color='textSecondary'>
+          {CONSTS[props.cycle]}
         </Typography>
-        {endDate ?
-          <>
-            <Typography variant='body2' component='p'>
-              <strong>End Date: </strong>{endDate.Date}
-            </Typography>
-            <Typography variant="button" display="block" gutterBottom>
+      </div>
+
+      <div className={styles.Divider}>
+        <Divider />
+      </div>
+
+      <div className={styles.Body}>
+        <div>
+          <Typography variant='body2'>
+            <strong>Start Date:</strong> {startDate}
+          </Typography>
+          {endDate ?
+            <>
+              <Typography variant='body2'>
+                <strong>End Date: </strong>{endDate.Date}
+              </Typography>
+            </>
+            : null}
+        </div>
+
+        <div>
+          <Typography variant='body2'>
+            <strong>Days in Cycle:</strong> {endDate ? calcDaysSince(startDate, endDate.Date) : calcDaysSince(startDate)}
+          </Typography>
+          { endDate ? 
+            <Typography variant="button" display="block">
               {endDate['Interaction Type']}
-            </Typography>
-          </>
-          : null}
-      </CardContent>
-    </Card >
+            </Typography> : null}
+        </div>
+      </div>
+    </Paper >
   );
 }
 

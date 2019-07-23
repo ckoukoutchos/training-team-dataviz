@@ -4,7 +4,7 @@ export default {
   cycles: [
     'mlPortland2019',
     'tradChicagoApril2019',
-    'tradDenverJanuary2019',
+    'tradDenverJune2019',
     'tradBostonJune2019',
     'tradBaltimoreJuly2019'
   ],
@@ -13,6 +13,12 @@ export default {
     projectScore: 'Project (Score)',
     softSkills: 'Soft Skill Assesment'
   },
+  cycleMetadate: [
+    'Staff change',
+    'Cycle End Date',
+    'Cycle Start Date',
+    'Associate Start'
+  ],
   'Project (Score)': {
     HTML_CSS_Page_Match_Project_v2: {
       'Max Score': 30,

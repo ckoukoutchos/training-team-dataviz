@@ -23,18 +23,17 @@ app.get('/api/:fileName', (req, res, next) => {
   const filePath = `files/${req.params.fileName}.csv`;
 
   // check if file exists in ./files
-  // if (fs.existsSync(filePath)) {
-  //   csv()
-  //     .fromFile(filePath)
-  //     .then(jsonObj => {
-  //       res.send(jsonObj)
-  //     }).catch(err => {
-  //       res.status(500).send('Error parsing CSV');
-  //     });
-  // } else {
-  //   res.status(404).send('File does not exist');
-  // }
-  res.status(404).send('File does not exist');
+  if (fs.existsSync(filePath)) {
+    csv()
+      .fromFile(filePath)
+      .then(jsonObj => {
+        res.send(jsonObj)
+      }).catch(err => {
+        res.status(500).send('Error parsing CSV');
+      });
+  } else {
+    res.status(404).send('File does not exist');
+  }
 });
 
 // multer storage config
