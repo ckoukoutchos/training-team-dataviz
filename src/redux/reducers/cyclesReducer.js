@@ -1,4 +1,4 @@
-import { FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_FAIL, POST_CYCLE_METRICS, POST_CYCLE_METRICS_SUCCESS, POST_CYCLE_METRICS_FAIL } from '../actionTypes';
+import { FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_FAIL, POST_CYCLE_METRICS, POST_CYCLE_METRICS_SUCCESS, POST_CYCLE_METRICS_FAIL, RESET_ERROR } from '../actionTypes';
 
 const initialState = {
   cycleAggr: {},
@@ -53,6 +53,12 @@ export default function (state = initialState, action) {
         ...state,
         error: action.error,
         loading: false
+      }
+    }
+    case RESET_ERROR: {
+      return {
+        ...state,
+        error: null
       }
     }
     default:

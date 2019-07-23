@@ -11,13 +11,13 @@ const RadarGraph = props => {
         keys={props.keys}
         indexBy='avg'
         maxValue={100}
-        margin={{ top: 70, right: 80, bottom: 40, left: 80 }}
+        margin={{ top: 35, right: 20, bottom: 35, left: 20 }}
         curve='catmullRomClosed'
         borderWidth={2}
         borderColor={{ from: 'color' }}
         gridLevels={3}
         gridShape='circular'
-        gridLabelOffset={15}
+        gridLabelOffset={20}
         enableDots={true}
         dotSize={10}
         dotColor={{ theme: 'background' }}
@@ -33,11 +33,11 @@ const RadarGraph = props => {
           {
             anchor: 'top-left',
             direction: 'column',
-            translateX: -50,
-            translateY: -40,
-            itemWidth: 80,
+            translateX: 150,
+            translateY: 0,
+            itemWidth: 60,
             itemHeight: 20,
-            itemTextColor: '#999',
+            itemTextColor: '#555',
             symbolSize: 12,
             symbolShape: 'circle',
             effects: [

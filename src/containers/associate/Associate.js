@@ -26,6 +26,10 @@ class Associate extends Component {
         <div className={styles.Wrapper}>
           <Breadcrumbs path={url} />
 
+          <Paper className={styles.Associate}>
+
+          </Paper>
+
           <AssociateInfo cycle={cycle} associate={cycleMetrics[cycle].find(row => row[0].Person === associate)} />
 
           <RadarGraph
