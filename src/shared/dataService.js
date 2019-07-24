@@ -105,6 +105,25 @@ export const calcDateMarkers = metadata => {
   });
 }
 
+export const calcModuleLength = metadata => {
+  let prevTotal = 0;
+  return Metadata.modules.map(modules => {
+    if (metadata[modules].start && metadata[modules].end) {
+      let weeks = Math.round(Number(calcDaysSince(metadata[modules].start, metadata[modules].end) / 7 + prevTotal));
+      console.log(weeks, prevTotal);
+      prevTotal += weeks;
+      console.log(prevTotal);
+      return weeks;
+    } else if (metadata[modules].start) {
+      let weeks = Math.round(Number(calcDaysSince(metadata[modules].start) / 7) + prevTotal);
+      prevTotal += weeks;
+      return weeks;
+    } else {
+      return 0;
+    }
+  });
+}
+
 export const calcMetricAvg = (associate, metric, maxScores) => {
   const metrics = associate.filter(event => event['Interaction Type'] === metric);
 

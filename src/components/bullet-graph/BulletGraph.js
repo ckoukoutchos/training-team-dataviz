@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Divider, Grid, Paper, Switch, Typography } from '@material-ui/core';
 import { ResponsiveBullet } from '@nivo/bullet'
-import { calcDateMarkers, calcDaysSince } from '../../shared/dataService';
+import { calcDateMarkers, calcDaysSince, calcModuleLength } from '../../shared/dataService';
 import Metadata from '../../shared/metadata';
 import styles from './BulletGraph.module.css';
 
@@ -19,7 +19,8 @@ class BulletGraph extends Component {
     const { modules } = this.state;
     const weeksSinceStart = Math.round(calcDaysSince(metadata['Associate Start']) / 7);
     const associateMarkers = [...calcDateMarkers(metadata), 34];
-    console.log(weeksSinceStart, associateMarkers);
+    const moduleLengths = calcModuleLength(metadata);
+    console.log(metadata, moduleLengths);
     return (
       <Paper className={styles.Paper}>
         <div className={styles.Header}>
@@ -84,9 +85,9 @@ class BulletGraph extends Component {
             spacing={46}
             titleAlign='start'
             titleOffsetX={-70}
-            measureSize={0.3}
-            rangeColors='red_yellow_blue'
-            measureColors='#555555'
+            measureSize={0.4}
+            rangeColors={['#a50026', '#ffffff']}
+            measureColors='#e6e6e6'
           />
         </div>
           : <div className={styles.Graph2}>
@@ -94,28 +95,33 @@ class BulletGraph extends Component {
               data={[
                 {
                   id: 'Associate',
-                  ranges: [6, 14],
+                  ranges: moduleLengths,
                   measures: [weeksSinceStart],
-                  markers: [...associateMarkers]
+                  markers: associateMarkers
                 },
                 {
                   id: 'Max Time',
                   ranges: [6, 10, 20, 28, 32, 34],
                   measures: [weeksSinceStart],
-                  markers: [...associateMarkers]
+                  markers: associateMarkers
                 }
               ]}
               margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
               spacing={46}
               titleAlign='start'
               titleOffsetX={-70}
-              measureSize={0.3}
+              measureSize={0.4}
               rangeColors='red_yellow_blue'
-              measureColors='#555555'
+              measureColors='#e6e6e6'
               markerColors='black'
-              markerSize={0.7}
+              markerSize={1}
             />
           </div>}
+
+        {/* <div>
+            <div></div>
+            <p></p>
+          </div> */}
       </Paper>
     );
   }
