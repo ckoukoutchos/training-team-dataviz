@@ -7,20 +7,20 @@ import styles from './BulletGraph.module.css';
 
 class BulletGraph extends Component {
   state = {
-    modules: false
+    showModules: false
   };
 
   toggleHandler = () => {
-    this.setState(prevState => ({ modules: !prevState.modules }));
+    this.setState(prevState => ({ showModules: !prevState.showModules }));
   }
 
   render() {
     const { metadata, title, subtitle } = this.props;
-    const { modules } = this.state;
-    const weeksSinceStart = Math.round(calcDaysSince(metadata['Associate Start']) / 7);
+    const { showModules } = this.state;
+    const weeksSinceStart = Number((calcDaysSince(metadata['Associate Start']) / 7).toFixed(1));
     const associateMarkers = [...calcDateMarkers(metadata), 34];
-    const moduleLengths = calcModuleLength(metadata);
-    console.log(metadata, moduleLengths);
+    const modules = calcModuleLength(metadata);
+    console.log(metadata);
     return (
       <Paper className={styles.Paper}>
         <div className={styles.Header}>
@@ -43,7 +43,7 @@ class BulletGraph extends Component {
               <Grid item>
                 <Switch
                   color='primary'
-                  checked={modules}
+                  checked={showModules}
                   onChange={this.toggleHandler}
                   value="checkedC"
                 />
@@ -53,31 +53,31 @@ class BulletGraph extends Component {
           </Typography>
         </div>
 
-        {modules ? <div className={styles.Graph}>
+        {showModules ? <div className={styles.Graph}>
           <ResponsiveBullet
             data={[
               {
                 id: 'Basics',
-                ranges: [8, 14],
-                measures: [7],
+                ranges: [6, 14],
+                measures: [modules.moduleLengths[0]],
                 markers: []
               },
               {
                 id: 'Databases',
                 ranges: [4, 14],
-                measures: [3],
+                measures: [modules.moduleLengths[1]],
                 markers: []
               },
               {
                 id: 'Java',
                 ranges: [10, 14],
-                measures: [9],
+                measures: [modules.moduleLengths[2]],
                 markers: []
               },
               {
                 id: 'React',
                 ranges: [8, 14],
-                measures: [11],
+                measures: [modules.moduleLengths[3]],
                 markers: []
               }
             ]}
@@ -95,7 +95,7 @@ class BulletGraph extends Component {
               data={[
                 {
                   id: 'Associate',
-                  ranges: moduleLengths,
+                  ranges: modules.ranges,
                   measures: [weeksSinceStart],
                   markers: associateMarkers
                 },

@@ -99,7 +99,7 @@ export const calcDateMarkers = metadata => {
   const startDate = metadata['Associate Start'];
   return Metadata.modules.map(modules => {
     if (metadata[modules].start) {
-      return Math.round(calcDaysSince(startDate, metadata[modules].start) / 7);
+      return Number((calcDaysSince(startDate, metadata[modules].start) / 7).toFixed(1));
     }
     return 0;
   });
@@ -107,21 +107,24 @@ export const calcDateMarkers = metadata => {
 
 export const calcModuleLength = metadata => {
   let prevTotal = 0;
-  return Metadata.modules.map(modules => {
+  const moduleLengths = [];
+  const ranges = Metadata.modules.map(modules => {
     if (metadata[modules].start && metadata[modules].end) {
-      let weeks = Math.round(Number(calcDaysSince(metadata[modules].start, metadata[modules].end) / 7 + prevTotal));
-      console.log(weeks, prevTotal);
-      prevTotal += weeks;
-      console.log(prevTotal);
-      return weeks;
+      const weeks = Number((calcDaysSince(metadata[modules].start, metadata[modules].end) / 7).toFixed(1));
+      moduleLengths.push(weeks);
+      const range = weeks + prevTotal;
+      prevTotal = range;
+      return range;
     } else if (metadata[modules].start) {
-      let weeks = Math.round(Number(calcDaysSince(metadata[modules].start) / 7) + prevTotal);
-      prevTotal += weeks;
-      return weeks;
+      const weeks = Number((calcDaysSince(metadata[modules].start) / 7).toFixed(1));
+      moduleLengths.push(weeks);
+      const range = weeks + prevTotal;
+      return range;
     } else {
       return 0;
     }
   });
+  return { moduleLengths, ranges };
 }
 
 export const calcMetricAvg = (associate, metric, maxScores) => {
