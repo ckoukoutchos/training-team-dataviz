@@ -2,7 +2,7 @@ import { put, all, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { FETCH_CYCLE_METRICS, POST_CYCLE_METRICS } from "../actionTypes";
 import { fetchCycleMetricsSuccess, fetchCycleMetricsFail, postCycleMetricsSuccess, postCycleMetricsFail } from "../actions";
-import { calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate } from '../../shared/dataService';
+import { calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata } from '../../shared/dataService';
 
 export default function* watchCycle() {
   yield all([
@@ -33,6 +33,8 @@ function* postCycleMetrics({ formData, cycleName, history }) {
 const formatCycleData = (data, cycleName) => {
   // sort by associate
   const sortedMetrics = sortMetircsByAssociate(data);
+  // collect associate module metadata
+  const associateMetadata = getAssociateMetadata(sortedMetrics);
   // calculate avg for projects, quizzes, soft skills
   const associateAggr = calcAssociateAggr(sortedMetrics);
   // calculate avgs for whole cycle
@@ -41,6 +43,6 @@ const formatCycleData = (data, cycleName) => {
   associateAggr[cycleName] = cycleAggr;
   // collect cycle metadata
   const metadata = getCycleMetadata(data);
-  
-  return [associateAggr, metadata, sortedMetrics, cycleName];
+
+  return [associateAggr, metadata, associateMetadata, sortedMetrics, cycleName];
 }

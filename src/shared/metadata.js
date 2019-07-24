@@ -19,6 +19,14 @@ export default {
     'Cycle Start Date',
     'Associate Start'
   ],
+  modules: [
+    'Development Basics and Front End',
+    'Databases',
+    'Logic Layer (Java)',
+    'Front End Frameworks (React)',
+    'Group Project',
+    'Final Project'
+  ],
   'Project (Score)': {
     HTML_CSS_Page_Match_Project_v2: {
       'Max Score': 30,

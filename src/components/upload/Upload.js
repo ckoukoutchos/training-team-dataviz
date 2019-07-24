@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { postCycleMetrics } from '../../redux/actions';
-import { Button, Card, CardContent, CardActions, CardHeader, CircularProgress, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { Button, Card, CardContent, CardActions, CardHeader, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import Spinner from '../spinner/Spinner';
 import styles from './Upload.module.css';
 import Metadata from '../../shared/metadata';
 import CONSTS from '../../shared/constants';
@@ -65,7 +66,7 @@ class Upload extends Component {
           </Button>
         </CardActions>
       </Card>
-      : <CircularProgress />;
+      : <Spinner />;
   }
 }
 

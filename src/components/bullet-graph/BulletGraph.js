@@ -1,128 +1,124 @@
-import React from 'react';
-import { Divider, Paper, Typography } from '@material-ui/core';
+import React, { Component } from 'react';
+import { Divider, Grid, Paper, Switch, Typography } from '@material-ui/core';
 import { ResponsiveBullet } from '@nivo/bullet'
+import { calcDateMarkers, calcDaysSince } from '../../shared/dataService';
+import Metadata from '../../shared/metadata';
 import styles from './BulletGraph.module.css';
 
-const BulletGraph = props => {
-  const { data, keys, title, subtitle} = props;
+class BulletGraph extends Component {
+  state = {
+    modules: false
+  };
 
-  return (
-    <Paper className={styles.Paper}>
-      <div className={styles.Header}>
-        <Typography variant='h5'>
-          {title}
-        </Typography>
-        { subtitle ? <Typography variant='subtitle1' color='textSecondary'>
-          {subtitle}
-        </Typography> : null}
-      </div>
+  toggleHandler = () => {
+    this.setState(prevState => ({ modules: !prevState.modules }));
+  }
 
-      <div className={styles.Divider}>
-        <Divider />
-      </div>
+  render() {
+    const { metadata, title, subtitle } = this.props;
+    const { modules } = this.state;
+    const weeksSinceStart = Math.round(calcDaysSince(metadata['Associate Start']) / 7);
+    const associateMarkers = [...calcDateMarkers(metadata), 34];
+    console.log(weeksSinceStart, associateMarkers);
+    return (
+      <Paper className={styles.Paper}>
+        <div className={styles.Header}>
+          <Typography variant='h4'>
+            {title}
+          </Typography>
+          {subtitle ? <Typography variant='subtitle1' color='textSecondary'>
+            {subtitle}
+          </Typography> : null}
+        </div>
 
-      <div className={styles.Graph}>
-        <ResponsiveBullet
-          data={[
+        <div className={styles.Divider}>
+          <Divider />
+        </div>
+
+        <div className={styles.Switch}>
+          <Typography component="div">
+            <Grid component="label" container alignItems="center" spacing={1}>
+              <Grid item>Overview</Grid>
+              <Grid item>
+                <Switch
+                  color='primary'
+                  checked={modules}
+                  onChange={this.toggleHandler}
+                  value="checkedC"
+                />
+              </Grid>
+              <Grid item>Per Module</Grid>
+            </Grid>
+          </Typography>
+        </div>
+
+        {modules ? <div className={styles.Graph}>
+          <ResponsiveBullet
+            data={[
               {
-                "id": "temp.",
-                "ranges": [
-                  27,
-                  31,
-                  28,
-                  0,
-                  100
-                ],
-                "measures": [
-                  74
-                ],
-                "markers": [
-                  71
-                ]
+                id: 'Basics',
+                ranges: [8, 14],
+                measures: [7],
+                markers: []
               },
               {
-                "id": "power",
-                "ranges": [
-                  1.6176649785923283,
-                  0.007553081192264437,
-                  1.9590286366558287,
-                  0,
-                  2
-                ],
-                "measures": [
-                  1.210065964084255,
-                  1.2359946945656102
-                ],
-                "markers": [
-                  1.8830730233247515
-                ]
+                id: 'Databases',
+                ranges: [4, 14],
+                measures: [3],
+                markers: []
               },
               {
-                "id": "volume",
-                "ranges": [
-                  27,
-                  5,
-                  29,
-                  9,
-                  3,
-                  31,
-                  0,
-                  40
-                ],
-                "measures": [
-                  10
-                ],
-                "markers": [
-                  40
-                ]
+                id: 'Java',
+                ranges: [10, 14],
+                measures: [9],
+                markers: []
               },
               {
-                "id": "cost",
-                "ranges": [
-                  15293,
-                  21964,
-                  370563,
-                  0,
-                  500000
-                ],
-                "measures": [
-                  51566,
-                  105264
-                ],
-                "markers": [
-                  443759
-                ]
-              },
-              {
-                "id": "revenue",
-                "ranges": [
-                  6,
-                  3,
-                  1,
-                  0,
-                  9
-                ],
-                "measures": [
-                  3
-                ],
-                "markers": [
-                  6.631357300511784,
-                  8.495226893413687
-                ]
+                id: 'React',
+                ranges: [8, 14],
+                measures: [11],
+                markers: []
               }
             ]}
-          margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
-          spacing={46}
-          titleAlign="start"
-          titleOffsetX={-70}
-          measureSize={0.2}
-          animate={true}
-          motionStiffness={90}
-          motionDamping={12}
-        />
-      </div>
-    </Paper>
-  )
+            margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
+            spacing={46}
+            titleAlign='start'
+            titleOffsetX={-70}
+            measureSize={0.3}
+            rangeColors='red_yellow_blue'
+            measureColors='#555555'
+          />
+        </div>
+          : <div className={styles.Graph2}>
+            <ResponsiveBullet
+              data={[
+                {
+                  id: 'Associate',
+                  ranges: [6, 14],
+                  measures: [weeksSinceStart],
+                  markers: [...associateMarkers]
+                },
+                {
+                  id: 'Max Time',
+                  ranges: [6, 10, 20, 28, 32, 34],
+                  measures: [weeksSinceStart],
+                  markers: [...associateMarkers]
+                }
+              ]}
+              margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
+              spacing={46}
+              titleAlign='start'
+              titleOffsetX={-70}
+              measureSize={0.3}
+              rangeColors='red_yellow_blue'
+              measureColors='#555555'
+              markerColors='black'
+              markerSize={0.7}
+            />
+          </div>}
+      </Paper>
+    );
+  }
 }
 
 export default BulletGraph;

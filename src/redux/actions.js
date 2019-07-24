@@ -5,10 +5,11 @@ export const fetchCycleMetrics = cycleName => ({
     cycleName
 });
 
-export const fetchCycleMetricsSuccess = (cycleAggr, cycleMetadata, cycleMetrics, cycleName) => ({
+export const fetchCycleMetricsSuccess = (cycleAggr, cycleMetadata, associateMetadata, cycleMetrics, cycleName) => ({
     type: FETCH_CYCLE_METRICS_SUCCESS,
     cycleAggr,
     cycleMetadata,
+    associateMetadata,
     cycleMetrics,
     cycleName
 });
@@ -25,10 +26,11 @@ export const postCycleMetrics = (formData, cycleName, history) => ({
     history
 });
 
-export const postCycleMetricsSuccess = (cycleAggr, cycleMetadata, cycleMetrics, cycleName) => ({
+export const postCycleMetricsSuccess = (cycleAggr, cycleMetadata, associateMetadata, cycleMetrics, cycleName) => ({
     type: POST_CYCLE_METRICS_SUCCESS,
     cycleAggr,
     cycleMetadata,
+    associateMetadata,
     cycleMetrics,
     cycleName
 });

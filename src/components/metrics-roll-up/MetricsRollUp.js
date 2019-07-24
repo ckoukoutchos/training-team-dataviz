@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import styles from './MetricsRollUp.module.css';
 
 const MetricsRollUp = props => {
@@ -52,7 +52,7 @@ const MetricsRollUp = props => {
           </TableBody>
         </Table>
       </Paper>
-      : <CircularProgress />
+      : null
   );
 }
 

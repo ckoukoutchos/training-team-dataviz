@@ -1,6 +1,7 @@
 import { FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_FAIL, POST_CYCLE_METRICS, POST_CYCLE_METRICS_SUCCESS, POST_CYCLE_METRICS_FAIL, RESET_ERROR } from '../actionTypes';
 
 const initialState = {
+  associateMetadata: {},
   cycleAggr: {},
   cycleMetadata: [],
   cycleMetrics: [],
@@ -20,6 +21,7 @@ export default function (state = initialState, action) {
     case FETCH_CYCLE_METRICS_SUCCESS: {
       return {
         ...state,
+        associateMetadata: newAssociateMetadata(state, action),
         cycleAggr: newCycleAggr(state, action),
         cycleMetadata: newCycleMetadata(state, action),
         cycleMetrics: newCycleMetrics(state, action),
@@ -43,6 +45,7 @@ export default function (state = initialState, action) {
     case POST_CYCLE_METRICS_SUCCESS: {
       return {
         ...state,
+        associateMetadata: newAssociateMetadata(state, action),
         cycleAggr: newCycleAggr(state, action),
         cycleMetadata: newCycleMetadata(state, action),
         cycleMetrics: newCycleMetrics(state, action),
@@ -66,6 +69,17 @@ export default function (state = initialState, action) {
     default:
       return state;
   }
+}
+
+const newAssociateMetadata = (state, action) => {
+  const newAssociateMetadata = {};
+  for (let [key, value] of Object.entries(state.associateMetadata)) {
+    newAssociateMetadata[key] = value;
+  }
+  for (let [key, value] of Object.entries(action.associateMetadata)) {
+    newAssociateMetadata[key] = value;
+  }
+  return newAssociateMetadata;
 }
 
 const newCycleAggr = (state, action) => {

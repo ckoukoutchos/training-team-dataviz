@@ -95,6 +95,16 @@ export const calcDaysSince = (startDate, endDate) => {
   }
 }
 
+export const calcDateMarkers = metadata => {
+  const startDate = metadata['Associate Start'];
+  return Metadata.modules.map(modules => {
+    if (metadata[modules].start) {
+      return Math.round(calcDaysSince(startDate, metadata[modules].start) / 7);
+    }
+    return 0;
+  });
+}
+
 export const calcMetricAvg = (associate, metric, maxScores) => {
   const metrics = associate.filter(event => event['Interaction Type'] === metric);
 
@@ -129,6 +139,51 @@ export const sortMetircsByAssociate = data => {
     }
   }
   return Object.values(associates);
+}
+
+export const getAssociateMetadata = data => {
+  const metadata = {};
+  for (const associate of data) {
+    let person = {
+      'Development Basics and Front End': {
+        start: null,
+        end: null
+      },
+      Databases: {
+        start: null,
+        end: null
+      },
+      'Logic Layer (Java)': {
+        start: null,
+        end: null
+      },
+      'Front End Frameworks (React)': {
+        start: null,
+        end: null
+      },
+      'Group Project': {
+        start: null,
+        end: null
+      },
+      'Final Project': {
+        start: null,
+        end: null
+      }
+    };
+    for (const event of associate) {
+      if (event['Interaction Type'] === 'Module Completed') {
+        person[event.Interaction].end = event.Date;
+      } else if (event['Interaction Type'] === 'Module Started') {
+        person[event.Interaction].start = event.Date;
+      } else if (event['Interaction Type'] === 'Associate Start') {
+        person[event['Interaction Type']] = event.Date;
+      } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
+        person['Cycle Exit'] = event.Date;
+      }
+    }
+    metadata[associate[0].Person] = person;
+  }
+  return metadata;
 }
 
 export const getCycleMetadata = data => {

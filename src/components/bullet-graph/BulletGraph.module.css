@@ -7,13 +7,21 @@
   width: 800px;
 }
 
+.Graph2 {
+  height: 250px;
+  width: 800px;
+}
+
 .Header {
   padding-top: 8px;
   text-align: center;
 }
 
 .Paper {
-  height: 500px;
   margin: 16px auto;
   width: 800px;
+}
+
+.Switch {
+  margin-left: 32px;
 }
