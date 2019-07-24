@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Divider, Grid, Paper, Switch, Typography } from '@material-ui/core';
 import { ResponsiveBullet } from '@nivo/bullet'
 import { calcDateMarkers, calcDaysSince, calcModuleLength } from '../../shared/dataService';
-import Metadata from '../../shared/metadata';
 import styles from './BulletGraph.module.css';
 
 class BulletGraph extends Component {
@@ -17,10 +16,16 @@ class BulletGraph extends Component {
   render() {
     const { metadata, title, subtitle } = this.props;
     const { showModules } = this.state;
-    const weeksSinceStart = Number((calcDaysSince(metadata['Associate Start']) / 7).toFixed(1));
-    const associateMarkers = [...calcDateMarkers(metadata), 34];
+
+    let daysSinceStart = 0;
+    if (metadata['Cycle Exit']) {
+      daysSinceStart = Math.round(calcDaysSince(metadata['Associate Start'], metadata['Cycle Exit']));
+    } else {
+      daysSinceStart = Math.round(calcDaysSince(metadata['Associate Start']));
+    }
+    const associateMarkers = [...calcDateMarkers(metadata), 238];
     const modules = calcModuleLength(metadata);
-    console.log(metadata);
+
     return (
       <Paper className={styles.Paper}>
         <div className={styles.Header}>
@@ -58,25 +63,25 @@ class BulletGraph extends Component {
             data={[
               {
                 id: 'Basics',
-                ranges: [6, 14],
+                ranges: [42, 98],
                 measures: [modules.moduleLengths[0]],
                 markers: []
               },
               {
                 id: 'Databases',
-                ranges: [4, 14],
+                ranges: [28, 98],
                 measures: [modules.moduleLengths[1]],
                 markers: []
               },
               {
                 id: 'Java',
-                ranges: [10, 14],
+                ranges: [70, 98],
                 measures: [modules.moduleLengths[2]],
                 markers: []
               },
               {
                 id: 'React',
-                ranges: [8, 14],
+                ranges: [56, 98],
                 measures: [modules.moduleLengths[3]],
                 markers: []
               }
@@ -96,13 +101,13 @@ class BulletGraph extends Component {
                 {
                   id: 'Associate',
                   ranges: modules.ranges,
-                  measures: [weeksSinceStart],
+                  measures: [daysSinceStart],
                   markers: associateMarkers
                 },
                 {
                   id: 'Max Time',
-                  ranges: [6, 10, 20, 28, 32, 34],
-                  measures: [weeksSinceStart],
+                  ranges: [42, 70, 140, 196, 224, 238],
+                  measures: [daysSinceStart],
                   markers: associateMarkers
                 }
               ]}

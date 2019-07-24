@@ -31,7 +31,7 @@ class Cycle extends Component {
           <CycleInfo cycleName={CONSTS[cycle]} metadata={cycleMetadata[cycle]} />
 
           <RadarGraph
-            title='Running Averages of Projects, Quizzes, and Soft Skills'
+            title='Running Averages of Assesments'
             subtitle='Including the Max and Min Associate Running Average'
             data={[
               {

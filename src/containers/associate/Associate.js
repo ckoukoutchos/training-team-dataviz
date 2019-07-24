@@ -32,7 +32,7 @@ class Associate extends Component {
           <AssociateInfo cycle={cycle} associate={cycleMetrics[cycle].find(row => row[0].Person === associate)} />
 
           <RadarGraph
-            title='Running Avg of Projects, Quizzes, and Soft Skills'
+            title='Running Avg of Assesments'
             subtitle='Compared to Cycle Averages'
             keys={['Cycle Average', associate]}
             data={[

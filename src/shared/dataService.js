@@ -99,7 +99,7 @@ export const calcDateMarkers = metadata => {
   const startDate = metadata['Associate Start'];
   return Metadata.modules.map(modules => {
     if (metadata[modules].start) {
-      return Number((calcDaysSince(startDate, metadata[modules].start) / 7).toFixed(1));
+      return Math.round(calcDaysSince(startDate, metadata[modules].start));
     }
     return 0;
   });
@@ -110,17 +110,25 @@ export const calcModuleLength = metadata => {
   const moduleLengths = [];
   const ranges = Metadata.modules.map(modules => {
     if (metadata[modules].start && metadata[modules].end) {
-      const weeks = Number((calcDaysSince(metadata[modules].start, metadata[modules].end) / 7).toFixed(1));
-      moduleLengths.push(weeks);
-      const range = weeks + prevTotal;
+      const days = Math.round(calcDaysSince(metadata[modules].start, metadata[modules].end));
+      moduleLengths.push(days);
+      const range = days + prevTotal;
       prevTotal = range;
       return range;
     } else if (metadata[modules].start) {
-      const weeks = Number((calcDaysSince(metadata[modules].start) / 7).toFixed(1));
-      moduleLengths.push(weeks);
-      const range = weeks + prevTotal;
-      return range;
+      if (metadata['Cycle Exit']) {
+        const days = Math.round(calcDaysSince(metadata[modules].start, metadata['Cycle Exit']));
+        moduleLengths.push(days);
+        const range = days + prevTotal;
+        return range;
+      } else {
+        const days = Math.round(calcDaysSince(metadata[modules].start));
+        moduleLengths.push(days);
+        const range = days + prevTotal;
+        return range;
+      }
     } else {
+      moduleLengths.push(0);
       return 0;
     }
   });
