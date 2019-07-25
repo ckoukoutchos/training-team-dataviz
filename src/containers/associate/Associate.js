@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-import { Paper, Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import MaterialTable from 'material-table';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
-import MetricsRollUp from '../../components/metrics-roll-up/MetricsRollUp';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import { getUrlParams } from '../../shared/dataService';
 import BulletGraph from '../../components/bullet-graph/BulletGraph';
@@ -56,31 +55,21 @@ class Associate extends Component {
 
           <BulletGraph title='Cycle Progress' subtitle='Overall & Per Module' metadata={associateMetadata[associate]} />
 
-          <MetricsRollUp associate={cycleAggr[cycle][associate]} />
-
-          <Paper className={styles.Container}>
-            <Table className={styles.Table}>
-              <TableHead>
-                <TableRow>
-                  <TableCell align='left'>Interaction</TableCell>
-                  <TableCell align='left'>Interaction Type</TableCell>
-                  <TableCell align='left'>Score</TableCell>
-                  <TableCell align='left'>Date</TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {cycleMetrics[cycle].find(row => row[0].Person === associate).map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell align='left'>{row.Interaction}</TableCell>
-                    <TableCell align='left'>{row['Interaction Type']}</TableCell>
-                    <TableCell align='left'>{row.Score}</TableCell>
-                    <TableCell align='left'>{row.Date}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
+          <div className={styles.Paper}>
+            <MaterialTable
+              title="Associate Metrics"
+              columns={[
+                { title: 'Interaction', field: 'Interaction' },
+                { title: 'Interaction Type', field: 'Interaction Type' },
+                { title: 'Score', field: 'Score' },
+                { title: 'Date', field: 'Date', type: 'date' }
+              ]}
+              data={cycleMetrics[cycle].find(row => row[0].Person === associate)}
+              options={{
+                sorting: true
+              }}
+            />
+          </div>
         </div>
         : <Spinner />
     );

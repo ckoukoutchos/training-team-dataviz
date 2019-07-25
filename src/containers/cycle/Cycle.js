@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
+import MaterialTable from 'material-table';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
-import MetricsRollUp from '../../components/metrics-roll-up/MetricsRollUp';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
 import { getUrlParams } from '../../shared/dataService';
@@ -23,7 +23,7 @@ class Cycle extends Component {
     const { cycleAggr, cycleMetadata, cycleMetrics, history } = this.props;
     const { url, cycle } = getUrlParams(history);
 
-    return ( 
+    return (
       !this.props.loading && cycleAggr[cycle] && cycleMetadata[cycle] && cycleMetrics[cycle] ?
         <div className={styles.Wrapper}>
           <Breadcrumbs path={url} />
@@ -56,8 +56,39 @@ class Cycle extends Component {
             keys={['Average', 'Max', 'Min']}
           />
 
-          <MetricsRollUp associate={cycleAggr[cycle][cycle]} />
-          <MetricsRollUp associates={cycleAggr[cycle]} cycle={cycle} />
+          <div className={styles.Paper}>
+            <MaterialTable
+              title="Associate Assessment Aggregations"
+              columns={[
+                { title: 'Associate', field: 'name' },
+                { title: 'Project Average', field: 'projectAvg' },
+                { title: 'Quiz Average', field: 'quizAvg' },
+                { title: 'Soft Skills Average', field: 'softSkillsAvg' }
+              ]}
+              data={
+                Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
+                  name,
+                  projectAvg: values.projectAvg,
+                  quizAvg: values.quizAvg,
+                  softSkillsAvg: values.softSkillsAvg
+                }))
+              }
+              options={{
+                sorting: true
+              }}
+              actions={[
+                {
+                  icon: 'search',
+                  tooltip: 'View Associate',
+                  onClick: (event, rowData) => {
+                    if (rowData.name !== cycle) {
+                      this.props.history.push(`/cycle/${cycle}/associate/${rowData.name.split(' ').join('-')}`)
+                    }
+                  }
+                }
+              ]}
+            />
+          </div>
         </div>
         : <Spinner />
     );

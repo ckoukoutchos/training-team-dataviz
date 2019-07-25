@@ -1,14 +1,6 @@
-.Container {
-  width: 800px;
-  margin: 8px auto;
-  overflow-x: auto;
-}
-
 .Paper {
   margin: 16px auto;
-  padding: 16px 24px;
-  text-align: center;
-  min-width: 800px;
+  width: 800px;
 }
 
 .Wrapper {
