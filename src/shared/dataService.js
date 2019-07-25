@@ -152,6 +152,50 @@ export const calcMetricAvg = (associate, metric, maxScores) => {
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
 }
 
+const formatCalendarDate = date => {
+  const dateSplit = date.split('/');
+  if (dateSplit[0].length === 1) {
+    dateSplit[0] = '0' + dateSplit[0];
+  }
+  if (dateSplit[1].length === 1) {
+    dateSplit[1] = '0' + dateSplit[1];
+  }
+  return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
+}
+
+export const sortAttendanceEvents = metrics => {
+  const attendance = {
+    events: []
+  };
+  metrics.forEach(event => {
+    // convert to correct date format
+    const newDateFormat = formatCalendarDate(event.Date);
+
+    // set start date
+    if (event['Interaction Type'] === 'Associate Start') {
+      attendance[event['Interaction Type']] = newDateFormat;
+
+      // set cycle exit date
+    } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
+      attendance['Cycle Exit'] = newDateFormat;
+
+      // set other attendace evts
+    } else if (event['Interaction Type'] === 'Attendance Event') {
+      attendance.events.push({
+        day: newDateFormat,
+        value: Metadata.attendance[event.Interaction]
+      })
+    }
+  });
+
+  // if no cycle exit date, use current
+  if (!attendance['Cycle Exit']) {
+    const date = new Date(Date.now());
+    attendance['Cycle Exit'] = date.toISOString();
+  }
+  return attendance;
+}
+
 export const sortMetircsByAssociate = data => {
   const associates = {};
 

@@ -5,6 +5,7 @@ import MaterialTable from 'material-table';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
+import Calendar from '../../components/calendar/Calendar';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import { getUrlParams } from '../../shared/dataService';
 import BulletGraph from '../../components/bullet-graph/BulletGraph';
@@ -54,6 +55,8 @@ class Associate extends Component {
           />
 
           <BulletGraph title='Cycle Progress' subtitle='Overall & Per Module' metadata={associateMetadata[associate]} />
+
+          <Calendar metrics={cycleMetrics[cycle].find(row => row[0].Person === associate)} />
 
           <div className={styles.Paper}>
             <MaterialTable

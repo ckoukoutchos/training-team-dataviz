@@ -1,6 +1,13 @@
 // eventually to be moved to config file/DB
 
 export default {
+  attendance: {
+    'Excused Absence': 0,
+    'Unexcused Absence': 1,
+    'Excused Late Arrival': 2,
+    'Unexcused Late Arrival': 3,
+    'Optional Attendance': 4
+  },
   cycles: [
     'mlPortland2019',
     'tradChicagoApril2019',

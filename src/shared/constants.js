@@ -1,4 +1,11 @@
 export default {
+    attendance: [
+        'Excused Absence',
+        'Unexcused Absence',
+        'Excused Late Arrival',
+        'Unexcused Late Arrival',
+        'Optional Attendance'
+    ],
     mlPortland2019: 'Mastery Learning Portland 2019',
     quiz: 'Quiz',
     projectScore: 'Project (Score)',
