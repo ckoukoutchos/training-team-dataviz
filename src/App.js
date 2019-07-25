@@ -30,7 +30,7 @@ class App extends Component {
             {/* <Route path='/cycle/:cycle/associate' exact component={Associates} /> */}
             <Route path='/cycle/:cycle/associate/:associateName' exact component={Associate} />
             <Route path='/upload' exact component={Upload} />
-            <Route path='/' component={Overview} />
+            <Route path='/' component={Cycles} />
           </Switch>
         </main>
 

@@ -23,6 +23,7 @@ class Associate extends Component {
   render() {
     const { associateMetadata, cycleAggr, cycleMetrics, history } = this.props;
     const { url, cycle, associate } = getUrlParams(history);
+    const tradCycle = RegExp('trad').test(cycle);
 
     return (
       !this.props.loading && cycleMetrics[cycle] && cycleAggr[cycle] && associateMetadata[associate] ?
@@ -54,7 +55,12 @@ class Associate extends Component {
             ]}
           />
 
-          <BulletGraph title='Cycle Progress' subtitle='Overall & Per Module' metadata={associateMetadata[associate]} />
+          <BulletGraph
+            title='Cycle Progress'
+            subtitle={tradCycle ? null : 'Overall & Per Module'}
+            metadata={associateMetadata[associate]}
+            traditional={tradCycle}
+          />
 
           <Calendar metrics={cycleMetrics[cycle].find(row => row[0].Person === associate)} />
 

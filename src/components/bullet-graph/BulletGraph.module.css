@@ -1,5 +1,5 @@
 .Divider {
-  margin: 16px;
+  margin-top: 16px;
 }
 
 .Graph {
@@ -9,6 +9,11 @@
 
 .Graph2 {
   height: 250px;
+  width: 800px;
+}
+
+.Graph3 {
+  height: 150px;
   width: 800px;
 }
 

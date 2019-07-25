@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResponsiveCalendar } from '@nivo/calendar';
 import { Divider, Paper, Typography } from '@material-ui/core';
+import Legend from '../legend/Legend';
 import { sortAttendanceEvents } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Calendar.module.css';
@@ -29,7 +30,7 @@ const Calendar = props => {
           from={attendance['Associate Start']}
           to={attendance['Cycle Exit']}
           emptyColor="#eeeeee"
-          colors={['gold', 'red', 'yellow', 'orange', 'green']}
+          colors={CONSTS.attendanceColors}
           margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
           yearSpacing={40}
           monthBorderColor="#0c0314"
@@ -44,6 +45,7 @@ const Calendar = props => {
           )}
         />
       </div>
+      <Legend items={CONSTS.attendance} colors={'attendanceColors'} />
     </Paper >
   );
 }
