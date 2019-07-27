@@ -18,7 +18,7 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-// get route for parsed csv data
+// get route for specific cycle file
 app.get('/api/:fileName', (req, res, next) => {
   const filePath = `files/${req.params.fileName}.csv`;
 
@@ -30,10 +30,41 @@ app.get('/api/:fileName', (req, res, next) => {
         res.send(jsonObj)
       }).catch(err => {
         res.status(500).send('Error parsing CSV');
+        console.log('Error parsing CSV at ' + filePath, err);
       });
   } else {
     res.status(404).send('File does not exist');
   }
+});
+
+// get route for all cycle files
+app.get('/api', (req, res, next) => {
+  const dirPath = path.join(__dirname, '/../files');
+  // get all csv files in file dir
+  fs.readdir(dirPath, (err, files) => {
+    if (err) {
+      res.status(500).send('Error getting files');
+      console.log('Error getting files from files directory', err);
+    } else {
+      // parse each file async and return as promises
+      const parsedFiles = files.map(async file => {
+        const filePath = `${dirPath}/${file}`;
+        try {
+          return await csv().fromFile(filePath);
+        } catch (err) {
+          res.status(500).send('Error parsing CSV');
+          console.log('Error parsing CSV at ' + filePath, err);
+        }
+      });
+      // resolve promises and send parsed csv data with file names
+      Promise.all(parsedFiles).then(data => {
+        res.send({ fileNames: files, data });
+      }).catch(err => {
+        res.status(500).send('Error resolving CSV data');
+        console.log('Error resolving CSV data', err);
+      });
+    }
+  });
 });
 
 // multer storage config
