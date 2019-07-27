@@ -6,7 +6,7 @@ export default {
     'Unexcused Late Arrival',
     'Optional Attendance'
   ],
-  attendanceColors: ['gold', 'red', 'yellow', 'orange', 'green'],
+  attendanceColors: ['gold', 'darkred', 'yellow', 'red', 'green'],
   mlPortland2019: 'Mastery Learning Portland 2019',
   moduleColors: [
     '#a50026',

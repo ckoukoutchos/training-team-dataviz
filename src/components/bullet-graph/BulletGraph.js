@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Divider, Grid, Paper, Switch, Typography } from '@material-ui/core';
 import { ResponsiveBullet } from '@nivo/bullet'
 import Legend from '../legend/Legend';
+import Toggle from '../toggle/Toggle';
 import { calcDateMarkers, calcDaysSince, calcModuleLength } from '../../shared/dataService';
 import Metadata from '../../shared/metadata';
 import styles from './BulletGraph.module.css';
@@ -143,22 +144,12 @@ class BulletGraph extends Component {
           <Divider />
         </div>
 
-        {!traditional ? <div className={styles.Switch}>
-          <Typography component="div">
-            <Grid component="label" container alignItems="center" spacing={1}>
-              <Grid item>Overview</Grid>
-              <Grid item>
-                <Switch
-                  color='primary'
-                  checked={showModules}
-                  onChange={this.toggleHandler}
-                  value="checkedC"
-                />
-              </Grid>
-              <Grid item>Per Module</Grid>
-            </Grid>
-          </Typography>
-        </div> : null}
+        {!traditional ? <Toggle
+          checked={showModules}
+          onChange={this.toggleHandler}
+          leftLabel='Overview'
+          rightLabel='Per Module'
+        /> : null}
 
         {traditional ? this.createTradCycleGraph(metadata) : this.createMLCycleGraphs(showModules, metadata)}
 

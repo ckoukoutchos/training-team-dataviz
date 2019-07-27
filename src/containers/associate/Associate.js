@@ -51,6 +51,11 @@ class Associate extends Component {
                 avg: 'Soft Skills',
                 [associate]: cycleAggr[cycle][associate].softSkillsAvg,
                 'Cycle Average': cycleAggr[cycle][cycle].softSkillsAvg
+              },
+              {
+                avg: 'Attempt/Pass',
+                [associate]: cycleAggr[cycle][associate].attemptPass,
+                'Cycle Average': cycleAggr[cycle][cycle].attemptAvg
               }
             ]}
           />

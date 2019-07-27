@@ -51,6 +51,12 @@ class Cycle extends Component {
                 'Max': cycleAggr[cycle][cycle].softSkillsMax,
                 'Min': cycleAggr[cycle][cycle].softSkillsMin,
                 'Average': cycleAggr[cycle][cycle].softSkillsAvg
+              },
+              {
+                avg: 'Attempt/Pass',
+                'Max': cycleAggr[cycle][cycle].attemptMax,
+                'Min': cycleAggr[cycle][cycle].attemptMin,
+                'Average': cycleAggr[cycle][cycle].attemptAvg
               }
             ]}
             keys={['Average', 'Max', 'Min']}
@@ -63,14 +69,16 @@ class Cycle extends Component {
                 { title: 'Associate', field: 'name' },
                 { title: 'Project Average', field: 'projectAvg' },
                 { title: 'Quiz Average', field: 'quizAvg' },
-                { title: 'Soft Skills Average', field: 'softSkillsAvg' }
+                { title: 'Soft Skills Average', field: 'softSkillsAvg' },
+                { title: 'Attempt/Pass Ration', field: 'attemptPass' }
               ]}
               data={
                 Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
                   name,
                   projectAvg: values.projectAvg,
                   quizAvg: values.quizAvg,
-                  softSkillsAvg: values.softSkillsAvg
+                  softSkillsAvg: values.softSkillsAvg,
+                  attemptPass: values.attemptPass
                 }))
               }
               options={{

@@ -5,6 +5,7 @@ export const calcAssociateAggr = associates => {
   const avgs = {};
   associates.forEach(associate => {
     avgs[associate[0].Person] = {
+      attemptPass: calcAttemptPassRatio(associate),
       projectAvg: calcMetricAvg(associate, CONSTS.projectScore, Metadata['Project (Score)']),
       quizAvg: calcMetricAvg(associate, CONSTS.quiz, Metadata.Quiz),
       softSkillsAvg: calcMetricAvg(associate, CONSTS.softSkills, Metadata['Soft Skill Assessment'])
@@ -14,6 +15,9 @@ export const calcAssociateAggr = associates => {
 }
 
 export const calcCycleAggr = associates => {
+  let attemptAvg = 0;
+  let attemptMax = 0;
+  let attemptMin = 100;
   let projectAvg = 0;
   let projectMax = 0;
   let projectMin = 100;
@@ -23,39 +27,54 @@ export const calcCycleAggr = associates => {
   let softSkillsAvg = 0;
   let softSkillsMax = 0;
   let softSkillsMin = 100;
+  let numAttempts = Object.keys(associates).length;
   let numProjects = Object.keys(associates).length;
   let numQuizzes = Object.keys(associates).length;
   let numSoftSkills = Object.keys(associates).length;
 
   for (const associate in associates) {
+    // attempts/pass avg
+    attemptAvg += associates[associate].attemptPass;
+    if (associates[associate].attemptPass === 0) {
+      numAttempts--;
+    }
+    // project avg
     projectAvg += associates[associate].projectAvg;
-
     if (associates[associate].projectAvg === 0) {
       numProjects--;
     }
+    // quiz avg
     quizAvg += associates[associate].quizAvg;
-
     if (associates[associate].quizAvg === 0) {
       numQuizzes--;
     }
+    // soft skills avg
     softSkillsAvg += associates[associate].softSkillsAvg;
-
     if (associates[associate].softSkillsAvg === 0) {
       numSoftSkills--;
     }
-
+    // attempt/pass max/min
+    if (associates[associate].attemptPass > attemptMax) {
+      attemptMax = associates[associate].attemptPass;
+    }
+    if (associates[associate].attemptPass < attemptMin && associates[associate].attemptPass !== 0) {
+      attemptMin = associates[associate].attemptPass;
+    }
+    //project max/min
     if (associates[associate].projectAvg > projectMax) {
       projectMax = associates[associate].projectAvg;
     }
     if (associates[associate].projectAvg < projectMin && associates[associate].projectAvg !== 0) {
       projectMin = associates[associate].projectAvg;
     }
+    // quiz max/min
     if (associates[associate].quizAvg > quizMax) {
       quizMax = associates[associate].quizAvg;
     }
     if (associates[associate].quizAvg < quizMin && associates[associate].quizAvg !== 0) {
       quizMin = associates[associate].quizAvg;
     }
+    // soft skills max/min
     if (associates[associate].softSkillsAvg > softSkillsMax) {
       softSkillsMax = associates[associate].softSkillsAvg;
     }
@@ -65,15 +84,18 @@ export const calcCycleAggr = associates => {
   };
 
   return {
-    projectAvg: Math.round(projectAvg / numProjects),
+    attemptAvg: numAttempts === 0 ? 0 : Math.round(attemptAvg / numAttempts),
+    attemptMax,
+    attemptMin,
+    projectAvg: numProjects === 0 ? 0 : Math.round(projectAvg / numProjects),
     projectMax,
     projectMin,
-    quizAvg: Math.round(quizAvg / numQuizzes),
+    quizAvg: numQuizzes === 0 ? 0 : Math.round(quizAvg / numQuizzes),
     quizMax,
     quizMin,
     softSkillsMax,
     softSkillsMin,
-    softSkillsAvg: Math.round(softSkillsAvg / numSoftSkills)
+    softSkillsAvg: numSoftSkills === 0 ? 0 : Math.round(softSkillsAvg / numSoftSkills)
   }
 }
 
@@ -150,6 +172,25 @@ export const calcMetricAvg = (associate, metric, maxScores) => {
 
   // convert to percent and round to nearest int
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
+}
+
+export const calcAttemptPassRatio = metrics => {
+  let attempt = 0;
+  let pass = 0;
+  for (const metric of metrics) {
+    if (metric['Interaction Type'] === 'Exercise') {
+      attempt++;
+      if (metric.Score === 'Completed' || metric.Score === 'Pass') {
+        pass++;
+      }
+    } else if (metric['Interaction Type'] === 'Project (Score)') {
+      attempt++;
+      if ((metric.Score / 30) >= 0.9) {
+        pass++;
+      }
+    }
+  }
+  return Math.round((pass / attempt) * 100);
 }
 
 const formatCalendarDate = date => {
