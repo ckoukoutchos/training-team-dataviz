@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Grid, Paper, Switch, Typography } from '@material-ui/core';
+import { Divider, Paper, Typography } from '@material-ui/core';
 import { ResponsiveBullet } from '@nivo/bullet'
 import Legend from '../legend/Legend';
 import Toggle from '../toggle/Toggle';

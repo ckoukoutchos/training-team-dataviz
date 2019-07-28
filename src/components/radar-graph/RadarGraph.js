@@ -4,28 +4,28 @@ import { ResponsiveRadar } from '@nivo/radar'
 import styles from './RadarGraph.module.css';
 
 const RadarGraph = props => {
-  const { data, keys, title, subtitle} = props;
+  const { data, index, keys, tall, title, subtitle } = props;
 
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
         <Typography variant='h4'>
-            {title}
-          </Typography>
-          { subtitle ? <Typography variant='subtitle1' color='textSecondary'>
-            {subtitle}
-          </Typography> : null}
-        </div>
+          {title}
+        </Typography>
+        {subtitle ? <Typography variant='subtitle1' color='textSecondary'>
+          {subtitle}
+        </Typography> : null}
+      </div>
 
       <div className={styles.Divider}>
         <Divider />
       </div>
 
-      <div className={styles.Graph}>
+      <div className={tall ? styles.TallGraph : styles.Graph}>
         <ResponsiveRadar
           data={data}
           keys={keys}
-          indexBy='avg'
+          indexBy={index}
           maxValue={100}
           margin={{ top: 35, right: 20, bottom: 35, left: 20 }}
           curve='catmullRomClosed'

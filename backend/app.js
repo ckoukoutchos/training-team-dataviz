@@ -58,7 +58,9 @@ app.get('/api', (req, res, next) => {
       });
       // resolve promises and send parsed csv data with file names
       Promise.all(parsedFiles).then(data => {
-        res.send({ fileNames: files, data });
+        // remove .csv extension to get cycle names
+        const formattedFileNames = files.map(file => file.split('').slice(0, -4).join(''));
+        res.send({ cycles: formattedFileNames, data });
       }).catch(err => {
         res.status(500).send('Error resolving CSV data');
         console.log('Error resolving CSV data', err);

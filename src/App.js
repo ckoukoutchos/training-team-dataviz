@@ -30,7 +30,7 @@ class App extends Component {
             {/* <Route path='/cycle/:cycle/associate' exact component={Associates} /> */}
             <Route path='/cycle/:cycle/associate/:associateName' exact component={Associate} />
             <Route path='/upload' exact component={Upload} />
-            <Route path='/' component={Cycles} />
+            <Route path='/' component={Overview} />
           </Switch>
         </main>
 
@@ -43,7 +43,10 @@ class App extends Component {
           <div className={styles.Modal}>
             <h2 id='modal-title'>Oops, something went wrong!</h2>
             <p id='simple-modal-description'>
-              {error}
+              {error.message}
+            </p>
+            <p id='simple-modal-description'>
+              {error.response.data}
             </p>
             <Button
               variant="contained"
