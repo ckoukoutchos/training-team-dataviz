@@ -1,6 +1,34 @@
 import Metadata from './metadata';
 import CONSTS from './constants';
 
+export const calcAllCyclesPercentiles = cycleAggr => {
+  const projectScores = [];
+  const quizScores = [];
+  const softSkillsScores = [];
+  for (const cycle in cycleAggr) {
+    for (const associate in cycleAggr[cycle]) {
+      projectScores.push(cycleAggr[cycle][associate].projectAvg);
+      quizScores.push(cycleAggr[cycle][associate].quizAvg);
+      softSkillsScores.push(cycleAggr[cycle][associate].softSkillsAvg);
+    }
+  }
+  // sort in ascending order
+  projectScores.sort((a, b) => a - b);
+  quizScores.sort((a, b) => a - b);
+  softSkillsScores.sort((a, b) => a - b);
+  // calc percentiles for each
+  const projectPercentiles = CONSTS.percentiles.map(perc =>
+    projectScores[Math.round(projectScores.length * perc)]
+  );
+  const quizPercentiles = CONSTS.percentiles.map(perc =>
+    quizScores[Math.round(quizScores.length * perc)]
+  );
+  const softSkillsPercentiles = CONSTS.percentiles.map(perc =>
+    softSkillsScores[Math.round(softSkillsScores.length * perc)]
+  );
+  return { projectPercentiles, projectScores, quizPercentiles, quizScores, softSkillsPercentiles, softSkillsScores };
+}
+
 export const calcAssociateAggr = associates => {
   const avgs = {};
   associates.forEach(associate => {
@@ -191,6 +219,11 @@ export const calcAttemptPassRatio = metrics => {
     }
   }
   return Math.round((pass / attempt) * 100);
+}
+
+export const calcPercentiles = (scores, avg) => {
+  const index = scores.indexOf(avg);
+  return Math.round((index + 1) / scores.length * 100);
 }
 
 const formatCalendarDate = date => {

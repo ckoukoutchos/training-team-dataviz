@@ -35,7 +35,8 @@ class Associate extends Component {
           <RadarGraph
             title='Running Avg of Assesments'
             subtitle='Compared to Cycle Averages'
-            keys={['Cycle Average', associate]}
+            keys={[associate, 'Cycle Average']}
+            index='avg'
             data={[
               {
                 avg: 'Projects',
@@ -45,12 +46,13 @@ class Associate extends Component {
               {
                 avg: 'Quizzes',
                 [associate]: cycleAggr[cycle][associate].quizAvg,
-                'Cycle Average': cycleAggr[cycle][cycle].quizAvg
+                'Cycle Average': cycleAggr[cycle][cycle].quizAvg,
+
               },
               {
                 avg: 'Soft Skills',
                 [associate]: cycleAggr[cycle][associate].softSkillsAvg,
-                'Cycle Average': cycleAggr[cycle][cycle].softSkillsAvg
+                'Cycle Average': cycleAggr[cycle][cycle].softSkillsAvg,
               },
               {
                 avg: 'Attempt/Pass',

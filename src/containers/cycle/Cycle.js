@@ -6,7 +6,7 @@ import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
-import { getUrlParams } from '../../shared/dataService';
+import { getUrlParams, calcPercentiles } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 
@@ -20,11 +20,11 @@ class Cycle extends Component {
   }
 
   render() {
-    const { cycleAggr, cycleMetadata, cycleMetrics, history } = this.props;
+    const { allCycleAggr, cycleAggr, cycleMetadata, cycleMetrics, history } = this.props;
     const { url, cycle } = getUrlParams(history);
 
     return (
-      !this.props.loading && cycleAggr[cycle] && cycleMetadata[cycle] && cycleMetrics[cycle] ?
+      !this.props.loading && cycleAggr[cycle] && cycleMetadata[cycle] && cycleMetrics[cycle] && Object.keys(allCycleAggr).length ?
         <div className={styles.Wrapper}>
           <Breadcrumbs path={url} />
 
@@ -33,6 +33,7 @@ class Cycle extends Component {
           <RadarGraph
             title='Running Averages of Assesments'
             subtitle='Including the Max and Min Associate Running Average'
+            index='avg'
             data={[
               {
                 avg: 'Projects',
@@ -64,7 +65,7 @@ class Cycle extends Component {
 
           <div className={styles.Paper}>
             <MaterialTable
-              title="Associate Assessment Aggregations"
+              title="Associate Assessment Averages"
               columns={[
                 { title: 'Associate', field: 'name' },
                 { title: 'Project Average', field: 'projectAvg' },
@@ -97,6 +98,40 @@ class Cycle extends Component {
               ]}
             />
           </div>
+
+          <div className={styles.Paper}>
+            <MaterialTable
+              title="Associate Assessment Percentile"
+              columns={[
+                { title: 'Associate', field: 'name' },
+                { title: 'Project Percentile', field: 'projectPercentile' },
+                { title: 'Quiz Percentile', field: 'quizPercentile' },
+                { title: 'Soft Skills Percentile', field: 'softSkillsPercentile' }
+              ]}
+              data={
+                Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
+                  name,
+                  projectPercentile: calcPercentiles(allCycleAggr.projectScores, values.projectAvg),
+                  quizPercentile: calcPercentiles(allCycleAggr.quizScores, values.quizAvg),
+                  softSkillsPercentile: calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg),
+                }))
+              }
+              options={{
+                sorting: true
+              }}
+              actions={[
+                {
+                  icon: 'search',
+                  tooltip: 'View Associate',
+                  onClick: (event, rowData) => {
+                    if (rowData.name !== cycle) {
+                      this.props.history.push(`/cycle/${cycle}/associate/${rowData.name.split(' ').join('-')}`)
+                    }
+                  }
+                }
+              ]}
+            />
+          </div>
         </div>
         : <Spinner />
     );
@@ -104,6 +139,7 @@ class Cycle extends Component {
 }
 
 const mapStateToProps = state => ({
+  allCycleAggr: state.cycles.allCycleAggr,
   cycleAggr: state.cycles.cycleAggr,
   cycleMetadata: state.cycles.cycleMetadata,
   cycleMetrics: state.cycles.cycleMetrics,
