@@ -6,7 +6,7 @@ import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
-import { getUrlParams, calcPercentiles } from '../../shared/dataService';
+import { getUrlParams, calcPercentiles, formatPercentile } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 
@@ -65,55 +65,21 @@ class Cycle extends Component {
 
           <div className={styles.Paper}>
             <MaterialTable
-              title="Associate Assessment Averages"
+              title="Associate Assessment Average & Percentile"
               columns={[
                 { title: 'Associate', field: 'name' },
-                { title: 'Project Average', field: 'projectAvg' },
-                { title: 'Quiz Average', field: 'quizAvg' },
-                { title: 'Soft Skills Average', field: 'softSkillsAvg' },
-                { title: 'Attempt/Pass Ration', field: 'attemptPass' }
+                { title: 'Projects', field: 'projectAvg' },
+                { title: 'Quizzes', field: 'quizAvg' },
+                { title: 'Soft Skills', field: 'softSkillsAvg' },
+                { title: 'Attempt/Pass', field: 'attemptPass' }
               ]}
               data={
                 Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
                   name,
-                  projectAvg: values.projectAvg,
-                  quizAvg: values.quizAvg,
-                  softSkillsAvg: values.softSkillsAvg,
-                  attemptPass: values.attemptPass
-                }))
-              }
-              options={{
-                sorting: true
-              }}
-              actions={[
-                {
-                  icon: 'search',
-                  tooltip: 'View Associate',
-                  onClick: (event, rowData) => {
-                    if (rowData.name !== cycle) {
-                      this.props.history.push(`/cycle/${cycle}/associate/${rowData.name.split(' ').join('-')}`)
-                    }
-                  }
-                }
-              ]}
-            />
-          </div>
-
-          <div className={styles.Paper}>
-            <MaterialTable
-              title="Associate Assessment Percentile"
-              columns={[
-                { title: 'Associate', field: 'name' },
-                { title: 'Project Percentile', field: 'projectPercentile' },
-                { title: 'Quiz Percentile', field: 'quizPercentile' },
-                { title: 'Soft Skills Percentile', field: 'softSkillsPercentile' }
-              ]}
-              data={
-                Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
-                  name,
-                  projectPercentile: calcPercentiles(allCycleAggr.projectScores, values.projectAvg),
-                  quizPercentile: calcPercentiles(allCycleAggr.quizScores, values.quizAvg),
-                  softSkillsPercentile: calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg),
+                  projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
+                  quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
+                  softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
+                  attemptPass: values.attemptPass + '%'
                 }))
               }
               options={{

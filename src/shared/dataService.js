@@ -369,6 +369,18 @@ export const getCycleMetadata = data => {
   return metadata;
 }
 
+export const formatPercentile = percentile => {
+  if (percentile % 10 === 1) {
+    return percentile + 'st';
+  } else if (percentile % 10 === 2) {
+    return percentile + 'nd';
+  } else if (percentile % 10 === 3) {
+    return percentile + 'rd';
+  } else {
+    return percentile + 'th';
+  }
+}
+
 export const getUrlParams = urlHistory => {
   const url = urlHistory.location.pathname.split('/');
   // get associate name from url and format to use ' ' instead of '-'
