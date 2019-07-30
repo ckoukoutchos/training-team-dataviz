@@ -6,6 +6,7 @@ import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
+import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import { getUrlParams, calcPercentiles, formatPercentile } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
@@ -31,7 +32,7 @@ class Cycle extends Component {
           <CycleInfo cycleName={CONSTS[cycle]} metadata={cycleMetadata[cycle]} />
 
           <RadarGraph
-            title='Running Averages of Assesments'
+            title='Running Averages of Assessments'
             subtitle='Including the Max and Min Associate Running Average'
             index='avg'
             data={[
@@ -85,6 +86,14 @@ class Cycle extends Component {
               options={{
                 sorting: true
               }}
+              detailPanel={[
+                {
+                  tooltip: 'Show Name',
+                  render: rowData => {
+                    return <AssociateInfo bodyOnly cycle={cycle} associate={cycleMetrics[cycle].find(row => row[0].Person === rowData.name)} />;
+                  },
+                }
+              ]}
               actions={[
                 {
                   icon: 'search',

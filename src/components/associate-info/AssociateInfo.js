@@ -10,7 +10,7 @@ const AssociateInfo = (props) => {
   const endDate = props.associate.find(item => exitRegex.test(item['Interaction Type']));
 
   return (
-    <Paper className={styles.Paper}>
+    !props.bodyOnly ? <Paper className={styles.Paper}>
       <div className={styles.Header}>
         <Typography variant='h3'>
           {Person}
@@ -42,13 +42,37 @@ const AssociateInfo = (props) => {
           <Typography variant='body2'>
             <strong>Days in Cycle:</strong> {endDate ? calcDaysSince(startDate, endDate.Date) : calcDaysSince(startDate)}
           </Typography>
-          { endDate ? 
+          {endDate ?
             <Typography variant="button" display="block">
               {endDate['Interaction Type']}
             </Typography> : null}
         </div>
       </div>
     </Paper >
+      : <div className={styles.BodyOnly}>
+        <div>
+          <Typography variant='body2'>
+            <strong>Start Date:</strong> {startDate}
+          </Typography>
+          {endDate ?
+            <>
+              <Typography variant='body2'>
+                <strong>End Date: </strong>{endDate.Date}
+              </Typography>
+            </>
+            : null}
+        </div>
+
+        <div>
+          <Typography variant='body2'>
+            <strong>Days in Cycle:</strong> {endDate ? calcDaysSince(startDate, endDate.Date) : calcDaysSince(startDate)}
+          </Typography>
+          {endDate ?
+            <Typography variant="button" display="block">
+              {endDate['Interaction Type']}
+            </Typography> : null}
+        </div>
+      </div>
   );
 }
 

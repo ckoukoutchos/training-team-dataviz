@@ -7,6 +7,7 @@ export default {
     'Optional Attendance'
   ],
   attendanceColors: ['gold', 'darkred', 'yellow', 'red', 'green'],
+  'Mastery Learning Portland 2019': 'mlPortland2019',
   mlPortland2019: 'Mastery Learning Portland 2019',
   moduleColors: [
     '#a50026',
@@ -30,7 +31,11 @@ export default {
   projectScore: 'Project (Score)',
   softSkills: 'Soft Skill Assessment',
   tradChicagoApril2019: 'Traditional Cycle Chicago April 2019',
+  'Traditional Cycle Chicago April 2019': 'tradChicagoApril2019',
   tradDenverJune2019: 'Traditional Cycle Denver June 2019',
+  'Traditional Cycle Denver June 2019': 'tradDenverJune2019',
   tradBostonJune2019: 'Traditional Cycle Boston June 2019',
-  tradBaltimoreJuly2019: 'Traditional Cycle Baltimore July 2019'
+  'Traditional Cycle Boston June 2019': 'tradBostonJune2019',
+  tradBaltimoreJuly2019: 'Traditional Cycle Baltimore July 2019',
+  'Traditional Cycle Baltimore July 2019': 'tradBaltimoreJuly2019'
 }
