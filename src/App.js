@@ -5,10 +5,11 @@ import { resetError } from './redux/actions';
 import styles from './App.module.css';
 import { Button, Modal } from '@material-ui/core';
 import Associate from './containers/associate/Associate';
+import Associates from './containers/associates/Associates';
 import Cycle from './containers/cycle/Cycle';
 import Cycles from './containers/cycles/Cycles';
 import Overview from './containers/overview/Overview';
-import NavBar from './components/NavBar/NavBar';
+import NavBar from './components/nav-bar/NavBar';
 import Upload from './components/upload/Upload';
 
 class App extends Component {
@@ -27,7 +28,7 @@ class App extends Component {
           <Switch>
             <Route path='/cycle' exact component={Cycles} />
             <Route path='/cycle/:cycle' exact component={Cycle} />
-            {/* <Route path='/cycle/:cycle/associate' exact component={Associates} /> */}
+            <Route path='/associate' exact component={Associates} />
             <Route path='/cycle/:cycle/associate/:associateName' exact component={Associate} />
             <Route path='/upload' exact component={Upload} />
             <Route path='/' component={Overview} />
