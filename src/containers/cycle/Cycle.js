@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchCycleMetrics } from '../../redux/actions';
-import MaterialTable from 'material-table';
+import MaterialTable, { MTableToolbar } from 'material-table';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
+import Toggle from '../../components/toggle/Toggle';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import { getUrlParams, calcPercentiles, formatPercentile } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 
 class Cycle extends Component {
+  state = {
+    showInactive: false,
+  }
+
   componentDidMount() {
     const { cycle } = getUrlParams(this.props.history);
     // only fetches if not already in memory
@@ -20,8 +25,43 @@ class Cycle extends Component {
     }
   }
 
+  toggleHandler = () => {
+    this.setState(prevState => ({ showInactive: !prevState.showInactive }));
+  }
+
+  createTableData = (cycleAggr, allCycleAggr, cycleMetadata, cycle, showInactive) => {
+    const tableData = [];
+    const leftCycle = cycleMetadata[cycle]['Associate Leave'].map(associate => associate.name);
+    Object.entries(cycleAggr[cycle]).forEach(([name, values]) => {
+      if (showInactive && leftCycle.includes(name)) {
+        tableData.push({
+          name,
+          projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
+          quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
+          softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
+          attemptPass: values.attemptPass + '%'
+        });
+      }
+      if (!showInactive && !leftCycle.includes(name)) {
+        tableData.push({
+          name,
+          projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
+          quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
+          softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
+          attemptPass: values.attemptPass + '%'
+        });
+      }
+    });
+    return tableData;
+  }
+
+  handleChange = name => evt => {
+    this.setState({ [name]: evt.target.checked });
+  };
+
   render() {
     const { allCycleAggr, cycleAggr, cycleMetadata, cycleMetrics, history } = this.props;
+    const { showInactive } = this.state;
     const { url, cycle } = getUrlParams(history);
 
     return (
@@ -74,17 +114,24 @@ class Cycle extends Component {
                 { title: 'Soft Skills', field: 'softSkillsAvg' },
                 { title: 'Attempt/Pass', field: 'attemptPass' }
               ]}
-              data={
-                Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
-                  name,
-                  projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
-                  quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
-                  softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
-                  attemptPass: values.attemptPass + '%'
-                }))
-              }
+              data={this.createTableData(cycleAggr, allCycleAggr, cycleMetadata, cycle, showInactive)}
               options={{
-                sorting: true
+                sorting: true,
+                pageSize: 10,
+                pageSizeOptions: [10, 20, 50]
+              }}
+              components={{
+                Toolbar: props => (
+                  <>
+                    <MTableToolbar {...props} />
+                    <Toggle
+                      checked={showInactive}
+                      onChange={this.toggleHandler}
+                      leftLabel='Active'
+                      rightLabel='Inactive'
+                    />
+                  </>
+                )
               }}
               detailPanel={[
                 {

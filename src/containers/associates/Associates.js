@@ -46,7 +46,9 @@ class Associates extends Component {
             ]}
             data={this.createTableData(cycleAggr, allCycleAggr)}
             options={{
-              sorting: true
+              sorting: true,
+              pageSize: 10,
+              pageSizeOptions: [10, 20, 50]
             }}
             detailPanel={[
               {

@@ -82,7 +82,9 @@ class Associate extends Component {
               ]}
               data={cycleMetrics[cycle].find(row => row[0].Person === associate)}
               options={{
-                sorting: true
+                sorting: true,
+                pageSize: 10,
+                pageSizeOptions: [10, 20, 50]
               }}
             />
           </div>

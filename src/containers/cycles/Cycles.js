@@ -37,7 +37,9 @@ class Cycles extends Component {
             }))
           }
           options={{
-            sorting: true
+            sorting: true,
+            pageSize: 10,
+            pageSizeOptions: [10, 20, 50]
           }}
           detailPanel={[
             {
