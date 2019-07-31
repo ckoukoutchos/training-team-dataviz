@@ -2,12 +2,22 @@ import React from 'react';
 import { ResponsiveCalendar } from '@nivo/calendar';
 import { Divider, Paper, Typography } from '@material-ui/core';
 import Legend from '../legend/Legend';
+import BasicTable from '../../components/basic-table/BasicTable';
+import ExpansionPanel from '../../components/expansion-panel/ExpansionPanel';
 import { sortAttendanceEvents } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Calendar.module.css';
 
 const Calendar = props => {
   const attendance = sortAttendanceEvents(props.metrics);
+  const countOfEvents = {
+    'Excused Absence': 0,
+    'Unexcused Absence': 0,
+    'Excused Late Arrival': 0,
+    'Unexcused Late Arrival': 0,
+    'Optional Attendance': 0
+  };
+  attendance.events.forEach(event => countOfEvents[CONSTS.attendance[event.value]] += 1);
 
   return (
     <Paper className={styles.Paper}>
@@ -46,6 +56,10 @@ const Calendar = props => {
         />
       </div>
       <Legend items={CONSTS.attendance} colors={'attendanceColors'} />
+
+      <ExpansionPanel panelTitle='Show Details'>
+        <BasicTable headers={CONSTS.attendance} rows={Object.values(countOfEvents)} />
+      </ExpansionPanel>
     </Paper >
   );
 }
