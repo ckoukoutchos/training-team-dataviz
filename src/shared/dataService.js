@@ -213,12 +213,19 @@ export const calcAttemptPassRatio = metrics => {
       }
     } else if (metric['Interaction Type'] === 'Project (Score)') {
       attempt++;
-      if ((metric.Score / 30) >= 0.9) {
-        pass++;
+      // because some peeps don't enter scores right
+      if (metric.Score.trim() !== '') {
+        if ((metric.Score / 30) >= 0.9) {
+          pass++;
+        }
       }
     }
   }
-  return Math.round((pass / attempt) * 100);
+  if (!(Math.round((pass / attempt) * 100))) {
+    return 0
+  } else {
+    return Math.round((pass / attempt) * 100);
+  }
 }
 
 export const calcPercentiles = (scores, avg) => {

@@ -43,7 +43,7 @@ class Cycles extends Component {
           }}
           detailPanel={[
             {
-              tooltip: 'Show Name',
+              tooltip: 'Show Details',
               render: rowData => {
                 return <CycleInfo bodyOnly cycleName={CONSTS[rowData.name]} metadata={cycleMetadata[CONSTS[rowData.name]]} />;
               },

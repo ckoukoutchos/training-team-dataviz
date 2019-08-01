@@ -135,7 +135,7 @@ class Cycle extends Component {
               }}
               detailPanel={[
                 {
-                  tooltip: 'Show Name',
+                  tooltip: 'Show Details',
                   render: rowData => {
                     return <AssociateInfo bodyOnly cycle={cycle} associate={cycleMetrics[cycle].find(row => row[0].Person === rowData.name)} />;
                   },
