@@ -388,6 +388,14 @@ export const formatPercentile = percentile => {
   }
 }
 
+export const getAssessmentTableData = (name, values, allCycleAggr) => ({
+  name,
+  projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
+  quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
+  softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
+  attemptPass: values.attemptPass + '%'
+});
+
 export const getUrlParams = urlHistory => {
   const url = urlHistory.location.pathname.split('/');
   // get associate name from url and format to use ' ' instead of '-'

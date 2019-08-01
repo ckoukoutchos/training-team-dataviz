@@ -8,7 +8,7 @@ import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
 import Toggle from '../../components/toggle/Toggle';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
-import { getUrlParams, calcPercentiles, formatPercentile } from '../../shared/dataService';
+import { getUrlParams, getAssessmentTableData } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 
@@ -31,25 +31,16 @@ class Cycle extends Component {
 
   createTableData = (cycleAggr, allCycleAggr, cycleMetadata, cycle, showInactive) => {
     const tableData = [];
-    const leftCycle = cycleMetadata[cycle]['Associate Leave'].map(associate => associate.name);
+    let leftCycle = [];
+    if (cycleMetadata[cycle]['Associate Leave']) {
+      leftCycle = cycleMetadata[cycle]['Associate Leave'].map(associate => associate.name);
+    }
     Object.entries(cycleAggr[cycle]).forEach(([name, values]) => {
       if (showInactive && leftCycle.includes(name)) {
-        tableData.push({
-          name,
-          projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
-          quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
-          softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
-          attemptPass: values.attemptPass + '%'
-        });
+        tableData.push(getAssessmentTableData(name, values, allCycleAggr));
       }
       if (!showInactive && !leftCycle.includes(name)) {
-        tableData.push({
-          name,
-          projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
-          quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
-          softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
-          attemptPass: values.attemptPass + '%'
-        });
+        tableData.push(getAssessmentTableData(name, values, allCycleAggr));
       }
     });
     return tableData;

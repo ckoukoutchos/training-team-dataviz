@@ -1,38 +1,54 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchAllCyclesMetrics } from '../../redux/actions';
-import MaterialTable from 'material-table';
+import MaterialTable, { MTableToolbar } from 'material-table';
+import Toggle from '../../components/toggle/Toggle';
 import Spinner from '../../components/spinner/Spinner';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
-import { calcPercentiles, formatPercentile } from '../../shared/dataService';
+import { getAssessmentTableData } from '../../shared/dataService';
 import styles from './Associates.module.css';
 
 class Associates extends Component {
+  state = {
+    showInactive: false
+  }
+
   componentDidMount() {
     if (!Object.keys(this.props.allCycleAggr).length) {
       this.props.fetchAllCycles();
     }
   }
 
-  createTableData(cycleAggr, allCycleAggr) {
+  createTableData(cycleAggr, allCycleAggr, cycleMetadata, showInactive) {
     const associateScores = [];
     for (const cycle in cycleAggr) {
-      associateScores.push(...Object.entries(cycleAggr[cycle]).map(([name, values]) => ({
-        name,
-        projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
-        quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
-        softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
-        attemptPass: values.attemptPass + '%'
-      })))
+      let leftCycle = [];
+      if (cycleMetadata[cycle]['Associate Leave']) {
+        leftCycle = cycleMetadata[cycle]['Associate Leave'].map(associate => associate.name);
+      }
+      Object.entries(cycleAggr[cycle]).forEach(([name, values]) => {
+        if (showInactive && leftCycle.includes(name)) {
+          associateScores.push(getAssessmentTableData(name, values, allCycleAggr));
+        }
+        if (!showInactive && !leftCycle.includes(name)) {
+          associateScores.push(getAssessmentTableData(name, values, allCycleAggr));
+        }
+      });
     }
     return associateScores;
   }
 
+  toggleHandler = () => {
+    this.setState(prevState => ({ showInactive: !prevState.showInactive }));
+  }
+
+
   render() {
-    const { allCycleAggr, cycleAggr, cycleMetrics, loading } = this.props;
+    const { allCycleAggr, cycleAggr, cycleMetadata, cycleMetrics, loading } = this.props;
+    const { showInactive } = this.state;
     let table = <Spinner />;
 
-    if (!loading && Object.keys(cycleAggr).length && Object.keys(cycleMetrics).length && Object.keys(allCycleAggr).length) {
+    if (!loading && Object.keys(cycleAggr).length && Object.keys(cycleMetrics).length && Object.keys(allCycleAggr).length && Object.keys(cycleMetadata).length) {
       table = (
         <div className={styles.Paper}>
           <MaterialTable
@@ -44,7 +60,7 @@ class Associates extends Component {
               { title: 'Soft Skills', field: 'softSkillsAvg' },
               { title: 'Attempt/Pass', field: 'attemptPass' }
             ]}
-            data={this.createTableData(cycleAggr, allCycleAggr)}
+            data={this.createTableData(cycleAggr, allCycleAggr, cycleMetadata, showInactive)}
             options={{
               sorting: true,
               pageSize: 10,
@@ -64,6 +80,19 @@ class Associates extends Component {
                 },
               }
             ]}
+            components={{
+              Toolbar: props => (
+                <>
+                  <MTableToolbar {...props} />
+                  <Toggle
+                    checked={showInactive}
+                    onChange={this.toggleHandler}
+                    leftLabel='Active'
+                    rightLabel='Inactive'
+                  />
+                </>
+              )
+            }}
             actions={[
               {
                 icon: 'search',
@@ -91,6 +120,7 @@ class Associates extends Component {
 const mapStateToProps = state => ({
   allCycleAggr: state.cycles.allCycleAggr,
   cycleAggr: state.cycles.cycleAggr,
+  cycleMetadata: state.cycles.cycleMetadata,
   cycleMetrics: state.cycles.cycleMetrics,
   loading: state.cycles.loading
 });

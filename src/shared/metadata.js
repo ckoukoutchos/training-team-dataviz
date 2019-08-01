@@ -161,5 +161,5 @@ export default {
     'Professionalism': { 'Max Score': 5 },
     'Communication': { 'Max Score': 5 },
   },
-  staff: ['Eric Queen', 'Corbin Koukoutchos', 'Dan Reuther', 'Katlyn Beck', 'Greg Fisher', 'Taylor Elam', 'Tony Richards', 'Dan Lawless', 'William Newman', 'Hayes McCardell', 'Josh Tucker']
+  staff: ['Eric Queen', 'Corbin Koukoutchos', 'Dan Reuther', 'Katlyn Beck', 'Greg Fisher', 'Taylor Elam', 'Tony Richards', 'Dan Lawless', 'William Newman', 'Hayes McCardell', 'Josh Tucker', 'Kyle Pike', 'James Jowers']
 }
