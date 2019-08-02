@@ -1,20 +1,27 @@
 .Body {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  
-  .Divider {
-    margin: 16px;
-  }
-  
-  .Header {
-    text-align: center;
-  }
-  
-  .Paper {
-    margin: 16px auto;
-    padding: 16px 24px;
-    width: 800px;
-  }
-  
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.BodyOnly {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+.Divider {
+  margin: 16px;
+}
+
+.Header {
+  text-align: center;
+}
+
+.Paper {
+  margin: 16px auto;
+  padding: 16px 24px;
+  width: 800px;
+}

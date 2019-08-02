@@ -3,7 +3,7 @@ import { Divider, Paper, Typography } from '@material-ui/core';
 import styles from './CycleInfo.module.css';
 
 const CycleInfo = props => {
-  const { cycleName, metadata } = props;
+  const { bodyOnly, cycleName, metadata } = props;
 
   const nameSplit = cycleName.split(' ');
   const cycleType = nameSplit.splice(0, 2).join(' ');
@@ -17,7 +17,7 @@ const CycleInfo = props => {
     : metadata['Associate Start'].length;
 
   return (
-    <Paper className={styles.Paper}>
+    !bodyOnly ? <Paper className={styles.Paper}>
       <div className={styles.Header}>
         <Typography variant='h3'>
           {formattedName}
@@ -62,6 +62,35 @@ const CycleInfo = props => {
         </div>
       </div>
     </Paper>
+      : <div className={styles.BodyOnly}>
+        <div>
+          <Typography variant='body2'>
+            <strong>Trainer(s): </strong>{trainers}
+          </Typography>
+
+          <Typography variant='body2'>
+            <strong>TA(s): </strong>{TAs}
+          </Typography>
+
+          <Typography variant='body2'>
+            <strong>Total # Associates: </strong>{metadata['Associate Start'].length}
+          </Typography>
+        </div>
+
+        <div>
+          <Typography variant='body2'>
+            <strong>Start Date(s): </strong>{startDates}
+          </Typography>
+
+          <Typography variant='body2'>
+            <strong>End Date: </strong>{endDate}
+          </Typography>
+
+          <Typography variant='body2'>
+            <strong>Current # Associates: </strong>{currentNumAssociates}
+          </Typography>
+        </div>
+      </div>
   );
 }
 

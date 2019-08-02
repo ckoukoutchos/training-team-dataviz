@@ -213,12 +213,19 @@ export const calcAttemptPassRatio = metrics => {
       }
     } else if (metric['Interaction Type'] === 'Project (Score)') {
       attempt++;
-      if ((metric.Score / 30) >= 0.9) {
-        pass++;
+      // because some peeps don't enter scores right
+      if (metric.Score.trim() !== '') {
+        if ((metric.Score / 30) >= 0.9) {
+          pass++;
+        }
       }
     }
   }
-  return Math.round((pass / attempt) * 100);
+  if (!(Math.round((pass / attempt) * 100))) {
+    return 0
+  } else {
+    return Math.round((pass / attempt) * 100);
+  }
 }
 
 export const calcPercentiles = (scores, avg) => {
@@ -368,6 +375,26 @@ export const getCycleMetadata = data => {
   });
   return metadata;
 }
+
+export const formatPercentile = percentile => {
+  if (percentile % 10 === 1) {
+    return percentile + 'st';
+  } else if (percentile % 10 === 2) {
+    return percentile + 'nd';
+  } else if (percentile % 10 === 3) {
+    return percentile + 'rd';
+  } else {
+    return percentile + 'th';
+  }
+}
+
+export const getAssessmentTableData = (name, values, allCycleAggr) => ({
+  name,
+  projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
+  quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
+  softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
+  attemptPass: values.attemptPass + '%'
+});
 
 export const getUrlParams = urlHistory => {
   const url = urlHistory.location.pathname.split('/');
