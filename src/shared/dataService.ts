@@ -1,10 +1,11 @@
 import Metadata from './metadata';
 import CONSTS from './constants';
+import { Metric, Cycle, Associate, Module } from '../models/types';
 
-export const calcAllCyclesPercentiles = cycleAggr => {
-  const projectScores = [];
-  const quizScores = [];
-  const softSkillsScores = [];
+export const calcAllCyclesPercentiles = (cycleAggr: any) => {
+  const projectScores: any = [];
+  const quizScores: any = [];
+  const softSkillsScores: any = [];
   for (const cycle in cycleAggr) {
     for (const associate in cycleAggr[cycle]) {
       projectScores.push(cycleAggr[cycle][associate].projectAvg);
@@ -13,9 +14,9 @@ export const calcAllCyclesPercentiles = cycleAggr => {
     }
   }
   // sort in ascending order
-  projectScores.sort((a, b) => a - b);
-  quizScores.sort((a, b) => a - b);
-  softSkillsScores.sort((a, b) => a - b);
+  projectScores.sort((a: number, b: number) => a - b);
+  quizScores.sort((a: number, b: number) => a - b);
+  softSkillsScores.sort((a: number, b: number) => a - b);
   // calc percentiles for each
   const projectPercentiles = CONSTS.percentiles.map(perc =>
     projectScores[Math.round(projectScores.length * perc)]
@@ -29,9 +30,10 @@ export const calcAllCyclesPercentiles = cycleAggr => {
   return { projectPercentiles, projectScores, quizPercentiles, quizScores, softSkillsPercentiles, softSkillsScores };
 }
 
-export const calcAssociateAggr = associates => {
+export const calcAssociateAggr = (associates: any) => {
   const avgs = {};
-  associates.forEach(associate => {
+  associates.forEach((associate: any) => {
+    //@ts-ignore
     avgs[associate[0].Person] = {
       attemptPass: calcAttemptPassRatio(associate),
       projectAvg: calcMetricAvg(associate, CONSTS.projectScore, Metadata['Project (Score)']),
@@ -42,7 +44,7 @@ export const calcAssociateAggr = associates => {
   return avgs;
 }
 
-export const calcCycleAggr = associates => {
+export const calcCycleAggr = (associates: any) => {
   let attemptAvg = 0;
   let attemptMax = 0;
   let attemptMin = 100;
@@ -127,14 +129,16 @@ export const calcCycleAggr = associates => {
   }
 }
 
-export const calcDaysSince = (startDate, endDate) => {
+export const calcDaysSince = (startDate: any, endDate?: any) => {
   // format as Date object
   const startDateSplit = startDate.split('/');
+  //@ts-ignore
   const startDateObj = new Date('20' + startDateSplit[2], startDateSplit[0] - 1, startDateSplit[1]);
 
   if (endDate) {
     // if end date provided, format as Date object and calc time btw start and end
     const endDateSplit = endDate.split('/');
+    //@ts-ignore
     const endDateObj = new Date('20' + endDateSplit[2], endDateSplit[0] - 1, endDateSplit[1]);
     const cycleLength = (endDateObj - startDateObj) / 86400000;
     return Math.round(cycleLength);
@@ -145,7 +149,7 @@ export const calcDaysSince = (startDate, endDate) => {
   }
 }
 
-export const calcDateMarkers = metadata => {
+export const calcDateMarkers = (metadata: any) => {
   const startDate = metadata['Associate Start'];
   return Metadata.modules.map(modules => {
     if (metadata[modules].start) {
@@ -155,9 +159,9 @@ export const calcDateMarkers = metadata => {
   });
 }
 
-export const calcModuleLength = metadata => {
+export const calcModuleLength = (metadata: any) => {
   let prevTotal = 0;
-  const moduleLengths = [];
+  const moduleLengths: any = [];
   const ranges = Metadata.modules.map(modules => {
     if (metadata[modules].start && metadata[modules].end) {
       const days = Math.round(calcDaysSince(metadata[modules].start, metadata[modules].end));
@@ -185,8 +189,8 @@ export const calcModuleLength = metadata => {
   return { moduleLengths, ranges };
 }
 
-export const calcMetricAvg = (associate, metric, maxScores) => {
-  const metrics = associate.filter(event => event['Interaction Type'] === metric);
+export const calcMetricAvg = (associate: any, metric: any, maxScores: any) => {
+  const metrics = associate.filter((event: any) => event['Interaction Type'] === metric);
 
   // return 0 if no metrics were taken
   if (!metrics.length) {
@@ -194,7 +198,7 @@ export const calcMetricAvg = (associate, metric, maxScores) => {
   }
 
   // adds up scores of all associate metrics and Max Scores for those metrics
-  const metricAvg = metrics.reduce((acc, curr) => {
+  const metricAvg = metrics.reduce((acc: any, curr: any) => {
     return [acc[0] + Number(curr.Score), acc[1] + maxScores[curr.Interaction]['Max Score']];
   }, [0, 0]);
 
@@ -202,7 +206,7 @@ export const calcMetricAvg = (associate, metric, maxScores) => {
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
 }
 
-export const calcAttemptPassRatio = metrics => {
+export const calcAttemptPassRatio = (metrics: any) => {
   let attempt = 0;
   let pass = 0;
   for (const metric of metrics) {
@@ -228,12 +232,12 @@ export const calcAttemptPassRatio = metrics => {
   }
 }
 
-export const calcPercentiles = (scores, avg) => {
+export const calcPercentiles = (scores: any, avg: any) => {
   const index = scores.indexOf(avg);
   return Math.round((index + 1) / scores.length * 100);
 }
 
-const formatCalendarDate = date => {
+const formatCalendarDate = (date: any) => {
   const dateSplit = date.split('/');
   if (dateSplit[0].length === 1) {
     dateSplit[0] = '0' + dateSplit[0];
@@ -244,59 +248,79 @@ const formatCalendarDate = date => {
   return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
 }
 
-export const sortAttendanceEvents = metrics => {
+export const sortAttendanceEvents = (metrics: any) => {
   const attendance = {
     events: []
   };
-  metrics.forEach(event => {
+  metrics.forEach((event: any) => {
     // convert to correct date format
     const newDateFormat = formatCalendarDate(event.Date);
 
     // set start date
     if (event['Interaction Type'] === 'Associate Start') {
+      //@ts-ignore
       attendance[event['Interaction Type']] = newDateFormat;
 
       // set cycle exit date
     } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
+      //@ts-ignore
       attendance['Cycle Exit'] = newDateFormat;
 
       // set other attendace evts
     } else if (event['Interaction Type'] === 'Attendance Event') {
       attendance.events.push({
+        //@ts-ignore
         day: newDateFormat,
+        //@ts-ignore
         value: Metadata.attendance[event.Interaction]
       })
     }
   });
 
   // if no cycle exit date, use current
+  //@ts-ignore
   if (!attendance['Cycle Exit']) {
     const date = new Date(Date.now());
+    //@ts-ignore
     attendance['Cycle Exit'] = date.toISOString();
   }
   return attendance;
 }
 
-export const sortMetircsByAssociate = data => {
-  const associates = {};
+export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
+  const associates: any = {};
 
-  for (const item of data) {
+  for (const metric of metrics) {
     // ignore training staff and empty Person
-    if (!Metadata.staff.includes(item.Person) && item.Person !== '') {
-
-      // if associate already added, push item
-      if (associates[item.Person]) {
-        associates[item.Person].push(item);
+    if (!Metadata.staff.includes(metric.Person) && metric.Person !== '') {
+      // if associate already added, push metric
+      if (associates[metric.Person]) {
+        associates[metric.Person].push(metric);
       } else {
         // if field doesn't exist, add one
-        associates[item.Person] = [item];
+        associates[metric.Person] = [metric];
+      }
+    } else {
+      // if cycle already added, push metric
+      if (associates['cycle']) {
+        associates['cycle'].push(metric);
+      } else {
+        // if field doesn't exist, add one
+        associates['cycle'] = [metric];
       }
     }
   }
   return Object.values(associates);
 }
 
-export const getAssociateMetadata = data => {
+export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
+  // find metric array with cycle data
+  const index = metrics.findIndex((metrics) => Metadata.staff.includes(metrics[0].Person) || metrics[0].Person === '');
+  // remove from associate metrics array and return it
+  return metrics.splice(index, 1)[0];
+}
+
+export const getAssociateMetadata = (data: any) => {
   const metadata = {};
   for (const associate of data) {
     let person = {
@@ -327,23 +351,33 @@ export const getAssociateMetadata = data => {
     };
     for (const event of associate) {
       if (event['Interaction Type'] === 'Module Completed') {
+        //@ts-ignore
         person[event.Interaction].end = event.Date;
       } else if (event['Interaction Type'] === 'Module Started') {
+        //@ts-ignore
         person[event.Interaction].start = event.Date;
       } else if (event['Interaction Type'] === 'Associate Start') {
+        //@ts-ignore
         person[event['Interaction Type']] = event.Date;
       } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
+        //@ts-ignore
         person['Cycle Exit'] = event.Date;
       }
     }
+    //@ts-ignore
     metadata[associate[0].Person] = person;
   }
   return metadata;
 }
 
-export const getCycleMetadata = data => {
+export const getCycleAssociateCount = (associates: Associate[]): number[] => {
+  const activeCount = associates.filter((associate: Associate) => !associate.endDate);
+  return [associates.length, activeCount.length];
+}
+
+export const getCycleMetadata = (data: any) => {
   const metadata = {};
-  data.forEach(event => {
+  data.forEach((event: any) => {
     // check for interaction type
     if (Metadata.cycleMetadate.includes(event['Interaction Type']) || RegExp('Cycle Exit').test(event['Interaction Type'])) {
       // because our data entry is wonky
@@ -356,18 +390,23 @@ export const getCycleMetadata = data => {
         field = event.Interaction
       }
       // if not already a field, create one
+      //@ts-ignore
       if (!metadata[field]) {
         // staff change need name and date
         if (field !== 'Cycle Start Date' && field !== 'Cycle End Date') {
+          //@ts-ignore
           metadata[field] = [{ name: event.Person, date: event.Date }];
         } else {
+          //@ts-ignore
           metadata[field] = [event.Date];
         }
         // otherwise, add to list
       } else {
         if (field !== 'Cycle Start Date' && field !== 'Cycle End Date') {
+          //@ts-ignore
           metadata[field].push({ name: event.Person, date: event.Date });
         } else {
+          //@ts-ignore
           metadata[field].push(event.Date);
         }
       }
@@ -376,7 +415,7 @@ export const getCycleMetadata = data => {
   return metadata;
 }
 
-export const formatPercentile = percentile => {
+export const formatPercentile = (percentile: any) => {
   if (percentile % 10 === 1) {
     return percentile + 'st';
   } else if (percentile % 10 === 2) {
@@ -388,7 +427,7 @@ export const formatPercentile = percentile => {
   }
 }
 
-export const getAssessmentTableData = (name, values, allCycleAggr) => ({
+export const getAssessmentTableData = (name: any, values: any, allCycleAggr: any) => ({
   name,
   projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
   quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
@@ -396,7 +435,7 @@ export const getAssessmentTableData = (name, values, allCycleAggr) => ({
   attemptPass: values.attemptPass + '%'
 });
 
-export const getUrlParams = urlHistory => {
+export const getUrlParams = (urlHistory: any) => {
   const url = urlHistory.location.pathname.split('/');
   // get associate name from url and format to use ' ' instead of '-'
   const associate = url[url.length - 1].split('-').join(' ');
@@ -404,4 +443,90 @@ export const getUrlParams = urlHistory => {
   const cycle = url[2];
 
   return { url, cycle, associate };
+}
+
+export const formatAssociateData = (metrics: Metric[], cycle: string): Associate => {
+  const associate = new Associate();
+  associate.name = metrics[0].Person;
+  associate.cycle = cycle;
+  associate.metrics = metrics;
+
+  for (const metric of metrics) {
+    const type = metric['Interaction Type'];
+    const module = associate.modules.find((module: Module) => module.type === metric.Interaction);
+
+    switch (type) {
+      case 'Module Completed':
+        if (module) {
+          module.endDate = metric.Date
+        }
+        break;
+      case 'Module Started':
+        if (module) {
+          module.startDate = metric.Date;
+          module.type = metric.Interaction;
+        }
+        break;
+      case 'Associate Start':
+        associate.active = true;
+        associate['startDate'] = metric.Date;
+        break;
+      case 'Attendance Event':
+        associate.attendance.push({
+          date: metric.Date,
+          type: metric.Interaction
+        });
+        break;
+      case 'Exercise':
+        associate.exercises.push(metric);
+        break;
+      case 'Quiz':
+        associate.quizzes.push(metric);
+        break;
+      case 'Project (Score)':
+        associate.projects.push(metric);
+        break;
+      case 'Soft Skill Assessment':
+        associate.softSkills.push(metric);
+        break;
+      default: break;
+    }
+    // multiple exit types, boolean check simpler than cases
+    if (RegExp('Cycle Exit').test(type)) {
+      associate.active = false;
+      associate['endDate'] = metric.Date;
+      associate.exitReason = metric.Interaction;
+    }
+  }
+  return associate;
+}
+
+export const formatCycleData = (metrics: Metric[], associates: Associate[], cycleName: string) => {
+  const cycle = new Cycle();
+  cycle.name = cycleName;
+  cycle.metrics = metrics;
+  cycle.associates = associates;
+
+  const cycleAssociateCount = getCycleAssociateCount(associates);
+  cycle.totalNumberOfAssociates = cycleAssociateCount[0];
+  cycle.currentNumberOfAssociates = cycleAssociateCount[1];
+
+  for (const metric of metrics) {
+    const type = metric['Interaction Type'];
+
+    switch (type) {
+      case 'Cycle Start Date':
+        cycle.startDate = metric.Date;
+        cycle.active = true;
+        break;
+      case 'Cycle End Date':
+        cycle.endDate = metric.Date;
+        cycle.active = false;
+        break;
+      case 'Staff Change':
+        break;
+      default: break;
+    }
+  }
+  return cycle;
 }

@@ -2,7 +2,7 @@ import { put, all, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { FETCH_ALL_CYCLES_METRICS, FETCH_CYCLE_METRICS, POST_CYCLE_METRICS } from "../actionTypes";
 import { fetchAllCyclesMetricsSuccess, fetchCycleMetricsSuccess, fetchCycleMetricsFail, postCycleMetricsSuccess, postCycleMetricsFail } from "../actions";
-import { calcAllCyclesPercentiles, calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata } from '../../shared/dataService';
+import { calcAllCyclesPercentiles, calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata, formatAssociateData, getCycleMetrics, formatCycleData } from '../../shared/dataService';
 
 export default function* watchCycle() {
   yield all([
@@ -25,7 +25,7 @@ function* fetchAllCyclesMetrics() {
 function* fetchCycleMetrics({ cycleName }) {
   try {
     const res = yield axios.get('/api/' + cycleName);
-    yield put(fetchCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
+    yield put(fetchCycleMetricsSuccess(...formatCycleDatas(res.data, cycleName)));
   } catch (err) {
     yield put(fetchCycleMetricsFail(err));
   }
@@ -34,16 +34,23 @@ function* fetchCycleMetrics({ cycleName }) {
 function* postCycleMetrics({ formData, cycleName, history }) {
   try {
     const res = yield axios.post('/api/' + cycleName, formData);
-    yield put(postCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
+    yield put(postCycleMetricsSuccess(...formatCycleDatas(res.data, cycleName)));
     history.push('/cycle')
   } catch (err) {
     yield put(postCycleMetricsFail(err));
   }
 }
 
-const formatCycleData = (data, cycleName) => {
+const formatCycleDatas = (data, cycleName) => {
   // sort by associate
   const sortedMetrics = sortMetircsByAssociate(data);
+
+  // experimental
+  const cycleMetrics = getCycleMetrics(sortedMetrics);
+  const formattedAssociates = sortedMetrics.map((associate) => formatAssociateData(associate, cycleName));
+  const formattedCycle = formatCycleData(cycleMetrics, formattedAssociates, cycleName);
+  console.log(formattedCycle);
+
   // collect associate module metadata
   const associateMetadata = getAssociateMetadata(sortedMetrics);
   // calculate avg for projects, quizzes, soft skills
@@ -65,7 +72,7 @@ const formatAllCycleData = (data, cycles) => {
   const cycleMetrics = {};
   // for each cycle, collect data
   for (let i = 0; i < data.length; i++) {
-    let [associateAggr, metadata, associateMeta, sortedMetrics, cycleName] = formatCycleData(data[i], cycles[i]);
+    let [associateAggr, metadata, associateMeta, sortedMetrics, cycleName] = formatCycleDatas(data[i], cycles[i]);
 
     for (let [key, value] of Object.entries(associateMeta)) {
       associateMetadata[key] = value;

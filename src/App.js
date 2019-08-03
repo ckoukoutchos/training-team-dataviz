@@ -47,7 +47,7 @@ class App extends Component {
               {error.message}
             </p>
             <p id='simple-modal-description'>
-              {error.response.data}
+              {error.response ? error.response.data : 'Error'}
             </p>
             <Button
               variant="contained"
