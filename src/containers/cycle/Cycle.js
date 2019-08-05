@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCycleMetrics } from '../../redux/actions';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
@@ -159,8 +158,4 @@ const mapStateToProps = state => ({
   loading: state.cycles.loading
 });
 
-const mapDispatchToProps = dispatch => ({
-  fetchCycle: (cycleName) => dispatch(fetchCycleMetrics(cycleName))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Cycle);
+export default connect(mapStateToProps)(Cycle);

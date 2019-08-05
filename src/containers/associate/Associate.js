@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCycleMetrics } from '../../redux/actions';
 import MaterialTable from 'material-table';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
@@ -101,8 +100,4 @@ const mapStateToProps = state => ({
   loading: state.cycles.loading
 });
 
-const mapDispatchToProps = dispatch => ({
-  fetchCycle: (cycleName) => dispatch(fetchCycleMetrics(cycleName))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Associate);
+export default connect(mapStateToProps)(Associate);

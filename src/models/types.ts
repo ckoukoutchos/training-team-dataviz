@@ -95,6 +95,14 @@ export class Cycle {
   }
 }
 
+export interface CycleAggregation extends Aggregation {
+  aggregations: Aggregation[];
+  attemptPassScores: number[];
+  projectScores: number[];
+  quizScores: number[];
+  softSkillsScores: number[];
+}
+
 export interface Metric {
   Date: string;
   Interaction: string;

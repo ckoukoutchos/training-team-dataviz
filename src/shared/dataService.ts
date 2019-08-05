@@ -1,6 +1,6 @@
 import Metadata from './metadata';
 import CONSTS from './constants';
-import { Metric, Cycle, Associate, Module, Aggregation } from '../models/types';
+import { Metric, Cycle, Associate, Module, Aggregation, CycleAggregation } from '../models/types';
 
 export const calcAllCyclesPercentiles = (cycleAggr: any) => {
   const projectScores: any = [];
@@ -228,11 +228,6 @@ export const calcAttemptPassRatio = (metrics: Metric[]) => {
   return attempt ? Math.round((pass / attempt) * 100) : 0;
 }
 
-export const calcPercentiles = (scores: any, avg: any) => {
-  const index = scores.indexOf(avg);
-  return Math.round((index + 1) / scores.length * 100);
-}
-
 const formatCalendarDate = (date: any) => {
   const dateSplit = date.split('/');
   if (dateSplit[0].length === 1) {
@@ -432,10 +427,19 @@ export const calcAssessmentAvg = (metrics: Metric[], maxScores: any): number => 
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
 }
 
+export const calcPercentiles = (scores: number[], avg: number) => {
+  const index = scores.indexOf(avg);
+  return Math.round((index + 1) / scores.length * 100);
+}
+
 export const calcScoreAvg = (scores: number[]): number => {
   const total = scores.reduce((acc: number, curr: number) => acc + curr, 0);
   // if zero attempts, return zero
   return scores.length ? Math.round(total / scores.length) : 0;
+}
+
+export const combineScores = (cycles: CycleAggregation[], type: string): number[] => {
+  return cycles.reduce((acc: number[], curr: CycleAggregation) => acc.concat(curr[type]), []);
 }
 
 export const formatAssociateData = (metrics: Metric[], cycle: string): Associate => {
@@ -517,7 +521,7 @@ export const formatCycleData = (metrics: Metric[], associates: Associate[], cycl
         cycle.endDate = metric.Date;
         cycle.active = false;
         break;
-      case 'Staff Change':
+      case 'Staff change':
         if (metric.Interaction === 'Trainer Start') {
           cycle.trainers.push(metric.Person);
         } else if (metric.Interaction === 'TA Start') {
@@ -544,7 +548,11 @@ export const getAssociateAggregations = (associates: Associate[]): Aggregation[]
   return aggregations;
 }
 
-export const getCycleAggregations = (associates: Aggregation[], cycleName: string): Aggregation => {
+export const getCycleAssessmentAggregations = (associates: Associate[]) => {
+
+}
+
+export const getCycleAggregations = (associates: Aggregation[], cycleName: string): CycleAggregation => {
   const attemptPassScores = [];
   const projectScores = [];
   const quizScores = [];
@@ -566,12 +574,76 @@ export const getCycleAggregations = (associates: Aggregation[], cycleName: strin
     }
   }
   return {
+    aggregations: associates,
     attemptPass: calcScoreAvg(attemptPassScores),
+    attemptPassScores: attemptPassScores.sort((a: number, b: number) => a - b),
     name: cycleName,
     projects: calcScoreAvg(projectScores),
+    projectScores: projectScores.sort((a: number, b: number) => a - b),
     quizzes: calcScoreAvg(quizScores),
-    softSkills: calcScoreAvg(softSkillsScores)
+    quizScores: quizScores.sort((a: number, b: number) => a - b),
+    softSkills: calcScoreAvg(softSkillsScores),
+    softSkillsScores: softSkillsScores.sort((a: number, b: number) => a - b),
   }
+}
+
+export const getAllCyclesAggregations = (cycles: CycleAggregation[]) => {
+  const attemptPassScores = combineScores(cycles, 'attemptPassScores');
+  const projectScores = combineScores(cycles, 'projectScores');
+  const quizScores = combineScores(cycles, 'quizScores');
+  const softSkillsScores = combineScores(cycles, 'softSkillsScores');
+  return {
+    aggregations: cycles,
+    attemptPass: calcScoreAvg(attemptPassScores),
+    attemptPassScores: attemptPassScores.sort((a: number, b: number) => a - b),
+    name: 'allCycles',
+    projects: calcScoreAvg(projectScores),
+    projectScores: projectScores.sort((a: number, b: number) => a - b),
+    quizzes: calcScoreAvg(quizScores),
+    quizScores: quizScores.sort((a: number, b: number) => a - b),
+    softSkills: calcScoreAvg(softSkillsScores),
+    softSkillsScores: softSkillsScores.sort((a: number, b: number) => a - b),
+  }
+}
+
+export const sortMetricsByAssessment = (associates: Associate[]) => {
+  const projects = {};
+  const quizzes = {};
+  const softSkills = {};
+
+  for (const associate of associates) {
+    // project sorting
+    for (const project of associate.projects) {
+      // if project already added, push score
+      if (projects[project.Interaction]) {
+        projects[project.Interaction].push(Number(project.Score));
+        // if field doesn't exist, add one
+      } else {
+        projects[project.Interaction] = [Number(project.Score)];
+      }
+    }
+    // quiz sorting
+    for (const quiz of associate.quizzes) {
+      // if quiz already added, push score
+      if (quizzes[quiz.Interaction]) {
+        quizzes[quiz.Interaction].push(Number(quiz.Score));
+        // if field doesn't exist, add one
+      } else {
+        quizzes[quiz.Interaction] = [Number(quiz.Score)];
+      }
+    }
+    // softSkills sorting
+    for (const softSkill of associate.softSkills) {
+      // if softSkill already added, push score
+      if (softSkills[softSkill.Interaction]) {
+        softSkills[softSkill.Interaction].push(Number(softSkill.Score));
+        // if field doesn't exist, add one
+      } else {
+        softSkills[softSkill.Interaction] = [Number(softSkill.Score)];
+      }
+    }
+  }
+  return { projects, quizzes, softSkills };
 }
 
 export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
