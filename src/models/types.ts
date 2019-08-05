@@ -1,3 +1,11 @@
+export interface Aggregation {
+  attemptPass: number;
+  name: string;
+  projects: number;
+  quizzes: number;
+  softSkills: number;
+}
+
 export class Associate {
   active: boolean;
   attendance: Attendance[];
@@ -54,13 +62,6 @@ export class Associate {
   }
 }
 
-export interface AssessmentAggregations {
-  attemptPass: number;
-  projects: RollUps;
-  quizzes: RollUps;
-  softSkills: RollUps;
-}
-
 export interface Attendance {
   date: string;
   type: string;
@@ -106,15 +107,4 @@ export interface Module {
   endDate: string | null;
   startDate: string | null;
   type: string;
-}
-
-export interface Overview {
-  assessmentAggregations: AssessmentAggregations;
-  currentNumberOfAssociates: number;
-  totalNumberOfAssociates: number;
-}
-
-export interface RollUps {
-  average: number;
-  percentile: number;
 }

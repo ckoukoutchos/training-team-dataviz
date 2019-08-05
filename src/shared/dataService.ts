@@ -1,6 +1,6 @@
 import Metadata from './metadata';
 import CONSTS from './constants';
-import { Metric, Cycle, Associate, Module } from '../models/types';
+import { Metric, Cycle, Associate, Module, Aggregation } from '../models/types';
 
 export const calcAllCyclesPercentiles = (cycleAggr: any) => {
   const projectScores: any = [];
@@ -206,30 +206,26 @@ export const calcMetricAvg = (associate: any, metric: any, maxScores: any) => {
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
 }
 
-export const calcAttemptPassRatio = (metrics: any) => {
+export const calcAttemptPassRatio = (metrics: Metric[]) => {
   let attempt = 0;
   let pass = 0;
   for (const metric of metrics) {
+    attempt++;
     if (metric['Interaction Type'] === 'Exercise') {
-      attempt++;
       if (metric.Score === 'Completed' || metric.Score === 'Pass') {
         pass++;
       }
-    } else if (metric['Interaction Type'] === 'Project (Score)') {
-      attempt++;
+    } else {
       // because some peeps don't enter scores right
       if (metric.Score.trim() !== '') {
-        if ((metric.Score / 30) >= 0.9) {
+        if ((Number(metric.Score) / 30) >= 0.9) {
           pass++;
         }
       }
     }
   }
-  if (!(Math.round((pass / attempt) * 100))) {
-    return 0
-  } else {
-    return Math.round((pass / attempt) * 100);
-  }
+  // if zero attempts, return zero
+  return attempt ? Math.round((pass / attempt) * 100) : 0;
 }
 
 export const calcPercentiles = (scores: any, avg: any) => {
@@ -285,32 +281,6 @@ export const sortAttendanceEvents = (metrics: any) => {
     attendance['Cycle Exit'] = date.toISOString();
   }
   return attendance;
-}
-
-export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
-  const associates: any = {};
-
-  for (const metric of metrics) {
-    // ignore training staff and empty Person
-    if (!Metadata.staff.includes(metric.Person) && metric.Person !== '') {
-      // if associate already added, push metric
-      if (associates[metric.Person]) {
-        associates[metric.Person].push(metric);
-      } else {
-        // if field doesn't exist, add one
-        associates[metric.Person] = [metric];
-      }
-    } else {
-      // if cycle already added, push metric
-      if (associates['cycle']) {
-        associates['cycle'].push(metric);
-      } else {
-        // if field doesn't exist, add one
-        associates['cycle'] = [metric];
-      }
-    }
-  }
-  return Object.values(associates);
 }
 
 export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
@@ -445,6 +415,29 @@ export const getUrlParams = (urlHistory: any) => {
   return { url, cycle, associate };
 }
 
+/*
+  experimental
+*/
+
+export const calcAssessmentAvg = (metrics: Metric[], maxScores: any): number => {
+  // return 0 if no metrics were taken
+  if (!metrics.length) {
+    return 0;
+  }
+  // adds up scores of all associate metrics and Max Scores for those metrics
+  const metricAvg = metrics.reduce((acc: any, curr: any) => {
+    return [acc[0] + Number(curr.Score), acc[1] + maxScores[curr.Interaction]['Max Score']];
+  }, [0, 0]);
+  // convert to percent and round to nearest int
+  return Math.round((metricAvg[0] / metricAvg[1]) * 100);
+}
+
+export const calcScoreAvg = (scores: number[]): number => {
+  const total = scores.reduce((acc: number, curr: number) => acc + curr, 0);
+  // if zero attempts, return zero
+  return scores.length ? Math.round(total / scores.length) : 0;
+}
+
 export const formatAssociateData = (metrics: Metric[], cycle: string): Associate => {
   const associate = new Associate();
   associate.name = metrics[0].Person;
@@ -453,6 +446,7 @@ export const formatAssociateData = (metrics: Metric[], cycle: string): Associate
 
   for (const metric of metrics) {
     const type = metric['Interaction Type'];
+    // if a module event, find matching module on Associate object
     const module = associate.modules.find((module: Module) => module.type === metric.Interaction);
 
     switch (type) {
@@ -501,7 +495,7 @@ export const formatAssociateData = (metrics: Metric[], cycle: string): Associate
   return associate;
 }
 
-export const formatCycleData = (metrics: Metric[], associates: Associate[], cycleName: string) => {
+export const formatCycleData = (metrics: Metric[], associates: Associate[], cycleName: string): Cycle => {
   const cycle = new Cycle();
   cycle.name = cycleName;
   cycle.metrics = metrics;
@@ -524,9 +518,84 @@ export const formatCycleData = (metrics: Metric[], associates: Associate[], cycl
         cycle.active = false;
         break;
       case 'Staff Change':
+        if (metric.Interaction === 'Trainer Start') {
+          cycle.trainers.push(metric.Person);
+        } else if (metric.Interaction === 'TA Start') {
+          cycle.TAs.push(metric.Person);
+        }
         break;
       default: break;
     }
   }
   return cycle;
+}
+
+export const getAssociateAggregations = (associates: Associate[]): Aggregation[] => {
+  const aggregations = [];
+  for (const associate of associates) {
+    aggregations.push({
+      attemptPass: calcAttemptPassRatio(associate.exercises.concat(associate.projects)),
+      name: associate.name,
+      projects: calcAssessmentAvg(associate.projects, Metadata['Project (Score)']),
+      quizzes: calcAssessmentAvg(associate.quizzes, Metadata.Quiz),
+      softSkills: calcAssessmentAvg(associate.softSkills, Metadata['Soft Skill Assessment']),
+    });
+  }
+  return aggregations;
+}
+
+export const getCycleAggregations = (associates: Aggregation[], cycleName: string): Aggregation => {
+  const attemptPassScores = [];
+  const projectScores = [];
+  const quizScores = [];
+  const softSkillsScores = [];
+  // grab scores for each assessment type
+  for (const associate of associates) {
+    // if assessment avg is zero, ignore
+    if (associate.attemptPass) {
+      attemptPassScores.push(associate.attemptPass);
+    }
+    if (associate.projects) {
+      projectScores.push(associate.projects);
+    }
+    if (associate.quizzes) {
+      quizScores.push(associate.quizzes);
+    }
+    if (associate.softSkills) {
+      softSkillsScores.push(associate.softSkills);
+    }
+  }
+  return {
+    attemptPass: calcScoreAvg(attemptPassScores),
+    name: cycleName,
+    projects: calcScoreAvg(projectScores),
+    quizzes: calcScoreAvg(quizScores),
+    softSkills: calcScoreAvg(softSkillsScores)
+  }
+}
+
+export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
+  const associates = {};
+
+  for (const metric of metrics) {
+    // ignore training staff and empty Person
+    if (!Metadata.staff.includes(metric.Person) && metric.Person !== '') {
+      // if associate already added, push metric
+      if (associates[metric.Person]) {
+        associates[metric.Person].push(metric);
+      } else {
+        // if field doesn't exist, add one
+        associates[metric.Person] = [metric];
+      }
+    } else {
+      // if cycle already added, push metric
+      if (associates['cycle']) {
+        associates['cycle'].push(metric);
+      } else {
+        // if field doesn't exist, add one
+        associates['cycle'] = [metric];
+      }
+    }
+  }
+  return Object.values(associates);
 }

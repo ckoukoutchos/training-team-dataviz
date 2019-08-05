@@ -2,7 +2,7 @@ import { put, all, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
 import { FETCH_ALL_CYCLES_METRICS, FETCH_CYCLE_METRICS, POST_CYCLE_METRICS } from "../actionTypes";
 import { fetchAllCyclesMetricsSuccess, fetchCycleMetricsSuccess, fetchCycleMetricsFail, postCycleMetricsSuccess, postCycleMetricsFail } from "../actions";
-import { calcAllCyclesPercentiles, calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata, formatAssociateData, getCycleMetrics, formatCycleData } from '../../shared/dataService';
+import { calcAllCyclesPercentiles, calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata, formatAssociateData, getCycleMetrics, formatCycleData, getAssociateAggregations, getCycleAggregations } from '../../shared/dataService';
 
 export default function* watchCycle() {
   yield all([
@@ -45,11 +45,21 @@ const formatCycleDatas = (data, cycleName) => {
   // sort by associate
   const sortedMetrics = sortMetircsByAssociate(data);
 
-  // experimental
+  /* experimental */
+  // pull out cycle specific metrics
   const cycleMetrics = getCycleMetrics(sortedMetrics);
+  // format into Associate objects
   const formattedAssociates = sortedMetrics.map((associate) => formatAssociateData(associate, cycleName));
+  // format into Cycle object
   const formattedCycle = formatCycleData(cycleMetrics, formattedAssociates, cycleName);
-  console.log(formattedCycle);
+  // get associate level aggregations
+  const associateAggregations = getAssociateAggregations(formattedAssociates);
+  // get cycle level aggregations
+  const cycleAggregations = getCycleAggregations(associateAggregations, cycleName);
+  console.log(associateAggregations, cycleAggregations);
+  // get assessment level aggregations
+
+  /* experimental */
 
   // collect associate module metadata
   const associateMetadata = getAssociateMetadata(sortedMetrics);

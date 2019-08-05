@@ -80,7 +80,7 @@ export default {
       Module: 'Logic Layer (Java)'
     }
   },
-  'Quiz': {
+  Quiz: {
     Quiz_Introductory_v1: {
       'Max Score': 17,
       Module: 'Development Basics & Frontend',
