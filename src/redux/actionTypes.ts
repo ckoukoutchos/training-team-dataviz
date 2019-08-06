@@ -1,4 +1,4 @@
-import { Cycle } from '../models/types';
+import { Cycle, CycleAggregation } from '../models/types';
 
 export const FETCH_ALL_CYCLES_METRICS = 'FETCH_ALL_CYCLES_METRICS';
 export const FETCH_ALL_CYCLES_METRICS_SUCCESS = 'FETCH_ALL_CYCLES_METRICS_SUCCESS';
@@ -21,6 +21,8 @@ interface FetchAllCycleMetricsFail {
 
 interface FetchAllCycleMetricsSuccess {
   type: typeof FETCH_ALL_CYCLES_METRICS_SUCCESS;
+  allCycleAggregations: any;
+  cycleAggregations: CycleAggregation[];
   formattedCycles: Cycle[];
 }
 

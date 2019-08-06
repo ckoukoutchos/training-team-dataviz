@@ -428,7 +428,7 @@ export const calcAssessmentAvg = (metrics: Metric[], maxScores: any): number => 
 }
 
 export const calcPercentiles = (scores: number[], avg: number) => {
-  const index = scores.indexOf(avg);
+  const index = scores.findIndex((score: number) => avg <= score);
   return Math.round((index + 1) / scores.length * 100);
 }
 
