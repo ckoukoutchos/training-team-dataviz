@@ -52,7 +52,7 @@ const AssociateInfo = (props: AssociateInfoProps) => {
       <div className={styles.Header}>
         <Typography variant='h3'>{associate.name}</Typography>
         <Typography variant='h6' color='textSecondary'>
-          {associate.cycle}
+          {CONSTS[associate.cycle]}
         </Typography>
       </div>
 

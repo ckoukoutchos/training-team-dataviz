@@ -303,55 +303,27 @@ export const calcAttemptPassRatio = (metrics: Metric[]) => {
   return attempt ? Math.round((pass / attempt) * 100) : 0;
 };
 
-const formatCalendarDate = (date: any) => {
-  const dateSplit = date.split('/');
-  if (dateSplit[0].length === 1) {
-    dateSplit[0] = '0' + dateSplit[0];
-  }
-  if (dateSplit[1].length === 1) {
-    dateSplit[1] = '0' + dateSplit[1];
-  }
-  return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
-};
-
-export const sortAttendanceEvents = (metrics: any) => {
-  const attendance = {
-    events: []
-  };
-  metrics.forEach((event: any) => {
-    // convert to correct date format
-    const newDateFormat = formatCalendarDate(event.Date);
-
-    // set start date
-    if (event['Interaction Type'] === 'Associate Start') {
-      //@ts-ignore
-      attendance[event['Interaction Type']] = newDateFormat;
-
-      // set cycle exit date
-    } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
-      //@ts-ignore
-      attendance['Cycle Exit'] = newDateFormat;
-
-      // set other attendace evts
-    } else if (event['Interaction Type'] === 'Attendance Event') {
-      attendance.events.push({
-        //@ts-ignore
-        day: newDateFormat,
-        //@ts-ignore
-        value: Metadata.attendance[event.Interaction]
-      });
+export const formatCalendarDate = (date: string) => {
+  if (date) {
+    const dateSplit = date.split('/');
+    if (dateSplit[0].length === 1) {
+      dateSplit[0] = '0' + dateSplit[0];
     }
-  });
-
-  // if no cycle exit date, use current
-  //@ts-ignore
-  if (!attendance['Cycle Exit']) {
+    if (dateSplit[1].length === 1) {
+      dateSplit[1] = '0' + dateSplit[1];
+    }
+    return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
+  } else {
     const date = new Date(Date.now());
-    //@ts-ignore
-    attendance['Cycle Exit'] = date.toISOString();
+    return date.toISOString();
   }
-  return attendance;
 };
+
+export const formatAttendanceEvents = (attendance: any) =>
+  attendance.map((event: any) => ({
+    day: formatCalendarDate(event.date),
+    value: Metadata.attendance[event.type]
+  }));
 
 export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
   // find metric array with cycle data
@@ -411,11 +383,6 @@ export const getAssociateMetadata = (data: any) => {
     metadata[associate[0].Person] = person;
   }
   return metadata;
-};
-
-export const getCycle = (array: any, cycleName: string): any => {
-  const item = array.find((item: any) => item.name === cycleName);
-  return item ? item : new Cycle();
 };
 
 export const getCycleAssociateCount = (associates: Associate[]): number[] => {
@@ -664,6 +631,10 @@ export const getAssociateAggregations = (
     });
   }
   return aggregations;
+};
+
+export const getItemInArrayByName = (array: any[], name: string): any => {
+  return array.find((item: any) => item.name === name);;
 };
 
 export const getCycleAssessmentAggregations = (associates: Associate[]) => { };

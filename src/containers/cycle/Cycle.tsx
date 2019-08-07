@@ -11,7 +11,7 @@ import Toggle from '../../components/toggle/Toggle';
 
 import {
   getUrlParams,
-  getCycle,
+  getItemInArrayByName,
   formatPercentile,
   calcPercentiles
 } from '../../shared/dataService';
@@ -112,8 +112,8 @@ class CycleView extends Component<CycleProps, CycleState> {
     } = this.props;
     const { showInactive } = this.state;
     const { url, cycle: cycleName } = getUrlParams(history);
-    const cycle = getCycle(cycles, cycleName);
-    const aggregation = getCycle(cycleAggregations, cycleName);
+    const cycle = getItemInArrayByName(cycles, cycleName);
+    const aggregation = getItemInArrayByName(cycleAggregations, cycleName);
 
     return (
       <div className={styles.Wrapper}>
@@ -123,7 +123,7 @@ class CycleView extends Component<CycleProps, CycleState> {
 
         <RadarGraph
           title='Running Averages of Assessments'
-          subtitle='Including the Max and Min Associate Running Average'
+          subtitle='Compared to Training Average'
           index='avg'
           data={[
             {
@@ -190,8 +190,9 @@ class CycleView extends Component<CycleProps, CycleState> {
                 render: (rowData: any) => (
                   <AssociateInfo
                     bodyOnly
-                    associate={cycle.associates.find(
-                      (associate: Associate) => associate.name === rowData.name
+                    associate={getItemInArrayByName(
+                      cycle.associates,
+                      rowData.name
                     )}
                   />
                 )
@@ -202,13 +203,11 @@ class CycleView extends Component<CycleProps, CycleState> {
                 icon: 'search',
                 tooltip: 'View Associate',
                 onClick: (event, rowData) => {
-                  if (rowData.name !== cycle) {
-                    this.props.history.push(
-                      `/cycle/${cycle}/associate/${rowData.name
-                        .split(' ')
-                        .join('-')}`
-                    );
-                  }
+                  this.props.history.push(
+                    `/cycle/${cycleName}/associate/${rowData.name
+                      .split(' ')
+                      .join('-')}`
+                  );
                 }
               }
             ]}

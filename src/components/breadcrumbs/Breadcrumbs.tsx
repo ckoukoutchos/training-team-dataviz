@@ -4,29 +4,42 @@ import { Breadcrumbs, Paper, Typography } from '@material-ui/core';
 import CONSTS from '../../shared/constants';
 import styles from './Breadcrumbs.module.css';
 
-const breadcrumbs = props => {
+interface BreadcrumbsProps {
+  path: string;
+}
+
+const breadcrumbs = (props: BreadcrumbsProps) => {
   const { path } = props;
 
   return (
-    <Paper className={path.length === 5 ? styles.BreadcrumbsLong : styles.BreadcrumbsShort}>
-      {path.length === 5 ?
+    <Paper
+      className={
+        path.length === 5 ? styles.BreadcrumbsLong : styles.BreadcrumbsShort
+      }
+    >
+      {path.length === 5 ? (
         <Breadcrumbs separator='›' aria-label='Breadcrumb'>
           <Link to='/cycle' className={styles.Link}>
             Cycles
           </Link>
+
           <Link to={'/cycle/' + path[2]} className={styles.Link}>
             {CONSTS[path[2]]}
           </Link>
+
           <Typography color='textPrimary'>{path[4]}</Typography>
         </Breadcrumbs>
-        : <Breadcrumbs separator='›' aria-label='Breadcrumb'>
+      ) : (
+        <Breadcrumbs separator='›' aria-label='Breadcrumb'>
           <Link to='/cycle' className={styles.Link}>
             Cycles
-            </Link>
+          </Link>
+
           <Typography color='textPrimary'>{CONSTS[path[2]]}</Typography>
-        </Breadcrumbs>}
+        </Breadcrumbs>
+      )}
     </Paper>
   );
-}
+};
 
 export default breadcrumbs;

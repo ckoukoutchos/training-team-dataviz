@@ -10,7 +10,7 @@ import { fetchAllCyclesMetrics } from '../../redux/actions';
 import {
   calcPercentiles,
   formatPercentile,
-  getCycle
+  getItemInArrayByName
 } from '../../shared/dataService';
 import styles from './Cycles.module.css';
 import CONSTS from '../../shared/constants';
@@ -81,7 +81,10 @@ class Cycles extends Component<CyclesProps> {
             {
               tooltip: 'Show Details',
               render: rowData => {
-                const cycle = getCycle(cycles, CONSTS[rowData.name]);
+                const cycle = getItemInArrayByName(
+                  cycles,
+                  CONSTS[rowData.name]
+                );
                 return (
                   <CycleInfo bodyOnly cycleName={rowData.name} cycle={cycle} />
                 );
