@@ -7,7 +7,11 @@ import MaterialTable from 'material-table';
 import { AppState } from '../../redux/reducers/rootReducer';
 import { ActionTypes } from '../../redux/actionTypes';
 import { fetchAllCyclesMetrics } from '../../redux/actions';
-import { calcPercentiles, formatPercentile } from '../../shared/dataService';
+import {
+  calcPercentiles,
+  formatPercentile,
+  getCycle
+} from '../../shared/dataService';
 import styles from './Cycles.module.css';
 import CONSTS from '../../shared/constants';
 import { CycleAggregation, Cycle } from '../../models/types';
@@ -16,7 +20,7 @@ import CycleInfo from '../../components/cycle-info/CycleInfo';
 
 interface CyclesProps {
   allCycleAggregations: any;
-  aggregations: CycleAggregation[];
+  cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
   history: History;
   fetchAllCycles: () => ActionTypes;
@@ -24,21 +28,18 @@ interface CyclesProps {
 
 class Cycles extends Component<CyclesProps> {
   componentDidMount() {
-    console.log(
-      'all aggs',
-      this.props.allCycleAggregations,
-      'some aggs',
-      this.props.aggregations,
-      'cycles',
-      this.props.cycles
-    );
-    if (!this.props.aggregations.length) {
+    if (!this.props.cycleAggregations.length) {
       this.props.fetchAllCycles();
     }
   }
 
   render() {
-    const { allCycleAggregations, aggregations, cycles, history } = this.props;
+    const {
+      allCycleAggregations,
+      cycleAggregations,
+      cycles,
+      history
+    } = this.props;
 
     return (
       <div className={styles.Paper}>
@@ -50,7 +51,7 @@ class Cycles extends Component<CyclesProps> {
             { title: 'Quizzes', field: 'quizAvg' },
             { title: 'Soft Skills', field: 'softSkillsAvg' }
           ]}
-          data={aggregations.map((aggregation: CycleAggregation) => ({
+          data={cycleAggregations.map((aggregation: CycleAggregation) => ({
             name: CONSTS[aggregation.name],
             projectAvg: `${aggregation.projects}% / ${formatPercentile(
               calcPercentiles(
@@ -80,15 +81,9 @@ class Cycles extends Component<CyclesProps> {
             {
               tooltip: 'Show Details',
               render: rowData => {
-                const cycle = cycles.find(
-                  (cycle: Cycle) => cycle.name === CONSTS[rowData.name]
-                );
+                const cycle = getCycle(cycles, CONSTS[rowData.name]);
                 return (
-                  <CycleInfo
-                    bodyOnly
-                    cycleName={rowData.name}
-                    cycle={cycle ? cycle : new Cycle()}
-                  />
+                  <CycleInfo bodyOnly cycleName={rowData.name} cycle={cycle} />
                 );
               }
             }
@@ -98,7 +93,7 @@ class Cycles extends Component<CyclesProps> {
               icon: 'search',
               tooltip: 'View Cycle',
               onClick: (event, rowData) => {
-                history.push(`/cycle/${rowData.name}`);
+                history.push(`/cycle/${CONSTS[rowData.name]}`);
               }
             }
           ]}
@@ -110,7 +105,7 @@ class Cycles extends Component<CyclesProps> {
 
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
-  aggregations: state.metrics.aggregations,
+  cycleAggregations: state.metrics.cycleAggregations,
   cycles: state.metrics.cycles
 });
 

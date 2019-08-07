@@ -38,4 +38,4 @@ export default {
   'Traditional Cycle Boston June 2019': 'tradBostonJune2019',
   tradBaltimoreJuly2019: 'Traditional Cycle Baltimore July 2019',
   'Traditional Cycle Baltimore July 2019': 'tradBaltimoreJuly2019'
-}
+};

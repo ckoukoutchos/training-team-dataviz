@@ -4,13 +4,17 @@ import styles from './CycleInfo.module.css';
 import { Cycle } from '../../models/types';
 
 interface CycleInfoProps {
-  bodyOnly: boolean;
+  bodyOnly?: boolean;
   cycleName: string;
   cycle: Cycle;
 }
 
 const CycleInfo = (props: CycleInfoProps) => {
   const { bodyOnly, cycleName, cycle } = props;
+  const formattedName = cycleName
+    .split(' ')
+    .slice(2)
+    .join(' ');
 
   const infoBody = (
     <div className={styles.BodyOnly}>
@@ -55,10 +59,10 @@ const CycleInfo = (props: CycleInfoProps) => {
   ) : (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h3'>{cycleName}</Typography>
+        <Typography variant='h3'>{formattedName}</Typography>
 
         <Typography variant='h6' color='textSecondary'>
-          Mastery Learning
+          {cycle.type}
         </Typography>
       </div>
 

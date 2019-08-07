@@ -3,26 +3,30 @@ import { Cycle, CycleAggregation } from '../../models/types';
 
 interface MetricsState {
   allCycleAggregations: any;
-  aggregations: CycleAggregation[],
-  cycles: Cycle[]
+  cycleAggregations: CycleAggregation[];
+  cycles: Cycle[];
 }
 
 const initalState = {
   allCycleAggregations: [],
-  aggregations: [],
+  cycleAggregations: [],
   cycles: []
 };
 
-const metricsReducer = (state: MetricsState = initalState, action: ActionTypes): MetricsState => {
+const metricsReducer = (
+  state: MetricsState = initalState,
+  action: ActionTypes
+): MetricsState => {
   switch (action.type) {
     case FETCH_ALL_CYCLES_METRICS_SUCCESS:
       return {
         allCycleAggregations: action.allCycleAggregations,
-        aggregations: action.cycleAggregations,
+        cycleAggregations: action.cycleAggregations,
         cycles: action.formattedCycles
       };
-    default: return state;
+    default:
+      return state;
   }
-}
+};
 
 export default metricsReducer;

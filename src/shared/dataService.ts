@@ -1,6 +1,31 @@
 import Metadata from './metadata';
 import CONSTS from './constants';
-import { Metric, Cycle, Associate, Module, Aggregation, CycleAggregation } from '../models/types';
+import {
+  Metric,
+  Cycle,
+  Associate,
+  Module,
+  Aggregation,
+  CycleAggregation
+} from '../models/types';
+
+export const getAssessmentTableData = (
+  name: any,
+  values: any,
+  allCycleAggr: any
+) => ({
+  name,
+  projectAvg: `${values.projectAvg}% / ${formatPercentile(
+    calcPercentiles(allCycleAggr.projectScores, values.projectAvg)
+  )}`,
+  quizAvg: `${values.quizAvg}% / ${formatPercentile(
+    calcPercentiles(allCycleAggr.quizScores, values.quizAvg)
+  )}`,
+  softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(
+    calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg)
+  )}`,
+  attemptPass: values.attemptPass + '%'
+});
 
 export const calcAllCyclesPercentiles = (cycleAggr: any) => {
   const projectScores: any = [];
@@ -18,17 +43,24 @@ export const calcAllCyclesPercentiles = (cycleAggr: any) => {
   quizScores.sort((a: number, b: number) => a - b);
   softSkillsScores.sort((a: number, b: number) => a - b);
   // calc percentiles for each
-  const projectPercentiles = CONSTS.percentiles.map(perc =>
-    projectScores[Math.round(projectScores.length * perc)]
+  const projectPercentiles = CONSTS.percentiles.map(
+    perc => projectScores[Math.round(projectScores.length * perc)]
   );
-  const quizPercentiles = CONSTS.percentiles.map(perc =>
-    quizScores[Math.round(quizScores.length * perc)]
+  const quizPercentiles = CONSTS.percentiles.map(
+    perc => quizScores[Math.round(quizScores.length * perc)]
   );
-  const softSkillsPercentiles = CONSTS.percentiles.map(perc =>
-    softSkillsScores[Math.round(softSkillsScores.length * perc)]
+  const softSkillsPercentiles = CONSTS.percentiles.map(
+    perc => softSkillsScores[Math.round(softSkillsScores.length * perc)]
   );
-  return { projectPercentiles, projectScores, quizPercentiles, quizScores, softSkillsPercentiles, softSkillsScores };
-}
+  return {
+    projectPercentiles,
+    projectScores,
+    quizPercentiles,
+    quizScores,
+    softSkillsPercentiles,
+    softSkillsScores
+  };
+};
 
 export const calcAssociateAggr = (associates: any) => {
   const avgs = {};
@@ -36,13 +68,21 @@ export const calcAssociateAggr = (associates: any) => {
     //@ts-ignore
     avgs[associate[0].Person] = {
       attemptPass: calcAttemptPassRatio(associate),
-      projectAvg: calcMetricAvg(associate, CONSTS.projectScore, Metadata['Project (Score)']),
+      projectAvg: calcMetricAvg(
+        associate,
+        CONSTS.projectScore,
+        Metadata['Project (Score)']
+      ),
       quizAvg: calcMetricAvg(associate, CONSTS.quiz, Metadata.Quiz),
-      softSkillsAvg: calcMetricAvg(associate, CONSTS.softSkills, Metadata['Soft Skill Assessment'])
+      softSkillsAvg: calcMetricAvg(
+        associate,
+        CONSTS.softSkills,
+        Metadata['Soft Skill Assessment']
+      )
     };
   });
   return avgs;
-}
+};
 
 export const calcCycleAggr = (associates: any) => {
   let attemptAvg = 0;
@@ -87,31 +127,43 @@ export const calcCycleAggr = (associates: any) => {
     if (associates[associate].attemptPass > attemptMax) {
       attemptMax = associates[associate].attemptPass;
     }
-    if (associates[associate].attemptPass < attemptMin && associates[associate].attemptPass !== 0) {
+    if (
+      associates[associate].attemptPass < attemptMin &&
+      associates[associate].attemptPass !== 0
+    ) {
       attemptMin = associates[associate].attemptPass;
     }
     //project max/min
     if (associates[associate].projectAvg > projectMax) {
       projectMax = associates[associate].projectAvg;
     }
-    if (associates[associate].projectAvg < projectMin && associates[associate].projectAvg !== 0) {
+    if (
+      associates[associate].projectAvg < projectMin &&
+      associates[associate].projectAvg !== 0
+    ) {
       projectMin = associates[associate].projectAvg;
     }
     // quiz max/min
     if (associates[associate].quizAvg > quizMax) {
       quizMax = associates[associate].quizAvg;
     }
-    if (associates[associate].quizAvg < quizMin && associates[associate].quizAvg !== 0) {
+    if (
+      associates[associate].quizAvg < quizMin &&
+      associates[associate].quizAvg !== 0
+    ) {
       quizMin = associates[associate].quizAvg;
     }
     // soft skills max/min
     if (associates[associate].softSkillsAvg > softSkillsMax) {
       softSkillsMax = associates[associate].softSkillsAvg;
     }
-    if (associates[associate].softSkillsAvg < softSkillsMin && associates[associate].softSkillsAvg !== 0) {
+    if (
+      associates[associate].softSkillsAvg < softSkillsMin &&
+      associates[associate].softSkillsAvg !== 0
+    ) {
       softSkillsMin = associates[associate].softSkillsAvg;
     }
-  };
+  }
 
   return {
     attemptAvg: numAttempts === 0 ? 0 : Math.round(attemptAvg / numAttempts),
@@ -125,21 +177,32 @@ export const calcCycleAggr = (associates: any) => {
     quizMin,
     softSkillsMax,
     softSkillsMin,
-    softSkillsAvg: numSoftSkills === 0 ? 0 : Math.round(softSkillsAvg / numSoftSkills)
-  }
-}
+    softSkillsAvg:
+      numSoftSkills === 0 ? 0 : Math.round(softSkillsAvg / numSoftSkills)
+  };
+};
 
 export const calcDaysSince = (startDate: any, endDate?: any) => {
   // format as Date object
   const startDateSplit = startDate.split('/');
-  //@ts-ignore
-  const startDateObj = new Date('20' + startDateSplit[2], startDateSplit[0] - 1, startDateSplit[1]);
+
+  const startDateObj = new Date(
+    //@ts-ignore
+    '20' + startDateSplit[2],
+    startDateSplit[0] - 1,
+    startDateSplit[1]
+  );
 
   if (endDate) {
     // if end date provided, format as Date object and calc time btw start and end
     const endDateSplit = endDate.split('/');
-    //@ts-ignore
-    const endDateObj = new Date('20' + endDateSplit[2], endDateSplit[0] - 1, endDateSplit[1]);
+
+    const endDateObj = new Date(
+      //@ts-ignore
+      '20' + endDateSplit[2],
+      endDateSplit[0] - 1,
+      endDateSplit[1]
+    );
     const cycleLength = (endDateObj - startDateObj) / 86400000;
     return Math.round(cycleLength);
   } else {
@@ -147,7 +210,7 @@ export const calcDaysSince = (startDate: any, endDate?: any) => {
     const daysSinceStart = (Date.now() - startDateObj) / 86400000;
     return Math.round(daysSinceStart);
   }
-}
+};
 
 export const calcDateMarkers = (metadata: any) => {
   const startDate = metadata['Associate Start'];
@@ -157,21 +220,25 @@ export const calcDateMarkers = (metadata: any) => {
     }
     return 0;
   });
-}
+};
 
 export const calcModuleLength = (metadata: any) => {
   let prevTotal = 0;
   const moduleLengths: any = [];
   const ranges = Metadata.modules.map(modules => {
     if (metadata[modules].start && metadata[modules].end) {
-      const days = Math.round(calcDaysSince(metadata[modules].start, metadata[modules].end));
+      const days = Math.round(
+        calcDaysSince(metadata[modules].start, metadata[modules].end)
+      );
       moduleLengths.push(days);
       const range = days + prevTotal;
       prevTotal = range;
       return range;
     } else if (metadata[modules].start) {
       if (metadata['Cycle Exit']) {
-        const days = Math.round(calcDaysSince(metadata[modules].start, metadata['Cycle Exit']));
+        const days = Math.round(
+          calcDaysSince(metadata[modules].start, metadata['Cycle Exit'])
+        );
         moduleLengths.push(days);
         const range = days + prevTotal;
         return range;
@@ -187,10 +254,12 @@ export const calcModuleLength = (metadata: any) => {
     }
   });
   return { moduleLengths, ranges };
-}
+};
 
 export const calcMetricAvg = (associate: any, metric: any, maxScores: any) => {
-  const metrics = associate.filter((event: any) => event['Interaction Type'] === metric);
+  const metrics = associate.filter(
+    (event: any) => event['Interaction Type'] === metric
+  );
 
   // return 0 if no metrics were taken
   if (!metrics.length) {
@@ -198,13 +267,19 @@ export const calcMetricAvg = (associate: any, metric: any, maxScores: any) => {
   }
 
   // adds up scores of all associate metrics and Max Scores for those metrics
-  const metricAvg = metrics.reduce((acc: any, curr: any) => {
-    return [acc[0] + Number(curr.Score), acc[1] + maxScores[curr.Interaction]['Max Score']];
-  }, [0, 0]);
+  const metricAvg = metrics.reduce(
+    (acc: any, curr: any) => {
+      return [
+        acc[0] + Number(curr.Score),
+        acc[1] + maxScores[curr.Interaction]['Max Score']
+      ];
+    },
+    [0, 0]
+  );
 
   // convert to percent and round to nearest int
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
-}
+};
 
 export const calcAttemptPassRatio = (metrics: Metric[]) => {
   let attempt = 0;
@@ -218,7 +293,7 @@ export const calcAttemptPassRatio = (metrics: Metric[]) => {
     } else {
       // because some peeps don't enter scores right
       if (metric.Score.trim() !== '') {
-        if ((Number(metric.Score) / 30) >= 0.9) {
+        if (Number(metric.Score) / 30 >= 0.9) {
           pass++;
         }
       }
@@ -226,7 +301,7 @@ export const calcAttemptPassRatio = (metrics: Metric[]) => {
   }
   // if zero attempts, return zero
   return attempt ? Math.round((pass / attempt) * 100) : 0;
-}
+};
 
 const formatCalendarDate = (date: any) => {
   const dateSplit = date.split('/');
@@ -237,7 +312,7 @@ const formatCalendarDate = (date: any) => {
     dateSplit[1] = '0' + dateSplit[1];
   }
   return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
-}
+};
 
 export const sortAttendanceEvents = (metrics: any) => {
   const attendance = {
@@ -264,7 +339,7 @@ export const sortAttendanceEvents = (metrics: any) => {
         day: newDateFormat,
         //@ts-ignore
         value: Metadata.attendance[event.Interaction]
-      })
+      });
     }
   });
 
@@ -276,14 +351,17 @@ export const sortAttendanceEvents = (metrics: any) => {
     attendance['Cycle Exit'] = date.toISOString();
   }
   return attendance;
-}
+};
 
 export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
   // find metric array with cycle data
-  const index = metrics.findIndex((metrics) => Metadata.staff.includes(metrics[0].Person) || metrics[0].Person === '');
+  const index = metrics.findIndex(
+    metrics =>
+      Metadata.staff.includes(metrics[0].Person) || metrics[0].Person === ''
+  );
   // remove from associate metrics array and return it
   return metrics.splice(index, 1)[0];
-}
+};
 
 export const getAssociateMetadata = (data: any) => {
   const metadata = {};
@@ -333,18 +411,28 @@ export const getAssociateMetadata = (data: any) => {
     metadata[associate[0].Person] = person;
   }
   return metadata;
-}
+};
+
+export const getCycle = (array: any, cycleName: string): any => {
+  const item = array.find((item: any) => item.name === cycleName);
+  return item ? item : new Cycle();
+};
 
 export const getCycleAssociateCount = (associates: Associate[]): number[] => {
-  const activeCount = associates.filter((associate: Associate) => !associate.endDate);
+  const activeCount = associates.filter(
+    (associate: Associate) => !associate.endDate
+  );
   return [associates.length, activeCount.length];
-}
+};
 
 export const getCycleMetadata = (data: any) => {
   const metadata = {};
   data.forEach((event: any) => {
     // check for interaction type
-    if (Metadata.cycleMetadate.includes(event['Interaction Type']) || RegExp('Cycle Exit').test(event['Interaction Type'])) {
+    if (
+      Metadata.cycleMetadate.includes(event['Interaction Type']) ||
+      RegExp('Cycle Exit').test(event['Interaction Type'])
+    ) {
       // because our data entry is wonky
       let field;
       if (event.Interaction === '') {
@@ -352,7 +440,7 @@ export const getCycleMetadata = (data: any) => {
       } else if (RegExp('Cycle Exit').test(event['Interaction Type'])) {
         field = 'Associate Leave';
       } else {
-        field = event.Interaction
+        field = event.Interaction;
       }
       // if not already a field, create one
       //@ts-ignore
@@ -378,7 +466,7 @@ export const getCycleMetadata = (data: any) => {
     }
   });
   return metadata;
-}
+};
 
 export const formatPercentile = (percentile: any) => {
   if (percentile % 10 === 1) {
@@ -390,15 +478,7 @@ export const formatPercentile = (percentile: any) => {
   } else {
     return percentile + 'th';
   }
-}
-
-export const getAssessmentTableData = (name: any, values: any, allCycleAggr: any) => ({
-  name,
-  projectAvg: `${values.projectAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.projectScores, values.projectAvg))}`,
-  quizAvg: `${values.quizAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.quizScores, values.quizAvg))}`,
-  softSkillsAvg: `${values.softSkillsAvg}% / ${formatPercentile(calcPercentiles(allCycleAggr.softSkillsScores, values.softSkillsAvg))}`,
-  attemptPass: values.attemptPass + '%'
-});
+};
 
 export const getUrlParams = (urlHistory: any) => {
   const url = urlHistory.location.pathname.split('/');
@@ -408,41 +488,59 @@ export const getUrlParams = (urlHistory: any) => {
   const cycle = url[2];
 
   return { url, cycle, associate };
-}
+};
 
 /*
   experimental
 */
 
-export const calcAssessmentAvg = (metrics: Metric[], maxScores: any): number => {
+export const calcAssessmentAvg = (
+  metrics: Metric[],
+  maxScores: any
+): number => {
   // return 0 if no metrics were taken
   if (!metrics.length) {
     return 0;
   }
   // adds up scores of all associate metrics and Max Scores for those metrics
-  const metricAvg = metrics.reduce((acc: any, curr: any) => {
-    return [acc[0] + Number(curr.Score), acc[1] + maxScores[curr.Interaction]['Max Score']];
-  }, [0, 0]);
+  const metricAvg = metrics.reduce(
+    (acc: any, curr: any) => {
+      return [
+        acc[0] + Number(curr.Score),
+        acc[1] + maxScores[curr.Interaction]['Max Score']
+      ];
+    },
+    [0, 0]
+  );
   // convert to percent and round to nearest int
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
-}
+};
 
 export const calcPercentiles = (scores: number[], avg: number) => {
   const index = scores.findIndex((score: number) => avg <= score);
-  return Math.round((index + 1) / scores.length * 100);
-}
+  return Math.round(((index + 1) / scores.length) * 100);
+};
 
 export const calcScoreAvg = (scores: number[]): number => {
   const total = scores.reduce((acc: number, curr: number) => acc + curr, 0);
   // if zero attempts, return zero
   return scores.length ? Math.round(total / scores.length) : 0;
-}
+};
 
-export const combineScores = (cycles: CycleAggregation[], type: string): number[] => {
-  return cycles.reduce((acc: number[], curr: CycleAggregation) => acc.concat(curr[type]), []);
-}
+export const combineScores = (
+  cycles: CycleAggregation[],
+  type: string
+): number[] => {
+  return cycles.reduce(
+    (acc: number[], curr: CycleAggregation) => acc.concat(curr[type]),
+    []
+  );
+};
 
-export const formatAssociateData = (metrics: Metric[], cycle: string): Associate => {
+export const formatAssociateData = (
+  metrics: Metric[],
+  cycle: string
+): Associate => {
   const associate = new Associate();
   associate.name = metrics[0].Person;
   associate.cycle = cycle;
@@ -451,12 +549,14 @@ export const formatAssociateData = (metrics: Metric[], cycle: string): Associate
   for (const metric of metrics) {
     const type = metric['Interaction Type'];
     // if a module event, find matching module on Associate object
-    const module = associate.modules.find((module: Module) => module.type === metric.Interaction);
+    const module = associate.modules.find(
+      (module: Module) => module.type === metric.Interaction
+    );
 
     switch (type) {
       case 'Module Completed':
         if (module) {
-          module.endDate = metric.Date
+          module.endDate = metric.Date;
         }
         break;
       case 'Module Started':
@@ -487,21 +587,28 @@ export const formatAssociateData = (metrics: Metric[], cycle: string): Associate
       case 'Soft Skill Assessment':
         associate.softSkills.push(metric);
         break;
-      default: break;
+      default:
+        break;
     }
     // multiple exit types, boolean check simpler than cases
     if (RegExp('Cycle Exit').test(type)) {
       associate.active = false;
       associate['endDate'] = metric.Date;
-      associate.exitReason = metric.Interaction;
+      // Interaction for graduates is empty string
+      associate.exitReason = metric.Interaction ? metric.Interaction : 'Graduated';
     }
   }
   return associate;
-}
+};
 
-export const formatCycleData = (metrics: Metric[], associates: Associate[], cycleName: string): Cycle => {
+export const formatCycleData = (
+  metrics: Metric[],
+  associates: Associate[],
+  cycleName: string
+): Cycle => {
   const cycle = new Cycle();
   cycle.name = cycleName;
+  cycle.type = cycleName[0] === 'm' ? 'Mastery Learning' : 'Traditional Cycle';
   cycle.metrics = metrics;
   cycle.associates = associates;
 
@@ -528,31 +635,43 @@ export const formatCycleData = (metrics: Metric[], associates: Associate[], cycl
           cycle.TAs.push(metric.Person);
         }
         break;
-      default: break;
+      default:
+        break;
     }
   }
   return cycle;
-}
+};
 
-export const getAssociateAggregations = (associates: Associate[]): Aggregation[] => {
+export const getAssociateAggregations = (
+  associates: Associate[]
+): Aggregation[] => {
   const aggregations = [];
   for (const associate of associates) {
     aggregations.push({
-      attemptPass: calcAttemptPassRatio(associate.exercises.concat(associate.projects)),
+      attemptPass: calcAttemptPassRatio(
+        associate.exercises.concat(associate.projects)
+      ),
       name: associate.name,
-      projects: calcAssessmentAvg(associate.projects, Metadata['Project (Score)']),
+      projects: calcAssessmentAvg(
+        associate.projects,
+        Metadata['Project (Score)']
+      ),
       quizzes: calcAssessmentAvg(associate.quizzes, Metadata.Quiz),
-      softSkills: calcAssessmentAvg(associate.softSkills, Metadata['Soft Skill Assessment']),
+      softSkills: calcAssessmentAvg(
+        associate.softSkills,
+        Metadata['Soft Skill Assessment']
+      )
     });
   }
   return aggregations;
-}
+};
 
-export const getCycleAssessmentAggregations = (associates: Associate[]) => {
+export const getCycleAssessmentAggregations = (associates: Associate[]) => { };
 
-}
-
-export const getCycleAggregations = (associates: Aggregation[], cycleName: string): CycleAggregation => {
+export const getCycleAggregations = (
+  associates: Aggregation[],
+  cycleName: string
+): CycleAggregation => {
   const attemptPassScores = [];
   const projectScores = [];
   const quizScores = [];
@@ -583,9 +702,9 @@ export const getCycleAggregations = (associates: Aggregation[], cycleName: strin
     quizzes: calcScoreAvg(quizScores),
     quizScores: quizScores.sort((a: number, b: number) => a - b),
     softSkills: calcScoreAvg(softSkillsScores),
-    softSkillsScores: softSkillsScores.sort((a: number, b: number) => a - b),
-  }
-}
+    softSkillsScores: softSkillsScores.sort((a: number, b: number) => a - b)
+  };
+};
 
 export const getAllCyclesAggregations = (cycles: CycleAggregation[]) => {
   const attemptPassScores = combineScores(cycles, 'attemptPassScores');
@@ -602,9 +721,9 @@ export const getAllCyclesAggregations = (cycles: CycleAggregation[]) => {
     quizzes: calcScoreAvg(quizScores),
     quizScores: quizScores.sort((a: number, b: number) => a - b),
     softSkills: calcScoreAvg(softSkillsScores),
-    softSkillsScores: softSkillsScores.sort((a: number, b: number) => a - b),
-  }
-}
+    softSkillsScores: softSkillsScores.sort((a: number, b: number) => a - b)
+  };
+};
 
 export const sortMetricsByAssessment = (associates: Associate[]) => {
   const projects = {};
@@ -644,7 +763,7 @@ export const sortMetricsByAssessment = (associates: Associate[]) => {
     }
   }
   return { projects, quizzes, softSkills };
-}
+};
 
 export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
   const associates = {};
@@ -670,4 +789,4 @@ export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
     }
   }
   return Object.values(associates);
-}
+};
