@@ -3,11 +3,11 @@ import {
   FETCH_ALL_CYCLES_METRICS_SUCCESS,
   FETCH_ALL_CYCLES_METRICS_FAIL,
   POST_CYCLE_METRICS,
-  POST_CYCLE_METRICS_SUCCESS,
   POST_CYCLE_METRICS_FAIL,
   RESET_ERROR,
   ActionTypes
 } from './actionTypes';
+import { History } from 'history';
 import { CycleAggregation, Cycle } from '../models/types';
 
 export const fetchAllCyclesMetrics = (): ActionTypes => ({
@@ -40,15 +40,6 @@ export const postCycleMetrics = (
   cycleName,
   history
 });
-
-// export const postCycleMetricsSuccess = (cycleAggr, cycleMetadata, associateMetadata, cycleMetrics, cycleName): ActionTypes => ({
-//     type: POST_CYCLE_METRICS_SUCCESS,
-//     cycleAggr,
-//     cycleMetadata,
-//     associateMetadata,
-//     cycleMetrics,
-//     cycleName
-// });
 
 export const postCycleMetricsFail = (error: any): ActionTypes => ({
   type: POST_CYCLE_METRICS_FAIL,

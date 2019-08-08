@@ -3,7 +3,8 @@ import axios from 'axios';
 import { FETCH_ALL_CYCLES_METRICS, POST_CYCLE_METRICS } from '../actionTypes';
 import {
   fetchAllCyclesMetricsSuccess,
-  fetchAllCyclesMetricsFail
+  fetchAllCyclesMetricsFail,
+  postCycleMetricsFail
 } from '../actions';
 import {
   sortMetircsByAssociate,
@@ -17,8 +18,8 @@ import {
 
 export default function* watchCycle() {
   yield all([
-    takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics)
-    // takeEvery(POST_CYCLE_METRICS, postCycleMetrics)
+    takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics),
+    takeEvery(POST_CYCLE_METRICS, postCycleMetrics)
   ]);
 }
 
@@ -43,15 +44,15 @@ function* fetchAllCyclesMetrics() {
   }
 }
 
-// function* postCycleMetrics({ formData, cycleName, history }) {
-//   try {
-//     const res = yield axios.post('/api/' + cycleName, formData);
-//     yield put(postCycleMetricsSuccess(formatCycleDatas(res.data, cycleName)));
-//     history.push('/cycle')
-//   } catch (err) {
-//     yield put(postCycleMetricsFail(err));
-//   }
-// }
+function* postCycleMetrics({ formData, cycleName, history }) {
+  try {
+    yield axios.post('/api/' + cycleName, formData);
+    yield fetchAllCyclesMetrics();
+    history.push('/');
+  } catch (err) {
+    yield put(postCycleMetricsFail(err));
+  }
+}
 
 const getCycleData = (data, cycleName) => {
   // sort by associate
@@ -97,7 +98,6 @@ const formatAllCycleData = (data, cycles) => {
     formattedCycles.push(formattedCycle);
   }
   const allCycleAggregations = getAllCyclesAggregations(cycleAggregations);
-  // console.log('allCycle', allCycleAggregations);
 
   return { allCycleAggregations, cycleAggregations, formattedCycles };
 };

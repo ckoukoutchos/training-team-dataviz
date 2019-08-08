@@ -142,25 +142,25 @@ class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
       <Paper className={styles.Paper}>
         <div className={styles.Header}>
           <Typography variant='h4'>{title}</Typography>
-          {subtitle ? (
+          {subtitle && (
             <Typography variant='subtitle1' color='textSecondary'>
               {subtitle}
             </Typography>
-          ) : null}
+          )}
         </div>
 
         <div className={styles.Divider}>
           <Divider />
         </div>
 
-        {!traditional ? (
+        {!traditional && (
           <Toggle
             checked={showModules}
             onChange={this.toggleHandler}
             leftLabel='Overview'
             rightLabel='Per Module'
           />
-        ) : null}
+        )}
 
         {traditional
           ? this.createTradCycleGraph(associate)

@@ -49,7 +49,7 @@ class App extends Component<AppProps> {
                 component={Associate}
               />
               <Route path='/upload' exact component={Upload} />
-              <Route path='/' component={Cycles} />
+              <Route path='/' component={Overview} />
             </Switch>
           </main>
         )}

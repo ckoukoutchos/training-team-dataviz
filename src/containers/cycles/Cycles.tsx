@@ -27,12 +27,6 @@ interface CyclesProps {
 }
 
 class Cycles extends Component<CyclesProps> {
-  componentDidMount() {
-    if (!this.props.cycleAggregations.length) {
-      this.props.fetchAllCycles();
-    }
-  }
-
   render() {
     const {
       allCycleAggregations,

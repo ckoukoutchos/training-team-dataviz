@@ -95,10 +95,6 @@ class CycleView extends Component<CycleProps, CycleState> {
       }
     });
 
-  handleChange = (name: string) => (evt: any) => {
-    this.setState({ [name]: evt.target.checked });
-  };
-
   toggleHandler = () => {
     this.setState(prevState => ({ showInactive: !prevState.showInactive }));
   };

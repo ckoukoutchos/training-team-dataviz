@@ -1,4 +1,5 @@
 import { Cycle, CycleAggregation } from '../models/types';
+import { History } from 'history';
 
 export const FETCH_ALL_CYCLES_METRICS = 'FETCH_ALL_CYCLES_METRICS';
 export const FETCH_ALL_CYCLES_METRICS_SUCCESS =
@@ -6,7 +7,6 @@ export const FETCH_ALL_CYCLES_METRICS_SUCCESS =
 export const FETCH_ALL_CYCLES_METRICS_FAIL = 'FETCH_ALL_CYCLES_METRICS_FAIL';
 
 export const POST_CYCLE_METRICS = 'POST_CYCLE_METRICS';
-export const POST_CYCLE_METRICS_SUCCESS = 'POST_CYCLE_METRICS_SUCCESS';
 export const POST_CYCLE_METRICS_FAIL = 'POST_CYCLE_METRICS_FAIL';
 
 export const RESET_ERROR = 'RESET_ERROR;';
@@ -39,10 +39,6 @@ interface PostCycleMetricsFail {
   error: any;
 }
 
-interface PostCycleMetricsSuccess {
-  type: typeof POST_CYCLE_METRICS_SUCCESS;
-}
-
 interface ResetError {
   type: typeof RESET_ERROR;
 }
@@ -53,5 +49,4 @@ export type ActionTypes =
   | FetchAllCycleMetricsSuccess
   | PostCycleMetrics
   | PostCycleMetricsFail
-  | PostCycleMetricsSuccess
   | ResetError;

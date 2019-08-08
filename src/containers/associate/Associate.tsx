@@ -39,7 +39,7 @@ class AssociateView extends Component<AssociateProps> {
       cycleAggregation.aggregations,
       associateName
     );
-    console.log(associate);
+
     return (
       <div className={styles.Wrapper}>
         <Breadcrumbs path={url} />
@@ -83,7 +83,7 @@ class AssociateView extends Component<AssociateProps> {
           associate={associate}
           title='Cycle Progress'
           subtitle={'Overall & Per Module'}
-          traditional={false}
+          traditional={cycleName[0] !== 'm'}
         />
 
         <Calendar

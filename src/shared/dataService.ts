@@ -27,41 +27,6 @@ export const getAssessmentTableData = (
   attemptPass: values.attemptPass + '%'
 });
 
-export const calcAllCyclesPercentiles = (cycleAggr: any) => {
-  const projectScores: any = [];
-  const quizScores: any = [];
-  const softSkillsScores: any = [];
-  for (const cycle in cycleAggr) {
-    for (const associate in cycleAggr[cycle]) {
-      projectScores.push(cycleAggr[cycle][associate].projectAvg);
-      quizScores.push(cycleAggr[cycle][associate].quizAvg);
-      softSkillsScores.push(cycleAggr[cycle][associate].softSkillsAvg);
-    }
-  }
-  // sort in ascending order
-  projectScores.sort((a: number, b: number) => a - b);
-  quizScores.sort((a: number, b: number) => a - b);
-  softSkillsScores.sort((a: number, b: number) => a - b);
-  // calc percentiles for each
-  const projectPercentiles = CONSTS.percentiles.map(
-    perc => projectScores[Math.round(projectScores.length * perc)]
-  );
-  const quizPercentiles = CONSTS.percentiles.map(
-    perc => quizScores[Math.round(quizScores.length * perc)]
-  );
-  const softSkillsPercentiles = CONSTS.percentiles.map(
-    perc => softSkillsScores[Math.round(softSkillsScores.length * perc)]
-  );
-  return {
-    projectPercentiles,
-    projectScores,
-    quizPercentiles,
-    quizScores,
-    softSkillsPercentiles,
-    softSkillsScores
-  };
-};
-
 export const calcAssociateAggr = (associates: any) => {
   const avgs = {};
   associates.forEach((associate: any) => {
@@ -510,7 +475,7 @@ export const calcModulesLength = (modules: any[], cycleEndDate: string | null) =
   return { moduleLengths, ranges };
 };
 
-export const calcPercentiles = (scores: number[], avg: number) => {
+export const calcPercentiles = (scores: number[], avg: number): number => {
   const index = scores.findIndex((score: number) => avg <= score);
   return Math.round(((index + 1) / scores.length) * 100);
 };
