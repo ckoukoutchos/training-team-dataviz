@@ -8,6 +8,12 @@
     "@nivo/bullet": "^0.59.2",
     "@nivo/calendar": "^0.59.1",
     "@nivo/radar": "^0.59.1",
+    "@types/jest": "^24.0.16",
+    "@types/node": "^12.6.9",
+    "@types/react": "^16.8.24",
+    "@types/react-dom": "^16.8.5",
+    "@types/react-redux": "^7.1.1",
+    "@types/react-router-dom": "^4.3.4",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "csvtojson": "^2.0.10",
@@ -20,7 +26,8 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "redux": "^4.0.4",
-    "redux-saga": "^1.0.5"
+    "redux-saga": "^1.0.5",
+    "typescript": "^3.5.3"
   },
   "devDependencies": {
     "node-env-run": "^3.0.2",
