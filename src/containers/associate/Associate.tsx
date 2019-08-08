@@ -39,14 +39,12 @@ class AssociateView extends Component<AssociateProps> {
       cycleAggregation.aggregations,
       associateName
     );
-
+    console.log(associate);
     return (
       <div className={styles.Wrapper}>
         <Breadcrumbs path={url} />
 
-        <AssociateInfo
-          associate={getItemInArrayByName(cycle.associates, associateName)}
-        />
+        <AssociateInfo associate={associate} />
 
         <RadarGraph
           title='Running Average of Assesments'
@@ -81,12 +79,12 @@ class AssociateView extends Component<AssociateProps> {
           ]}
         />
 
-        {/* <BulletGraph
+        <BulletGraph
+          associate={associate}
           title='Cycle Progress'
-          subtitle={tradCycle ? null : 'Overall & Per Module'}
-          metadata={associateMetadata[associate]}
-          traditional={tradCycle}
-        /> */}
+          subtitle={'Overall & Per Module'}
+          traditional={false}
+        />
 
         <Calendar
           attendance={associate.attendance}

@@ -182,44 +182,30 @@ export const calcCycleAggr = (associates: any) => {
   };
 };
 
-export const calcDaysSince = (startDate: any, endDate?: any) => {
+export const calcDaysSince = (startDate: string, endDate?: string) => {
   // format as Date object
   const startDateSplit = startDate.split('/');
-
   const startDateObj = new Date(
-    //@ts-ignore
-    '20' + startDateSplit[2],
-    startDateSplit[0] - 1,
-    startDateSplit[1]
+    Number('20' + startDateSplit[2]),
+    Number(startDateSplit[0]) - 1,
+    Number(startDateSplit[1])
   );
 
   if (endDate) {
     // if end date provided, format as Date object and calc time btw start and end
     const endDateSplit = endDate.split('/');
-
     const endDateObj = new Date(
-      //@ts-ignore
-      '20' + endDateSplit[2],
-      endDateSplit[0] - 1,
-      endDateSplit[1]
+      Number('20' + endDateSplit[2]),
+      Number(endDateSplit[0]) - 1,
+      Number(endDateSplit[1])
     );
-    const cycleLength = (endDateObj - startDateObj) / 86400000;
+    const cycleLength = (endDateObj.valueOf() - startDateObj.valueOf()) / 86400000;
     return Math.round(cycleLength);
   } else {
     // if no end date, calc time btw now and start
-    const daysSinceStart = (Date.now() - startDateObj) / 86400000;
+    const daysSinceStart = (Date.now() - startDateObj.valueOf()) / 86400000;
     return Math.round(daysSinceStart);
   }
-};
-
-export const calcDateMarkers = (metadata: any) => {
-  const startDate = metadata['Associate Start'];
-  return Metadata.modules.map(modules => {
-    if (metadata[modules].start) {
-      return Math.round(calcDaysSince(startDate, metadata[modules].start));
-    }
-    return 0;
-  });
 };
 
 export const calcModuleLength = (metadata: any) => {
@@ -481,6 +467,47 @@ export const calcAssessmentAvg = (
   );
   // convert to percent and round to nearest int
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
+};
+
+export const calcDateMarkers = (associate: Associate) => {
+  return associate.modules.map(module => {
+    if (module.startDate) {
+      return Math.round(calcDaysSince(associate.startDate, module.startDate));
+    }
+    return 0;
+  });
+};
+
+export const calcModulesLength = (modules: any[], cycleEndDate: string | null) => {
+  let prevTotal = 0;
+  const moduleLengths: any = [];
+  const ranges = modules.map(module => {
+    if (module.startDate && module.endDate) {
+      const days = Math.round(
+        calcDaysSince(module.startDate, module.endDate)
+      );
+      moduleLengths.push(days);
+      const range = days + prevTotal;
+      prevTotal = range;
+      return range;
+    } else if (module.startDate) {
+      if (cycleEndDate) {
+        const days = Math.round(
+          calcDaysSince(module.startDate, cycleEndDate)
+        );
+        moduleLengths.push(days);
+        return days + prevTotal;
+      } else {
+        const days = Math.round(calcDaysSince(module.startDate));
+        moduleLengths.push(days);
+        return days + prevTotal;
+      }
+    } else {
+      moduleLengths.push(0);
+      return 0;
+    }
+  });
+  return { moduleLengths, ranges };
 };
 
 export const calcPercentiles = (scores: number[], avg: number) => {
