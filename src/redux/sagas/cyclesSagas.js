@@ -1,81 +1,103 @@
 import { put, all, takeEvery } from 'redux-saga/effects';
 import axios from 'axios';
-import { FETCH_ALL_CYCLES_METRICS, FETCH_CYCLE_METRICS, POST_CYCLE_METRICS } from "../actionTypes";
-import { fetchAllCyclesMetricsSuccess, fetchCycleMetricsSuccess, fetchCycleMetricsFail, postCycleMetricsSuccess, postCycleMetricsFail } from "../actions";
-import { calcAllCyclesPercentiles, calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata } from '../../shared/dataService';
+import { FETCH_ALL_CYCLES_METRICS, POST_CYCLE_METRICS } from '../actionTypes';
+import {
+  fetchAllCyclesMetricsSuccess,
+  fetchAllCyclesMetricsFail,
+  postCycleMetricsFail
+} from '../actions';
+import {
+  sortMetircsByAssociate,
+  formatAssociateData,
+  getCycleMetrics,
+  formatCycleData,
+  getAssociateAggregations,
+  getCycleAggregations,
+  getAllCyclesAggregations
+} from '../../shared/dataService';
 
 export default function* watchCycle() {
   yield all([
     takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics),
-    takeEvery(FETCH_CYCLE_METRICS, fetchCycleMetrics),
     takeEvery(POST_CYCLE_METRICS, postCycleMetrics)
-  ])
+  ]);
 }
 
 function* fetchAllCyclesMetrics() {
   try {
     const res = yield axios.get('/api');
     const { cycles, data } = res.data;
-    yield put(fetchAllCyclesMetricsSuccess(...formatAllCycleData(data, cycles)));
+    const {
+      allCycleAggregations,
+      cycleAggregations,
+      formattedCycles
+    } = formatAllCycleData(data, cycles);
+    yield put(
+      fetchAllCyclesMetricsSuccess(
+        allCycleAggregations,
+        cycleAggregations,
+        formattedCycles
+      )
+    );
   } catch (err) {
-    yield put(fetchCycleMetricsFail(err));
-  }
-}
-
-function* fetchCycleMetrics({ cycleName }) {
-  try {
-    const res = yield axios.get('/api/' + cycleName);
-    yield put(fetchCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
-  } catch (err) {
-    yield put(fetchCycleMetricsFail(err));
+    yield put(fetchAllCyclesMetricsFail(err));
   }
 }
 
 function* postCycleMetrics({ formData, cycleName, history }) {
   try {
-    const res = yield axios.post('/api/' + cycleName, formData);
-    yield put(postCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
-    history.push('/cycle')
+    yield axios.post('/api/' + cycleName, formData);
+    yield fetchAllCyclesMetrics();
+    history.push('/');
   } catch (err) {
     yield put(postCycleMetricsFail(err));
   }
 }
 
-const formatCycleData = (data, cycleName) => {
+const getCycleData = (data, cycleName) => {
   // sort by associate
   const sortedMetrics = sortMetircsByAssociate(data);
-  // collect associate module metadata
-  const associateMetadata = getAssociateMetadata(sortedMetrics);
-  // calculate avg for projects, quizzes, soft skills
-  const associateAggr = calcAssociateAggr(sortedMetrics);
-  // calculate avgs for whole cycle
-  const cycleAggr = calcCycleAggr(associateAggr);
-  // combine into one object
-  associateAggr[cycleName] = cycleAggr;
-  // collect cycle metadata
-  const metadata = getCycleMetadata(data);
+  // pull out cycle specific metrics
+  const cycleMetrics = getCycleMetrics(sortedMetrics);
+  // format sorted metrics into Associate objects
+  const formattedAssociates = sortedMetrics.map(associate =>
+    formatAssociateData(associate, cycleName)
+  );
+  // sort assessments scores from formatted associates
+  // re-enable for assessment aggregation
+  // const sortedAssessments = sortMetricsByAssessment(formattedAssociates);
 
-  return [associateAggr, metadata, associateMetadata, sortedMetrics, cycleName];
-}
+  // format Associates into Cycle object
+  const formattedCycle = formatCycleData(
+    cycleMetrics,
+    formattedAssociates,
+    cycleName
+  );
+  // get associate level aggregations
+  const associateAggregations = getAssociateAggregations(formattedAssociates);
+  // get cycle level aggregations
+  const cycleAggregation = getCycleAggregations(
+    associateAggregations,
+    cycleName
+  );
+  // get assessment level aggregations
+  return { formattedCycle, cycleAggregation };
+};
 
 const formatAllCycleData = (data, cycles) => {
-  const associateMetadata = {};
-  const cycleAggr = {};
-  const cycleMetadata = {};
-  const cycleMetrics = {};
+  const formattedCycles = [];
+  const cycleAggregations = [];
+
   // for each cycle, collect data
   for (let i = 0; i < data.length; i++) {
-    let [associateAggr, metadata, associateMeta, sortedMetrics, cycleName] = formatCycleData(data[i], cycles[i]);
-
-    for (let [key, value] of Object.entries(associateMeta)) {
-      associateMetadata[key] = value;
-    }
-    cycleAggr[cycleName] = associateAggr;
-    cycleMetadata[cycleName] = metadata;
-    cycleMetrics[cycleName] = sortedMetrics;
+    const { formattedCycle, cycleAggregation } = getCycleData(
+      data[i],
+      cycles[i]
+    );
+    cycleAggregations.push(cycleAggregation);
+    formattedCycles.push(formattedCycle);
   }
-  // all cycle aggregations
-  const allCycleAggr = calcAllCyclesPercentiles(cycleAggr);
+  const allCycleAggregations = getAllCyclesAggregations(cycleAggregations);
 
-  return [cycleAggr, cycleMetadata, associateMetadata, cycleMetrics, allCycleAggr];
-}
+  return { allCycleAggregations, cycleAggregations, formattedCycles };
+};
