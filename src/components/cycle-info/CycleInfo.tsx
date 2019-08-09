@@ -17,7 +17,7 @@ const CycleInfo = (props: CycleInfoProps) => {
     .join(' ');
 
   const infoBody = (
-    <div className={styles.BodyOnly}>
+    <div className={styles.Body}>
       <div>
         <Typography variant='body2'>
           <strong>Trainer(s): </strong>

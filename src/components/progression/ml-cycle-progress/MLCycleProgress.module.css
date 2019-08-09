@@ -1,0 +1,22 @@
+.Divider {
+  margin-top: 16px;
+}
+
+.Graph {
+  height: 117px;
+  width: 800px;
+}
+
+.Header {
+  padding-top: 8px;
+  text-align: center;
+}
+
+.Paper {
+  margin: 16px auto;
+  width: 800px;
+}
+
+text {
+  font-weight: 600;
+}

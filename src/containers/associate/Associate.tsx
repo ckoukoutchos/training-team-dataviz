@@ -3,16 +3,17 @@ import { connect } from 'react-redux';
 import MaterialTable from 'material-table';
 import { History } from 'history';
 
-import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import Calendar from '../../components/calendar/Calendar';
+import MLAssociateProgress from '../../components/progression/ml-associate-progress/MLAssociateProgress';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
-import BulletGraph from '../../components/bullet-graph/BulletGraph';
 
+import styles from './Associate.module.css';
 import { getUrlParams, getItemInArrayByName } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
 import { CycleAggregation, Cycle } from '../../models/types';
+import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
 
 interface AssociateProps {
   allCycleAggregations: CycleAggregation;
@@ -79,12 +80,15 @@ class AssociateView extends Component<AssociateProps> {
           ]}
         />
 
-        <BulletGraph
-          associate={associate}
-          title='Cycle Progress'
-          subtitle={'Overall & Per Module'}
-          traditional={cycleName[0] !== 'm'}
-        />
+        {cycleName[0] === 'm' ? (
+          <MLAssociateProgress
+            associate={associate}
+            title='Cycle Progress'
+            subtitle='Overall & Per Module'
+          />
+        ) : (
+          <TraditionalCycleProgress item={associate} title='Cycle Progress' />
+        )}
 
         <Calendar
           attendance={associate.attendance}

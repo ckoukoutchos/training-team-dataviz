@@ -9,11 +9,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 interface ExpansionPanelsProps {
   children: ReactElement;
-  panelTitle: string;
+  panelTitle?: string;
 }
 
 const ExpansionPanels = (props: ExpansionPanelsProps) => {
-  const { children, panelTitle } = props;
+  const { children, panelTitle = 'Show Details' } = props;
   return (
     <ExpansionPanel>
       <ExpansionPanelSummary

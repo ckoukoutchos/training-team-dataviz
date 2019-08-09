@@ -66,7 +66,7 @@ const Calendar = (props: CalendarProps) => {
       </div>
       <Legend items={CONSTS.attendance} colors={'attendanceColors'} />
 
-      <ExpansionPanel panelTitle='Show Details'>
+      <ExpansionPanel>
         <BasicTable
           headers={CONSTS.attendance}
           rows={Object.values(countOfEvents)}
