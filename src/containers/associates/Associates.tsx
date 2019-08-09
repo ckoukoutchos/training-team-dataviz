@@ -8,11 +8,7 @@ import Toggle from '../../components/toggle/Toggle';
 
 import styles from './Associates.module.css';
 import { AppState } from '../../redux/reducers/rootReducer';
-import {
-  CycleAggregation,
-  Cycle,
-  Associate
-} from '../../models/types';
+import { CycleAggregation, Cycle, Associate } from '../../models/types';
 import {
   formatPercentile,
   calcPercentiles,
@@ -108,7 +104,10 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
       history
     } = this.props;
     const { showInactive } = this.state;
-    const associates = cycles.reduce((acc: any, curr: any) => acc.concat(curr.associates), []);
+    const associates = cycles.reduce(
+      (acc: any, curr: any) => acc.concat(curr.associates),
+      []
+    );
 
     return (
       <div className={styles.Paper}>
@@ -129,7 +128,7 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
           )}
           options={{
             sorting: true,
-            pageSize: 10,
+            pageSize: 20,
             pageSizeOptions: [10, 20, 50]
           }}
           components={{
@@ -149,13 +148,12 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
             {
               tooltip: 'Show Details',
               render: (rowData: any) => {
-                return <AssociateInfo
-                  bodyOnly
-                  associate={getItemInArrayByName(
-                    associates,
-                    rowData.name
-                  )}
-                />
+                return (
+                  <AssociateInfo
+                    bodyOnly
+                    associate={getItemInArrayByName(associates, rowData.name)}
+                  />
+                );
               }
             }
           ]}

@@ -7,6 +7,7 @@ import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
+import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
 import Toggle from '../../components/toggle/Toggle';
 
 import {
@@ -24,6 +25,7 @@ import {
   Associate
 } from '../../models/types';
 import { AppState } from '../../redux/reducers/rootReducer';
+import MLCycleProgress from '../../components/progression/ml-cycle-progress/MLCycleProgress';
 
 interface CycleProps {
   allCycleAggregations: CycleAggregation;
@@ -145,6 +147,16 @@ class CycleView extends Component<CycleProps, CycleState> {
           ]}
           keys={['Cycle Average', 'Training Average']}
         />
+
+        {cycleName[0] === 'm' ? (
+          <MLCycleProgress
+            cycle={cycle}
+            title='Cycle Progress'
+            subtitle='Count per Module'
+          />
+        ) : (
+          <TraditionalCycleProgress item={cycle} title='Cycle Progress' />
+        )}
 
         <div className={styles.Paper}>
           <MaterialTable

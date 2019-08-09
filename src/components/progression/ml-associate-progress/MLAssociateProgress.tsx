@@ -2,30 +2,31 @@ import React, { Component } from 'react';
 import { Divider, Paper, Typography } from '@material-ui/core';
 import { ResponsiveBullet } from '@nivo/bullet';
 
-import Legend from '../legend/Legend';
-import Toggle from '../toggle/Toggle';
+import Legend from '../../legend/Legend';
+import Toggle from '../../toggle/Toggle';
 
 import {
   calcDateMarkers,
-  calcDaysSince,
   calcModulesLength
-} from '../../shared/dataService';
-import Metadata from '../../shared/metadata';
-import styles from './BulletGraph.module.css';
-import { Associate } from '../../models/types';
+} from '../../../shared/dataService';
+import Metadata from '../../../shared/metadata';
+import styles from './MLAssociateProgress.module.css';
+import { Associate } from '../../../models/types';
 
-interface BulletGraphProps {
+interface MLAssociateProgressProps {
   associate: Associate;
   title: string;
   subtitle: string;
-  traditional: boolean;
 }
 
-interface BulletGraphState {
+interface MLAssociateProgressState {
   showModules: boolean;
 }
 
-class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
+class MLAssociateProgress extends Component<
+  MLAssociateProgressProps,
+  MLAssociateProgressState
+> {
   state = {
     showModules: false
   };
@@ -55,7 +56,7 @@ class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
           },
           {
             id: 'React',
-            ranges: [56, 98],
+            ranges: [70, 98],
             measures: [modules.moduleLengths[3]],
             markers: []
           }
@@ -65,11 +66,11 @@ class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
             id: 'Associate',
             ranges: modules.ranges,
             measures: [],
-            markers: [...calcDateMarkers(associate), 238]
+            markers: [...calcDateMarkers(associate), 266]
           },
           {
             id: 'Max Time',
-            ranges: [42, 70, 140, 196, 224, 238],
+            ranges: [42, 70, 140, 210, 252, 266],
             measures: [],
             markers: []
           }
@@ -93,49 +94,14 @@ class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
     );
   }
 
-  createTradCycleGraph(associate: Associate) {
-    let daysSinceStart = 0;
-    if (associate.endDate) {
-      daysSinceStart = Math.round(
-        calcDaysSince(associate.startDate, associate.endDate)
-      );
-    } else {
-      daysSinceStart = Math.round(calcDaysSince(associate.startDate));
-    }
-
-    return (
-      <div className={styles.Graph3}>
-        <ResponsiveBullet
-          data={[
-            {
-              id: 'Associate',
-              ranges: [21, 28, 70, 105, 126, 140],
-              measures: [daysSinceStart],
-              markers: []
-            }
-          ]}
-          margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
-          spacing={46}
-          titleAlign='start'
-          titleOffsetX={-70}
-          measureSize={0.4}
-          rangeColors='red_yellow_blue'
-          measureColors='#e6e6e6'
-          markerColors='black'
-          markerSize={1}
-        />
-      </div>
-    );
-  }
-
   toggleHandler = () => {
-    this.setState((prevState: BulletGraphState) => ({
+    this.setState((prevState: MLAssociateProgressState) => ({
       showModules: !prevState.showModules
     }));
   };
 
   render() {
-    const { associate, title, subtitle, traditional } = this.props;
+    const { associate, title, subtitle } = this.props;
     const { showModules } = this.state;
 
     return (
@@ -153,18 +119,14 @@ class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
           <Divider />
         </div>
 
-        {!traditional && (
-          <Toggle
-            checked={showModules}
-            onChange={this.toggleHandler}
-            leftLabel='Overview'
-            rightLabel='Per Module'
-          />
-        )}
+        <Toggle
+          checked={showModules}
+          onChange={this.toggleHandler}
+          leftLabel='Overview'
+          rightLabel='Per Module'
+        />
 
-        {traditional
-          ? this.createTradCycleGraph(associate)
-          : this.createMLCycleGraph(showModules, associate)}
+        {this.createMLCycleGraph(showModules, associate)}
 
         {showModules ? (
           <Legend
@@ -179,4 +141,4 @@ class BulletGraph extends Component<BulletGraphProps, BulletGraphState> {
   }
 }
 
-export default BulletGraph;
+export default MLAssociateProgress;
