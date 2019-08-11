@@ -8,7 +8,13 @@ import {
   ListItemIcon,
   ListItemText
 } from '@material-ui/core';
-import { ArrowUpward, Autorenew, Home, Person } from '@material-ui/icons';
+import {
+  Assessment,
+  ArrowUpward,
+  Autorenew,
+  Home,
+  Person
+} from '@material-ui/icons';
 
 interface SidedrawerProps {
   onClose: () => void;
@@ -51,6 +57,15 @@ const Sidedrawer = (props: SidedrawerProps) => {
                 <Person />
               </ListItemIcon>
               <ListItemText primary='Associates' />
+            </ListItem>
+          </Link>
+
+          <Link to='/assessment' className={styles.Link}>
+            <ListItem button>
+              <ListItemIcon>
+                <Assessment />
+              </ListItemIcon>
+              <ListItemText primary='Assessments' />
             </ListItem>
           </Link>
 

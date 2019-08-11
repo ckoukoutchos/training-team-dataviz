@@ -25,7 +25,8 @@ export const calcDaysSince = (startDate: string, endDate?: string) => {
       Number(endDateSplit[0]) - 1,
       Number(endDateSplit[1])
     );
-    const cycleLength = (endDateObj.valueOf() - startDateObj.valueOf()) / 86400000;
+    const cycleLength =
+      (endDateObj.valueOf() - startDateObj.valueOf()) / 86400000;
     return Math.round(cycleLength);
   } else {
     // if no end date, calc time btw now and start
@@ -54,38 +55,6 @@ export const calcAttemptPassRatio = (metrics: Metric[]) => {
   }
   // if zero attempts, return zero
   return attempt ? Math.round((pass / attempt) * 100) : 0;
-};
-
-export const formatCalendarDate = (date: string) => {
-  if (date) {
-    const dateSplit = date.split('/');
-    if (dateSplit[0].length === 1) {
-      dateSplit[0] = '0' + dateSplit[0];
-    }
-    if (dateSplit[1].length === 1) {
-      dateSplit[1] = '0' + dateSplit[1];
-    }
-    return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
-  } else {
-    const date = new Date(Date.now());
-    return date.toISOString();
-  }
-};
-
-export const formatAttendanceEvents = (attendance: any) =>
-  attendance.map((event: any) => ({
-    day: formatCalendarDate(event.date),
-    value: Metadata.attendance[event.type]
-  }));
-
-export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
-  // find metric array with cycle data
-  const index = metrics.findIndex(
-    metrics =>
-      Metadata.staff.includes(metrics[0].Person) || metrics[0].Person === ''
-  );
-  // remove from associate metrics array and return it
-  return metrics.splice(index, 1)[0];
 };
 
 export const calcAssessmentAvg = (
@@ -119,23 +88,22 @@ export const calcDateMarkers = (associate: Associate) => {
   });
 };
 
-export const calcModulesLength = (modules: any[], cycleEndDate: string | null) => {
+export const calcModulesLength = (
+  modules: any[],
+  cycleEndDate: string | null
+) => {
   let prevTotal = 0;
   const moduleLengths: any = [];
   const ranges = modules.map(module => {
     if (module.startDate && module.endDate) {
-      const days = Math.round(
-        calcDaysSince(module.startDate, module.endDate)
-      );
+      const days = Math.round(calcDaysSince(module.startDate, module.endDate));
       moduleLengths.push(days);
       const range = days + prevTotal;
       prevTotal = range;
       return range;
     } else if (module.startDate) {
       if (cycleEndDate) {
-        const days = Math.round(
-          calcDaysSince(module.startDate, cycleEndDate)
-        );
+        const days = Math.round(calcDaysSince(module.startDate, cycleEndDate));
         moduleLengths.push(days);
         return days + prevTotal;
       } else {
@@ -150,6 +118,10 @@ export const calcModulesLength = (modules: any[], cycleEndDate: string | null) =
   });
   return { moduleLengths, ranges };
 };
+
+export const calcPercent = (score: number, maxScore: number): number => {
+  return Math.round((score / maxScore) * 100);
+}
 
 export const calcPercentiles = (scores: number[], avg: number): number => {
   const index = scores.findIndex((score: number) => avg <= score);
@@ -230,10 +202,34 @@ export const formatAssociateData = (
       associate.active = false;
       associate['endDate'] = metric.Date;
       // Interaction for graduates is empty string
-      associate.exitReason = metric.Interaction ? metric.Interaction : 'Graduated';
+      associate.exitReason = metric.Interaction
+        ? metric.Interaction
+        : 'Graduated';
     }
   }
   return associate;
+};
+
+export const formatAttendanceEvents = (attendance: any) =>
+  attendance.map((event: any) => ({
+    day: formatCalendarDate(event.date),
+    value: Metadata.attendance[event.type]
+  }));
+
+export const formatCalendarDate = (date: string) => {
+  if (date) {
+    const dateSplit = date.split('/');
+    if (dateSplit[0].length === 1) {
+      dateSplit[0] = '0' + dateSplit[0];
+    }
+    if (dateSplit[1].length === 1) {
+      dateSplit[1] = '0' + dateSplit[1];
+    }
+    return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
+  } else {
+    const date = new Date(Date.now());
+    return date.toISOString();
+  }
 };
 
 export const formatCycleData = (
@@ -314,7 +310,7 @@ export const getAssociateAggregations = (
 };
 
 export const getItemInArrayByName = (array: any[], name: string): any => {
-  return array.find((item: any) => item.name === name);;
+  return array.find((item: any) => item.name === name);
 };
 
 export const getCycleAggregations = (
@@ -362,7 +358,52 @@ export const getCycleAssociateCount = (associates: Associate[]): number[] => {
   return [associates.length, activeCount.length];
 };
 
-export const getAllCyclesAggregations = (cycles: CycleAggregation[]) => {
+export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
+  // find metric array with cycle data
+  const index = metrics.findIndex(
+    metrics =>
+      Metadata.staff.includes(metrics[0].Person) || metrics[0].Person === ''
+  );
+  // remove from associate metrics array and return it
+  return metrics.splice(index, 1)[0];
+};
+
+export const formatAssessments = (assessments: Metric[], maxScores: any): any[] => {
+  const formattedAssessments = {};
+  // format into obj for each assessment
+  assessments.forEach((assessment: Metric) => {
+    if (formattedAssessments[assessment.Interaction]) {
+      // if assessment already added
+      formattedAssessments[assessment.Interaction].scores.push(
+        Number(assessment.Score)
+      );
+      formattedAssessments[assessment.Interaction].metrics.push(assessment);
+    } else {
+      // if not added, create field
+      formattedAssessments[assessment.Interaction] = {
+        average: 0,
+        metrics: [assessment],
+        module: maxScores[assessment.Interaction].Module,
+        name: assessment.Interaction,
+        scores: [Number(assessment.Score)]
+      };
+    }
+  });
+  // calc average
+  for (const assessment in formattedAssessments) {
+    //@ts-ignore
+    const metrics = formattedAssessments[assessment].metrics;
+    formattedAssessments[assessment].average = calcAssessmentAvg(
+      metrics,
+      maxScores
+    );
+  }
+  return Object.values(formattedAssessments);
+};
+
+export const getAllCyclesAggregations = (
+  cycles: CycleAggregation[]
+): CycleAggregation => {
   const attemptPassScores = combineScores(cycles, 'attemptPassScores');
   const projectScores = combineScores(cycles, 'projectScores');
   const quizScores = combineScores(cycles, 'quizScores');
@@ -391,43 +432,24 @@ export const getUrlParams = (urlHistory: any) => {
   return { url, cycle, associate };
 };
 
-export const sortMetricsByAssessment = (associates: Associate[]) => {
-  const projects = {};
-  const quizzes = {};
-  const softSkills = {};
+export const sortMetricsByAssessmentType = (cycles: Cycle[]) => {
+  const projects: any = [];
+  const quizzes: any = [];
+  const softSkills: any = [];
 
-  for (const associate of associates) {
-    // project sorting
-    for (const project of associate.projects) {
-      // if project already added, push score
-      if (projects[project.Interaction]) {
-        projects[project.Interaction].push(Number(project.Score));
-        // if field doesn't exist, add one
-      } else {
-        projects[project.Interaction] = [Number(project.Score)];
-      }
-    }
-    // quiz sorting
-    for (const quiz of associate.quizzes) {
-      // if quiz already added, push score
-      if (quizzes[quiz.Interaction]) {
-        quizzes[quiz.Interaction].push(Number(quiz.Score));
-        // if field doesn't exist, add one
-      } else {
-        quizzes[quiz.Interaction] = [Number(quiz.Score)];
-      }
-    }
-    // softSkills sorting
-    for (const softSkill of associate.softSkills) {
-      // if softSkill already added, push score
-      if (softSkills[softSkill.Interaction]) {
-        softSkills[softSkill.Interaction].push(Number(softSkill.Score));
-        // if field doesn't exist, add one
-      } else {
-        softSkills[softSkill.Interaction] = [Number(softSkill.Score)];
-      }
-    }
-  }
+  // this is gross, should re-think data structures to potentially avoid
+  cycles.forEach((cycle: Cycle) => {
+    cycle.associates.forEach((associate: Associate) => {
+      // add cycle name to metric
+      const formattedProjects = associate.projects.map((item: any) => ({ ...item, cycle: associate.cycle }));
+      const formattedQuizzes = associate.quizzes.map((item: any) => ({ ...item, cycle: associate.cycle }));
+      const formattedSoftSkills = associate.softSkills.map((item: any) => ({ ...item, cycle: associate.cycle }));
+      projects.push(...formattedProjects);
+      quizzes.push(...formattedQuizzes);
+      softSkills.push(...formattedSoftSkills);
+    });
+  });
+
   return { projects, quizzes, softSkills };
 };
 

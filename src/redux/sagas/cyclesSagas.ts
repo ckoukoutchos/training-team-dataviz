@@ -13,9 +13,12 @@ import {
   formatCycleData,
   getAssociateAggregations,
   getCycleAggregations,
-  getAllCyclesAggregations
+  getAllCyclesAggregations,
+  sortMetricsByAssessmentType,
+  formatAssessments
 } from '../../shared/dataService';
 import { History } from 'history';
+import Metadata from '../../shared/metadata';
 
 export default function* watchCycle() {
   yield all([
@@ -32,13 +35,15 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
     const {
       allCycleAggregations,
       cycleAggregations,
-      formattedCycles
+      formattedCycles,
+      assessmentAggregations
     } = formatAllCycleData(data, cycles);
     yield put(
       fetchAllCyclesMetricsSuccess(
         allCycleAggregations,
         cycleAggregations,
-        formattedCycles
+        formattedCycles,
+        assessmentAggregations
       )
     );
   } catch (err) {
@@ -46,7 +51,15 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
   }
 }
 
-function* postCycleMetrics({ formData, cycleName, history }: { formData: FormData, cycleName: string, history: History}): IterableIterator<{}> {
+function* postCycleMetrics({
+  formData,
+  cycleName,
+  history
+}: {
+  formData: FormData;
+  cycleName: string;
+  history: History;
+}): IterableIterator<{}> {
   try {
     yield axios.post('/api/' + cycleName, formData);
     yield fetchAllCyclesMetrics();
@@ -65,10 +78,6 @@ const getCycleData = (data: any, cycleName: string) => {
   const formattedAssociates = sortedMetrics.map((associate: any) =>
     formatAssociateData(associate, cycleName)
   );
-  // sort assessments scores from formatted associates
-  // re-enable for assessment aggregation
-  // const sortedAssessments = sortMetricsByAssessment(formattedAssociates);
-
   // format Associates into Cycle object
   const formattedCycle = formatCycleData(
     cycleMetrics,
@@ -99,7 +108,22 @@ const formatAllCycleData = (data: any, cycles: string[]) => {
     cycleAggregations.push(cycleAggregation);
     formattedCycles.push(formattedCycle);
   }
+  // get overall aggregations
   const allCycleAggregations = getAllCyclesAggregations(cycleAggregations);
+  // sort assessments by type
+  const sortedAssessments = sortMetricsByAssessmentType(formattedCycles);
+  // format assessments & calc average
+  const assessmentAggregations = {
+    projects: formatAssessments(
+      sortedAssessments.projects,
+      Metadata['Project (Score)']
+    ),
+    quizzes: formatAssessments(sortedAssessments.quizzes, Metadata.Quiz),
+    softSkills: formatAssessments(
+      sortedAssessments.softSkills,
+      Metadata['Soft Skill Assessment']
+    )
+  };
 
-  return { allCycleAggregations, cycleAggregations, formattedCycles };
+  return { allCycleAggregations, cycleAggregations, formattedCycles, assessmentAggregations };
 };

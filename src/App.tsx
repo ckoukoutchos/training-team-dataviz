@@ -8,6 +8,8 @@ import { ActionTypes } from './redux/actionTypes';
 import { resetError } from './redux/actions';
 
 import styles from './App.module.css';
+import Assessment from './containers/assessment/Assessment';
+import Assessments from './containers/assessments/Assessments';
 import Associate from './containers/associate/Associate';
 import Associates from './containers/associates/Associates';
 import Cycle from './containers/cycle/Cycle';
@@ -47,6 +49,12 @@ class App extends Component<AppProps> {
                 path='/cycle/:cycle/associate/:associateName'
                 exact
                 component={Associate}
+              />
+              <Route path='/assessment' exact component={Assessments} />
+              <Route
+                path='/assessment/:type/:assessment'
+                exact
+                component={Assessment}
               />
               <Route path='/upload' exact component={Upload} />
               <Route path='/' component={Overview} />

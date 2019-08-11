@@ -16,9 +16,9 @@ export default {
     'tradBaltimoreJuly2019'
   ],
   'Interaction Type': {
-    quiz: 'Quiz',
-    projectScore: 'Project (Score)',
-    softSkills: 'Soft Skill Assesment'
+    quizzes: 'Quiz',
+    projects: 'Project (Score)',
+    softSkills: 'Soft Skill Assessment'
   },
   cycleMetadate: [
     'Staff change',

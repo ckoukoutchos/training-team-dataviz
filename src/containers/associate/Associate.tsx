@@ -43,7 +43,7 @@ class AssociateView extends Component<AssociateProps> {
 
     return (
       <div className={styles.Wrapper}>
-        <Breadcrumbs path={url} />
+        <Breadcrumbs path={url} root='cycle' />
 
         <AssociateInfo associate={associate} />
 

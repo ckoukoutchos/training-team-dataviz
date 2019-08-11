@@ -5,12 +5,14 @@ interface MetricsState {
   allCycleAggregations: any;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
+  assessmentAggregations: any;
 }
 
 const initalState = {
   allCycleAggregations: [],
   cycleAggregations: [],
-  cycles: []
+  cycles: [],
+  assessmentAggregations: []
 };
 
 const metricsReducer = (
@@ -22,7 +24,8 @@ const metricsReducer = (
       return {
         allCycleAggregations: action.allCycleAggregations,
         cycleAggregations: action.cycleAggregations,
-        cycles: action.formattedCycles
+        cycles: action.formattedCycles,
+        assessmentAggregations: action.assessmentAggregations
       };
     default:
       return state;

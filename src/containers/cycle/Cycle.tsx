@@ -115,7 +115,7 @@ class CycleView extends Component<CycleProps, CycleState> {
 
     return (
       <div className={styles.Wrapper}>
-        <Breadcrumbs path={url} />
+        <Breadcrumbs path={url} root='cycle' />
 
         <CycleInfo cycleName={CONSTS[cycleName]} cycle={cycle} />
 
