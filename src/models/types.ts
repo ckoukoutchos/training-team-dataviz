@@ -6,6 +6,31 @@ export interface Aggregation {
   softSkills: number;
 }
 
+export interface Assessment {
+  associate: string;
+  cycle: string;
+  date: string;
+  name: string;
+  module: string;
+  score: number;
+  type: AssessmentType;
+}
+
+export interface AssessmentAggregation {
+  average: number;
+  module: string;
+  name: string;
+  scores: number[];
+  type: AssessmentType;
+}
+
+export enum AssessmentType {
+  EXERCISE = 'Exercise',
+  PROJECT = 'Project (Score)',
+  QUIZ = 'Quiz',
+  SOFT_SKILLS = 'Soft Skill Assessment'
+}
+
 export class Associate {
   active: boolean;
   attendance: Attendance[];
@@ -30,31 +55,38 @@ export class Associate {
     this.exitReason = null;
     this.metrics = [];
     this.name = '';
-    this.modules = [{
-      type: 'Development Basics and Front End',
-      startDate: null,
-      endDate: null
-    }, {
-      type: 'Databases',
-      startDate: null,
-      endDate: null
-    }, {
-      type: 'Logic Layer (Java)',
-      startDate: null,
-      endDate: null
-    }, {
-      type: 'Front End Frameworks (React)',
-      startDate: null,
-      endDate: null
-    }, {
-      type: 'Group Project',
-      startDate: null,
-      endDate: null
-    }, {
-      type: 'Final Project',
-      startDate: null,
-      endDate: null
-    }];
+    this.modules = [
+      {
+        type: 'Development Basics and Front End',
+        startDate: null,
+        endDate: null
+      },
+      {
+        type: 'Databases',
+        startDate: null,
+        endDate: null
+      },
+      {
+        type: 'Logic Layer (Java)',
+        startDate: null,
+        endDate: null
+      },
+      {
+        type: 'Front End Frameworks (React)',
+        startDate: null,
+        endDate: null
+      },
+      {
+        type: 'Group Project',
+        startDate: null,
+        endDate: null
+      },
+      {
+        type: 'Final Project',
+        startDate: null,
+        endDate: null
+      }
+    ];
     this.projects = [];
     this.quizzes = [];
     this.softSkills = [];
@@ -109,6 +141,7 @@ export interface Metric {
   'Interaction Type': string;
   Person: string;
   Score: string;
+  [key: string]: any;
 }
 
 export interface Module {

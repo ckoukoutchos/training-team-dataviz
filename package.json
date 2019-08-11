@@ -8,6 +8,7 @@
     "@nivo/bar": "^0.59.2",
     "@nivo/bullet": "^0.59.2",
     "@nivo/calendar": "^0.59.1",
+    "@nivo/line": "^0.59.3",
     "@nivo/radar": "^0.59.1",
     "@types/jest": "^24.0.16",
     "@types/node": "^12.6.9",

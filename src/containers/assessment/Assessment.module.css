@@ -1,0 +1,31 @@
+.Container {
+  margin: 8px 16px 16px 50px;
+}
+
+.Divider {
+  margin-top: 16px;
+}
+
+.Graph {
+  height: 450px;
+  width: 800px;
+}
+
+.Header {
+  padding-top: 8px;
+  text-align: center;
+}
+
+.Paper {
+  margin: 16px auto;
+  height: 590px;
+  width: 800px;
+}
+
+.Select {
+  width: 300px;
+}
+
+text {
+  font-weight: 600;
+}

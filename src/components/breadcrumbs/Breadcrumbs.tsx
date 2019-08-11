@@ -6,10 +6,11 @@ import styles from './Breadcrumbs.module.css';
 
 interface BreadcrumbsProps {
   path: string;
+  root: string;
 }
 
 const breadcrumbs = (props: BreadcrumbsProps) => {
-  const { path } = props;
+  const { path, root } = props;
 
   return (
     <Paper
@@ -19,23 +20,23 @@ const breadcrumbs = (props: BreadcrumbsProps) => {
     >
       {path.length === 5 ? (
         <Breadcrumbs separator='›' aria-label='Breadcrumb'>
-          <Link to='/cycle' className={styles.Link}>
+          <Link to={`/${root}`} className={styles.Link}>
             Cycles
           </Link>
-
-          <Link to={'/cycle/' + path[2]} className={styles.Link}>
+          <Link to={`/${root}/${path[2]}`} className={styles.Link}>
             {CONSTS[path[2]]}
           </Link>
-
           <Typography color='textPrimary'>{path[4]}</Typography>
         </Breadcrumbs>
       ) : (
         <Breadcrumbs separator='›' aria-label='Breadcrumb'>
-          <Link to='/cycle' className={styles.Link}>
-            Cycles
+          <Link to={`/${root}`} className={styles.Link}>
+            {root === 'cycle' ? 'Cycles' : 'Assessments'}
           </Link>
 
-          <Typography color='textPrimary'>{CONSTS[path[2]]}</Typography>
+          <Typography color='textPrimary'>
+            {root === 'cycle' ? CONSTS[path[2]] : path[3]}
+          </Typography>
         </Breadcrumbs>
       )}
     </Paper>
