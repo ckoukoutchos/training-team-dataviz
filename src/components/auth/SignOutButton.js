@@ -7,7 +7,7 @@ import { signOut } from '../../redux/actions/signInActions';
 
 const SignOutButton = (props) => {
 	const logout = () => {
-		var auth2 = gapi.auth2.getAuthInstance();
+		let auth2 = gapi.auth2.getAuthInstance();
 		auth2.signOut().then(() => {
 			props.signOut()
 			props.history.push('/signin')
