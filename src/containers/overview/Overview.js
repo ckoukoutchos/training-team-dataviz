@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchAllCyclesMetrics } from '../../redux/actions';
+import { fetchAllCyclesMetrics } from '../../redux/actions/cycleActions';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
 import Spinner from '../../components/spinner/Spinner';
 

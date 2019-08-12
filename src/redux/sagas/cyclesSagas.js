@@ -1,47 +1,43 @@
-import { put, all, takeEvery } from 'redux-saga/effects';
+import { put, all, takeEvery, select } from 'redux-saga/effects';
 import axios from 'axios';
-import { FETCH_ALL_CYCLES_METRICS, FETCH_CYCLE_METRICS, POST_CYCLE_METRICS } from "../actionTypes";
-import { fetchAllCyclesMetricsSuccess, fetchCycleMetricsSuccess, fetchCycleMetricsFail, postCycleMetricsSuccess, postCycleMetricsFail } from "../actions";
+import { FETCH_ALL_CYCLES_METRICS, FETCH_CYCLE_METRICS } from "../actions/actionTypes";
+import { fetchAllCyclesMetricsSuccess, fetchCycleMetricsSuccess, fetchCycleMetricsFail } from "../actions/cycleActions";
 import { calcAllCyclesPercentiles, calcAssociateAggr, calcCycleAggr, getCycleMetadata, sortMetircsByAssociate, getAssociateMetadata } from '../../shared/dataService';
+import { getToken } from './selectors';
 
 export default function* watchCycle() {
   yield all([
     takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics),
-    takeEvery(FETCH_CYCLE_METRICS, fetchCycleMetrics),
-    takeEvery(POST_CYCLE_METRICS, postCycleMetrics)
+    takeEvery(FETCH_CYCLE_METRICS, fetchCycleMetrics)
   ])
+}
+
+function* getHeaders() {
+	const token = yield select(getToken);
+	return { headers: { 'x-access-token': token }};
 }
 
 function* fetchAllCyclesMetrics() {
   try {
-    const res = yield axios.get('/api');
-    const { cycles, data } = res.data;
-    yield put(fetchAllCyclesMetricsSuccess(...formatAllCycleData(data, cycles)));
+	const headers = yield getHeaders();
+	const res = yield axios.get('/api/cycle', headers);
+    const data = res.data;
+    yield put(fetchAllCyclesMetricsSuccess(...formatAllCycleData(data)));
   } catch (err) {
     yield put(fetchCycleMetricsFail(err));
   }
 }
 
-function* fetchCycleMetrics({ cycleName }) {
+function* fetchCycleMetrics({ cycleName, fileId }) {
   try {
-    const res = yield axios.get('/api/' + cycleName);
+    const res = yield axios.get('/api/cycle' + fileId, getHeaders());
     yield put(fetchCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
   } catch (err) {
     yield put(fetchCycleMetricsFail(err));
   }
 }
 
-function* postCycleMetrics({ formData, cycleName, history }) {
-  try {
-    const res = yield axios.post('/api/' + cycleName, formData);
-    yield put(postCycleMetricsSuccess(...formatCycleData(res.data, cycleName)));
-    history.push('/cycle')
-  } catch (err) {
-    yield put(postCycleMetricsFail(err));
-  }
-}
-
-const formatCycleData = (data, cycleName) => {
+const formatCycleData = (data, fileId, cycleName) => {
   // sort by associate
   const sortedMetrics = sortMetircsByAssociate(data);
   // collect associate module metadata
@@ -53,19 +49,20 @@ const formatCycleData = (data, cycleName) => {
   // combine into one object
   associateAggr[cycleName] = cycleAggr;
   // collect cycle metadata
-  const metadata = getCycleMetadata(data);
+  const metadata = getCycleMetadata(data, fileId);
 
   return [associateAggr, metadata, associateMetadata, sortedMetrics, cycleName];
 }
 
-const formatAllCycleData = (data, cycles) => {
+const formatAllCycleData = (data) => {
   const associateMetadata = {};
   const cycleAggr = {};
   const cycleMetadata = {};
   const cycleMetrics = {};
   // for each cycle, collect data
   for (let i = 0; i < data.length; i++) {
-    let [associateAggr, metadata, associateMeta, sortedMetrics, cycleName] = formatCycleData(data[i], cycles[i]);
+	let [associateAggr, metadata, associateMeta, sortedMetrics, cycleName] = 
+		formatCycleData(data[i].data, data[i].fileId, data[i].name);
 
     for (let [key, value] of Object.entries(associateMeta)) {
       associateMetadata[key] = value;

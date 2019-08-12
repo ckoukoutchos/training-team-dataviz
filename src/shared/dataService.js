@@ -334,8 +334,9 @@ export const getAssociateMetadata = data => {
   return metadata;
 }
 
-export const getCycleMetadata = data => {
+export const getCycleMetadata = (data, fileId) => {
   const metadata = {};
+  metadata.fileId = fileId;
   data.forEach(event => {
     // check for interaction type
     if (Metadata.cycleMetadate.includes(event['Interaction Type']) || RegExp('Cycle Exit').test(event['Interaction Type'])) {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
-import { resetError } from './redux/actions';
+import { resetError } from './redux/actions/cycleActions';
 import styles from './App.module.css';
 import { Button, Modal } from '@material-ui/core';
 import Associate from './containers/associate/Associate';
@@ -10,7 +10,9 @@ import Cycle from './containers/cycle/Cycle';
 import Cycles from './containers/cycles/Cycles';
 import Overview from './containers/overview/Overview';
 import NavBar from './components/nav-bar/NavBar';
-import Upload from './components/upload/Upload';
+import GoogleApi from './components/auth/GoogleApi';
+import SignInPage from './components/auth/SignInPage';
+import ProtectedRoute from './ProtectedRoute';
 
 class App extends Component {
 
@@ -26,14 +28,15 @@ class App extends Component {
         <NavBar />
         <main className={styles.Main}>
           <Switch>
-            <Route path='/cycle' exact component={Cycles} />
-            <Route path='/cycle/:cycle' exact component={Cycle} />
-            <Route path='/associate' exact component={Associates} />
-            <Route path='/cycle/:cycle/associate/:associateName' exact component={Associate} />
-            <Route path='/upload' exact component={Upload} />
-            <Route path='/' component={Overview} />
+		  	<Route path='/signin' exact component={SignInPage} />
+            <ProtectedRoute path='/cycle' exact component={Cycles} />
+            <ProtectedRoute path='/cycle/:cycle' exact component={Cycle} />
+            <ProtectedRoute path='/associate' exact component={Associates} />
+            <ProtectedRoute path='/cycle/:cycle/associate/:associateName' exact component={Associate} />
+            <ProtectedRoute path='/' component={Overview} />
           </Switch>
         </main>
+		<GoogleApi />
 
         {error ? <Modal
           aria-labelledby='simple-modal-title'

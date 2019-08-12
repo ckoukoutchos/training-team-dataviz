@@ -1,4 +1,5 @@
-import { FETCH_ALL_CYCLES_METRICS, FETCH_ALL_CYCLES_METRICS_SUCCESS, FETCH_ALL_CYCLES_METRICS_FAIL, FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_FAIL, POST_CYCLE_METRICS, POST_CYCLE_METRICS_SUCCESS, POST_CYCLE_METRICS_FAIL, RESET_ERROR } from '../actionTypes';
+import { FETCH_ALL_CYCLES_METRICS, FETCH_ALL_CYCLES_METRICS_SUCCESS, FETCH_ALL_CYCLES_METRICS_FAIL, 
+	FETCH_CYCLE_METRICS, FETCH_CYCLE_METRICS_SUCCESS, FETCH_CYCLE_METRICS_FAIL, RESET_ERROR } from '../actions/actionTypes';
 
 const initialState = {
   allCycleAggr: {},
@@ -55,30 +56,6 @@ export default function (state = initialState, action) {
       };
     }
     case FETCH_CYCLE_METRICS_FAIL: {
-      return {
-        ...state,
-        error: action.error,
-        loading: false
-      }
-    }
-    case POST_CYCLE_METRICS: {
-      return {
-        ...state,
-        error: false,
-        loading: true
-      };
-    }
-    case POST_CYCLE_METRICS_SUCCESS: {
-      return {
-        ...state,
-        associateMetadata: newAssociateMetadata(state, action),
-        cycleAggr: newCycleAggr(state, action),
-        cycleMetadata: newCycleMetadata(state, action),
-        cycleMetrics: newCycleMetrics(state, action),
-        loading: false,
-      };
-    }
-    case POST_CYCLE_METRICS_FAIL: {
       return {
         ...state,
         error: action.error,

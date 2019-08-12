@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Link, withRouter } from 'react-router-dom';
 import styles from './NavBar.module.css';
 import { AppBar, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
-import { ArrowUpward, Autorenew, Home, Menu, Person } from '@material-ui/icons';
+import { Autorenew, Home, Menu, Person } from '@material-ui/icons';
+import SignInButton from '../auth/SignInButton';
+import SignOutButton from '../auth/SignOutButton';
 
 class NavBar extends Component {
   state = {
@@ -14,6 +17,7 @@ class NavBar extends Component {
   }
 
   render() {
+	  const { isSignedIn, history } = this.props;
     return (
       <>
         <div style={{ display: 'flex' }}>
@@ -25,11 +29,21 @@ class NavBar extends Component {
               onClick={this.clickHandler}>
               <Menu />
             </IconButton>
-            <Typography variant='h6' style={{ paddingTop: '8px' }}>Training Team DataViz</Typography>
-          </AppBar>
+			<Typography variant='h6' 
+				style={{ paddingTop: '8px', flexGrow: 1, cursor: 'pointer' }}
+				onClick={() => history.push('/')}>Training Team DataViz</Typography>
+			<div className={styles.Space}>
+				<div className={ isSignedIn ? '' : styles.Hide}>
+					<SignOutButton/>
+				</div>
+				<div className={ isSignedIn ? styles.Hide : ''}>
+					<SignInButton/>
+				</div>
+			</div>
+		  </AppBar>
         </div>
 
-        <Drawer open={this.state.sideDrawerOpen} onClose={this.clickHandler}>
+        <Drawer open={this.state.sideDrawerOpen && isSignedIn} onClose={this.clickHandler}>
           <div
             style={{ width: '250px' }}
             role="presentation"
@@ -63,15 +77,6 @@ class NavBar extends Component {
                   <ListItemText primary='Associates' />
                 </ListItem>
               </Link>
-
-              <Link to='/upload' className={styles.Link}>
-                <ListItem button>
-                  <ListItemIcon>
-                    <ArrowUpward />
-                  </ListItemIcon>
-                  <ListItemText primary='Upload' />
-                </ListItem>
-              </Link>
             </List>
           </div>
         </Drawer>
@@ -80,4 +85,8 @@ class NavBar extends Component {
   }
 }
 
-export default NavBar;
+const mapStateToProps = state => ({
+	isSignedIn: state.user.isSignedIn
+});
+  
+export default withRouter(connect(mapStateToProps)(NavBar));

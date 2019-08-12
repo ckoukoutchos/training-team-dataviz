@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCycleMetrics } from '../../redux/actions';
+import { fetchCycleMetrics } from '../../redux/actions/cycleActions';
 import MaterialTable from 'material-table';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
@@ -13,16 +13,17 @@ import styles from './Cycle.module.css';
 
 class Cycle extends Component {
   componentDidMount() {
-    const { cycle } = getUrlParams(this.props.history);
+	const { cycle } = getUrlParams(this.props.history);
     // only fetches if not already in memory
     if (!Object.keys(this.props.cycleAggr).includes(cycle)) {
-      this.props.fetchCycle(cycle);
+	  const fileId = this.props.cycleMetadata[cycle].fileId;
+      this.props.fetchCycle(cycle, fileId);
     }
   }
 
   render() {
     const { allCycleAggr, cycleAggr, cycleMetadata, cycleMetrics, history } = this.props;
-    const { url, cycle } = getUrlParams(history);
+	const { url, cycle } = getUrlParams(history);
 
     return (
       !this.props.loading && cycleAggr[cycle] && cycleMetadata[cycle] && cycleMetrics[cycle] && Object.keys(allCycleAggr).length ?
@@ -122,7 +123,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchCycle: (cycleName) => dispatch(fetchCycleMetrics(cycleName))
+  fetchCycle: (cycleName, fileId) => dispatch(fetchCycleMetrics(cycleName, fileId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cycle);

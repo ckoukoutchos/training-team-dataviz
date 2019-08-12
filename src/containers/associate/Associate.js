@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCycleMetrics } from '../../redux/actions';
+import { fetchCycleMetrics } from '../../redux/actions/cycleActions';
 import MaterialTable from 'material-table';
 import styles from './Associate.module.css';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
@@ -13,10 +13,11 @@ import Spinner from '../../components/spinner/Spinner';
 
 class Associate extends Component {
   componentDidMount() {
-    const { cycle } = getUrlParams(this.props.history);
+	const { cycle } = getUrlParams(this.props.history);
     // only fetches if not already in memory
     if (!Object.keys(this.props.cycleAggr).includes(cycle)) {
-      this.props.fetchCycle(cycle);
+	  const fileId = this.props.cycleMetadata[cycle].fileId;
+      this.props.fetchCycle(cycle, fileId);
     }
   }
 
@@ -96,11 +97,12 @@ const mapStateToProps = state => ({
   associateMetadata: state.cycles.associateMetadata,
   cycleAggr: state.cycles.cycleAggr,
   cycleMetrics: state.cycles.cycleMetrics,
-  loading: state.cycles.loading
+  loading: state.cycles.loading,
+  cycleMetadata: state.cycles.cycleMetadata
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchCycle: (cycleName) => dispatch(fetchCycleMetrics(cycleName))
+  fetchCycle: (cycleName, fileId) => dispatch(fetchCycleMetrics(cycleName, fileId))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Associate);

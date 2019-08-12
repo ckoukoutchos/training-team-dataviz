@@ -7,8 +7,8 @@ export default {
     'Optional Attendance'
   ],
   attendanceColors: ['gold', 'darkred', 'yellow', 'red', 'green'],
-  'Mastery Learning Portland 2019': 'mlPortland2019',
-  mlPortland2019: 'Mastery Learning Portland 2019',
+  'Mastery Learning Portland 2019': 'mlPortlandJanuary2019',
+  mlPortlandJanuary2019: 'Mastery Learning Portland 2019',
   moduleColors: [
     '#a50026',
     '#d73027',

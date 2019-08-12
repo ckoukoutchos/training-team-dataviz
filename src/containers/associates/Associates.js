@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchAllCyclesMetrics } from '../../redux/actions';
+import { fetchAllCyclesMetrics } from '../../redux/actions/cycleActions';
 import MaterialTable from 'material-table';
 import Spinner from '../../components/spinner/Spinner';
 import AssociateInfo from '../../components/associate-info/AssociateInfo';
@@ -52,7 +52,7 @@ class Associates extends Component {
               {
                 tooltip: 'Show Name',
                 render: rowData => {
-                  let cycleName = 'mlPortland2019';
+                  let cycleName = 'mlPortlandJanuary2019';
                   for (const cycle in cycleAggr) {
                     if (cycleAggr[cycle][rowData.name]) {
                       cycleName = cycle;
@@ -67,7 +67,7 @@ class Associates extends Component {
                 icon: 'search',
                 tooltip: 'View Associate',
                 onClick: (event, rowData) => {
-                  let cycleName = 'mlPortland2019';
+                  let cycleName = 'mlPortlandJanuary2019';
                   for (const cycle in cycleAggr) {
                     if (cycleAggr[cycle][rowData.name]) {
                       cycleName = cycle;

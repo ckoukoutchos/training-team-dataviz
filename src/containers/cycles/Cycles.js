@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MaterialTable from 'material-table';
 import styles from './Cycles.module.css';
-import { fetchAllCyclesMetrics } from '../../redux/actions';
+import { fetchAllCyclesMetrics } from '../../redux/actions/cycleActions';
 import { calcPercentiles, formatPercentile } from '../../shared/dataService';
 import CONSTS from '../../shared/constants';
 import CycleInfo from '../../components/cycle-info/CycleInfo';

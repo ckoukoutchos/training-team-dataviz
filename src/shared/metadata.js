@@ -9,7 +9,7 @@ export default {
     'Optional Attendance': 4
   },
   cycles: [
-    'mlPortland2019',
+    'mlPortlandJanuary2019',
     'tradChicagoApril2019',
     'tradDenverJune2019',
     'tradBostonJune2019',

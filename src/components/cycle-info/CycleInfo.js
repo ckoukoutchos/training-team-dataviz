@@ -4,8 +4,7 @@ import styles from './CycleInfo.module.css';
 
 const CycleInfo = props => {
   const { bodyOnly, cycleName, metadata } = props;
-
-  const nameSplit = cycleName.split(' ');
+  const nameSplit = cycleName.split('_');
   const cycleType = nameSplit.splice(0, 2).join(' ');
   const formattedName = nameSplit.splice(-3, 3).join(' ');
   const trainers = metadata['Trainer Start'].reduce((acc, curr) => (acc + curr.name + ' | '), '').slice(0, -2);
