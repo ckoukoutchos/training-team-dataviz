@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Button } from '@material-ui/core';
-import { signOut } from '../../redux/actions/signInActions';
+import { signOut } from '../../redux/actions';
 
 const SignOutButton = (props) => {
 	const logout = () => {

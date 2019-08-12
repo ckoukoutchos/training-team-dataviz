@@ -2,7 +2,7 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { CLIENT_ID, SCOPES } from '../../shared/config';
-import { signIn } from '../../redux/actions/signInActions';
+import { signIn } from '../../redux/actions';
 
 const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 
