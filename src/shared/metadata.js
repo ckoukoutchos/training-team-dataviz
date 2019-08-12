@@ -9,11 +9,11 @@ export default {
     'Optional Attendance': 4
   },
   cycles: [
-    'mlPortlandJanuary2019',
-    'tradChicagoApril2019',
-    'tradDenverJune2019',
-    'tradBostonJune2019',
-    'tradBaltimoreJuly2019'
+    'mlPortland2019',
+    'tradChicago2019',
+    'tradDenver2019',
+    'tradBoston2019',
+    'tradBaltimore2019'
   ],
   'Interaction Type': {
     quiz: 'Quiz',

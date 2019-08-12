@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   render() {
-    const { error } = this.props;
+	const { error } = this.props;
 
     return (
       <>

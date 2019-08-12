@@ -32,15 +32,19 @@ module.exports = class CycleService {
 	}
 
 	async processFiles(drive, files) {
-		const jsonData = files.map(async file => {
-			try {
-				let data = await this.retrieveCycleDataFromDrive(drive, file.id)
-				let cycleName = this.processCycleName(file.name);
-				return { fileId: file.id, name: cycleName, data: data };
-			} catch(err) {
-				throw err;
-			}
-		});
+		const jsonData = files
+			.filter((file) => {
+				return !config.BLACKLIST.includes(file.name);
+			})
+			.map(async file => {
+				try {
+					let data = await this.retrieveCycleDataFromDrive(drive, file.id)
+					let cycleName = this.processCycleName(file.name);
+					return { fileId: file.id, name: cycleName, data: data };
+				} catch(err) {
+					throw err;
+				}
+			});
 		return Promise.all(jsonData).then((data) => {
 			return data;
 		}).catch(err => {
@@ -51,13 +55,12 @@ module.exports = class CycleService {
 	processCycleName(fileName) {
 		let cycleNameArray = fileName.split('_');
 		let cycleName = '';
-		if(cycleNameArray.length > 4) {
-			let location = cycleNameArray[0];
-			let dateArray = cycleNameArray[1].split('-');
-			let monthNum = Number(dateArray[1]) - 1;
-			let type = cycleNameArray[3];
+		if(cycleNameArray.length > 6) {
+			let location = cycleNameArray[2];
+			let year = cycleNameArray[3];
+			let type = cycleNameArray[5];
 			cycleName += type.includes('Trad') ? 'trad' : 'ml';
-			cycleName += location + config.MONTHS[monthNum] + dateArray[0];
+			cycleName += location + year;
 		} else {
 			cycleName = fileName;
 		}

@@ -52,7 +52,7 @@ class Associates extends Component {
               {
                 tooltip: 'Show Name',
                 render: rowData => {
-                  let cycleName = 'mlPortlandJanuary2019';
+                  let cycleName = 'mlPortland2019';
                   for (const cycle in cycleAggr) {
                     if (cycleAggr[cycle][rowData.name]) {
                       cycleName = cycle;
@@ -67,7 +67,7 @@ class Associates extends Component {
                 icon: 'search',
                 tooltip: 'View Associate',
                 onClick: (event, rowData) => {
-                  let cycleName = 'mlPortlandJanuary2019';
+                  let cycleName = 'mlPortland2019';
                   for (const cycle in cycleAggr) {
                     if (cycleAggr[cycle][rowData.name]) {
                       cycleName = cycle;
