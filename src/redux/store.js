@@ -6,6 +6,7 @@ export default function configureStore() {
   const sagaMiddleware = createSagaMiddleware();
 
   return {
-	...createStore(rootReducer, applyMiddleware(sagaMiddleware))
+	...createStore(rootReducer, applyMiddleware(sagaMiddleware)),
+    runSagas: sagaMiddleware.run
   }
 }
