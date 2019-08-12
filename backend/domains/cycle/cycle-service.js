@@ -5,6 +5,11 @@ const CustomException = require("../../util/custom-exception");
 
 module.exports = class CycleService {
 
+	/**
+	 * Sets up the Google Drive client with access token.
+	 * @param {Request} req the incoming request
+	 * @returns a configured instance of the google drive client
+	 */
 	configureGoogleClient(req) {
 		const token = req.headers['x-access-token'];
 		const oAuth2Client = new google.auth.OAuth2();
@@ -12,6 +17,11 @@ module.exports = class CycleService {
 		return google.drive({version: 'v3', auth: oAuth2Client});
 	}
 
+	/**
+	 * The method called to retrieve all cycle data.
+	 * @param {Request} req the incoming request
+	 * @param {Response} res the outgoing response
+	 */
 	async retrieveAllCycleData(req, res) {
 		const drive = this.configureGoogleClient(req);
 		try {
@@ -31,6 +41,12 @@ module.exports = class CycleService {
 		}
 	}
 
+	/**
+	 * Processes the files which contain event data.
+	 * @param {Google} drive the google drive client
+	 * @param {Array} files the list of files to process
+	 * @returns {Array} event data for all cycles
+	 */
 	async processFiles(drive, files) {
 		const jsonData = files
 			.filter((file) => {
@@ -52,6 +68,11 @@ module.exports = class CycleService {
 		});
 	}
 
+	/**
+	 * Using the file name, parses a readable string for the cycle name.
+	 * @param {String} fileName the name of the event data file
+	 * @returns {String} a readable cycle name
+	 */
 	processCycleName(fileName) {
 		let cycleNameArray = fileName.split('_');
 		let cycleName = '';
@@ -67,6 +88,11 @@ module.exports = class CycleService {
 		return cycleName;
 	}
 
+	/**
+	 * Retrives a single cycle's event data.
+	 * @param {Request} req the incoming request
+	 * @param {Response} res the outgoing response
+	 */
 	async retrieveCycleData(req, res) {
 		const fileId = req.params.id;
 		const drive = this.configureGoogleClient(req);
@@ -78,6 +104,12 @@ module.exports = class CycleService {
 		}
 	}
 
+	/**
+	 * Retrieves cycle data from drive and converts it to json.
+	 * @param {Google} drive google drive client
+	 * @param {String} fileId file id to search for
+	 * @returns {JSON} cycle event data
+	 */
 	async retrieveCycleDataFromDrive(drive, fileId) {
 		try {
 			let cycleCsvData = await drive.files.export({

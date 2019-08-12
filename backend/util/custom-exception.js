@@ -1,3 +1,6 @@
+/**
+ * Custom exception class.
+ */
 class CustomException {
 
     constructor (code, message) {
