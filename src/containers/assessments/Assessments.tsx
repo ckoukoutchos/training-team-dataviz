@@ -54,7 +54,7 @@ class Assessemnts extends Component<AssessemntsProps> {
               {
                 icon: 'search',
                 tooltip: 'View Assessment',
-                onClick: (event, rowData) => {
+                onClick: (event: any, rowData: any) => {
                   history.push(`/assessment/projects/${rowData.name}`);
                 }
               }
@@ -83,7 +83,7 @@ class Assessemnts extends Component<AssessemntsProps> {
               {
                 icon: 'search',
                 tooltip: 'View Assessment',
-                onClick: (event, rowData) => {
+                onClick: (event: any, rowData: any) => {
                   history.push(`/assessment/quizzes/${rowData.name}`);
                 }
               }
@@ -111,7 +111,7 @@ class Assessemnts extends Component<AssessemntsProps> {
               {
                 icon: 'search',
                 tooltip: 'View Assessment',
-                onClick: (event, rowData) => {
+                onClick: (event: any, rowData: any) => {
                   history.push(`/assessment/softSkills/${rowData.name}`);
                 }
               }

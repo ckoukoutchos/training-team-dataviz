@@ -89,7 +89,7 @@ class Cycles extends Component<CyclesProps> {
             {
               icon: 'search',
               tooltip: 'View Cycle',
-              onClick: (event, rowData) => {
+              onClick: (event: any, rowData: any) => {
                 history.push(`/cycle/${CONSTS[rowData.name]}`);
               }
             }

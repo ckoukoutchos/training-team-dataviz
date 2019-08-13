@@ -235,10 +235,12 @@ export const formatCalendarDate = (date: string) => {
 export const formatCycleData = (
   metrics: Metric[],
   associates: Associate[],
-  cycleName: string
+  cycleName: string,
+  fileId: string
 ): Cycle => {
   const cycle = new Cycle();
   cycle.name = cycleName;
+  cycle.fileId = fileId;
   cycle.type = cycleName[0] === 'm' ? 'Mastery Learning' : 'Traditional Cycle';
   cycle.metrics = metrics;
   cycle.associates = associates;

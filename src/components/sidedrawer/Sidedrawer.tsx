@@ -68,15 +68,6 @@ const Sidedrawer = (props: SidedrawerProps) => {
               <ListItemText primary='Assessments' />
             </ListItem>
           </Link>
-
-          <Link to='/upload' className={styles.Link}>
-            <ListItem button>
-              <ListItemIcon>
-                <ArrowUpward />
-              </ListItemIcon>
-              <ListItemText primary='Upload' />
-            </ListItem>
-          </Link>
         </List>
       </div>
     </Drawer>

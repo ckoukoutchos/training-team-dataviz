@@ -30,12 +30,12 @@ export default {
   percentiles: [0.1, 0.25, 0.5, 0.75, 0.9],
   projectScore: 'Project (Score)',
   softSkills: 'Soft Skill Assessment',
-  tradChicagoApril2019: 'Traditional Cycle Chicago April 2019',
-  'Traditional Cycle Chicago April 2019': 'tradChicagoApril2019',
-  tradDenverJune2019: 'Traditional Cycle Denver June 2019',
-  'Traditional Cycle Denver June 2019': 'tradDenverJune2019',
-  tradBostonJune2019: 'Traditional Cycle Boston June 2019',
-  'Traditional Cycle Boston June 2019': 'tradBostonJune2019',
-  tradBaltimoreJuly2019: 'Traditional Cycle Baltimore July 2019',
-  'Traditional Cycle Baltimore July 2019': 'tradBaltimoreJuly2019'
-};
+  tradChicago2019: 'Traditional Cycle Chicago April 2019',
+  'Traditional Cycle Chicago April 2019': 'tradChicago2019',
+  tradDenver2019: 'Traditional Cycle Denver June 2019',
+  'Traditional Cycle Denver June 2019': 'tradDenver2019',
+  tradBoston2019: 'Traditional Cycle Boston June 2019',
+  'Traditional Cycle Boston June 2019': 'tradBoston2019',
+  tradBaltimore2019: 'Traditional Cycle Baltimore July 2019',
+  'Traditional Cycle Baltimore July 2019': 'tradBaltimore2019'
+}

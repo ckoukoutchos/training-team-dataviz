@@ -10,10 +10,10 @@ export default {
   },
   cycles: [
     'mlPortland2019',
-    'tradChicagoApril2019',
-    'tradDenverJune2019',
-    'tradBostonJune2019',
-    'tradBaltimoreJuly2019'
+    'tradChicago2019',
+    'tradDenver2019',
+    'tradBoston2019',
+    'tradBaltimore2019'
   ],
   'Interaction Type': {
     quizzes: 'Quiz',

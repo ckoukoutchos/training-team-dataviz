@@ -17,8 +17,10 @@ import Cycles from './containers/cycles/Cycles';
 import Overview from './containers/overview/Overview';
 import Modal from './components/modal/Modal';
 import NavBar from './components/nav-bar/NavBar';
-import Upload from './components/upload/Upload';
 import Spinner from './components/spinner/Spinner';
+import ProtectedRoute from './ProtectedRoute';
+import GoogleApi from './components/auth/GoogleApi';
+import SignInPage from './components/auth/SignInPage';
 
 interface AppProps {
   error: any | null;
@@ -42,25 +44,26 @@ class App extends Component<AppProps> {
         ) : (
           <main className={styles.Main}>
             <Switch>
-              <Route path='/cycle' exact component={Cycles} />
-              <Route path='/cycle/:cycle' exact component={Cycle} />
-              <Route path='/associate' exact component={Associates} />
-              <Route
+			  <Route path='/signin' exact component={SignInPage} />
+              <ProtectedRoute path='/cycle' exact component={Cycles} />
+              <ProtectedRoute path='/cycle/:cycle' exact component={Cycle} />
+              <ProtectedRoute path='/associate' exact component={Associates} />
+              <ProtectedRoute
                 path='/cycle/:cycle/associate/:associateName'
                 exact
                 component={Associate}
               />
-              <Route path='/assessment' exact component={Assessments} />
-              <Route
+              <ProtectedRoute path='/assessment' exact component={Assessments} />
+              <ProtectedRoute
                 path='/assessment/:type/:assessment'
                 exact
                 component={Assessment}
               />
-              <Route path='/upload' exact component={Upload} />
-              <Route path='/' component={Overview} />
+              <ProtectedRoute path='/' component={Overview} />
             </Switch>
           </main>
-        )}
+		)}
+		<GoogleApi />
 
         {error ? <Modal error={error} toggleModal={this.toggleModal} /> : null}
       </>

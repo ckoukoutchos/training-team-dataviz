@@ -106,6 +106,7 @@ export class Cycle {
   endDate: string | null;
   metrics: Metric[];
   name: string;
+  fileId: string;
   startDate: string;
   totalNumberOfAssociates: number;
   trainers: string[];
@@ -118,7 +119,8 @@ export class Cycle {
     this.currentNumberOfAssociates = 0;
     this.endDate = null;
     this.metrics = [];
-    this.name = '';
+	this.name = '';
+	this.fileId = '';
     this.startDate = '';
     this.totalNumberOfAssociates = 0;
     this.trainers = [];
@@ -149,3 +151,4 @@ export interface Module {
   startDate: string | null;
   type: string;
 }
+
