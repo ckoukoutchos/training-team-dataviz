@@ -1,9 +1,10 @@
-import { put, all, takeEvery, select } from 'redux-saga/effects';
+import { put, all, takeEvery, select, delay } from 'redux-saga/effects';
 import axios from 'axios';
 import { FETCH_ALL_CYCLES_METRICS } from '../actionTypes';
 import {
   fetchAllCyclesMetricsSuccess,
-  fetchAllCyclesMetricsFail
+  fetchAllCyclesMetricsFail,
+  signOut
 } from '../actions';
 import {
   sortMetircsByAssociate,
@@ -51,7 +52,12 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
       )
     );
   } catch (err) {
-    yield put(fetchAllCyclesMetricsFail(err));
+	if(err.message && err.message.includes('401')) {
+		let auth2 = gapi.auth2.getAuthInstance();
+		yield auth2.signOut();
+		yield put(signOut());
+	}
+	yield put(fetchAllCyclesMetricsFail(err));
   }
 }
 

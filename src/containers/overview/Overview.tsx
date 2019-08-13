@@ -22,7 +22,6 @@ interface OverviewProps {
 class Overview extends Component<OverviewProps> {
   componentDidMount() {
     if (!this.props.cycles.length) {
-		console.log(this.props.cycles.length + 'no cycle data! fetching...')
       this.props.fetchAllCycles();
     }
   }

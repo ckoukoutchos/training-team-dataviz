@@ -10,6 +10,8 @@
     "@nivo/calendar": "^0.59.1",
     "@nivo/line": "^0.59.3",
     "@nivo/radar": "^0.59.1",
+    "@types/gapi": "0.0.39",
+    "@types/gapi.auth2": "0.0.50",
     "@types/jest": "^24.0.16",
     "@types/node": "^12.6.9",
     "@types/react": "^16.8.24",

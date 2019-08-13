@@ -19,7 +19,6 @@ const signInReducer = (state: SignInState = initialState, action: ActionTypes): 
     case SIGN_IN: {
 		const userAuth = action.user.getAuthResponse(true);
 		return {
-			...state,
 			isSignedIn: true,
 			token: userAuth.access_token,
 			loading: false,
@@ -28,7 +27,6 @@ const signInReducer = (state: SignInState = initialState, action: ActionTypes): 
 	}
     case SIGN_OUT: {
 		return {
-			...state,
 			isSignedIn: false,
 			token: '',
 			loading: false,

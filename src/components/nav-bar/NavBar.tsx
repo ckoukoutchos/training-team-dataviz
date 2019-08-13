@@ -42,7 +42,7 @@ class NavBar extends Component<any, NavBarState> {
 			<Typography variant='h6'
 				style={{ paddingTop: '8px', flexGrow: 1, cursor: 'pointer' }}
 				onClick={() => history.push('/')}>
-            	Training Team DataViz
+            	Beta Training Team DataViz
             </Typography>
 			<div className={styles.Space}>
 				<div className={ isSignedIn ? '' : styles.Hide}>
