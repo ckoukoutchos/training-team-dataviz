@@ -42,14 +42,16 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
       allCycleAggregations,
       cycleAggregations,
       formattedCycles,
-      assessmentAggregations
+	  assessmentAggregations,
+	  cycleMetadata
     } = formatAllCycleData(data);
     yield put(
       fetchAllCyclesMetricsSuccess(
         allCycleAggregations,
         cycleAggregations,
         formattedCycles,
-        assessmentAggregations
+		assessmentAggregations,
+		cycleMetadata
       )
     );
   } catch (err) {
@@ -62,7 +64,8 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
   }
 }
 
-const getCycleData = (data: any, fileId: string, cycleName: string) => {
+const getCycleData = (data: any, metadata: any) => {
+  const cycleName = metadata.name;
   // sort by associate
   const sortedMetrics = sortMetircsByAssociate(data);
   // pull out cycle specific metrics
@@ -76,7 +79,7 @@ const getCycleData = (data: any, fileId: string, cycleName: string) => {
     cycleMetrics,
     formattedAssociates,
 	cycleName,
-	fileId
+	metadata.fileId
   );
   // get associate level aggregations
   const associateAggregations = getAssociateAggregations(formattedAssociates);
@@ -85,6 +88,7 @@ const getCycleData = (data: any, fileId: string, cycleName: string) => {
     associateAggregations,
     cycleName
   );
+
   // get assessment level aggregations
   return { formattedCycle, cycleAggregation };
 };
@@ -92,14 +96,18 @@ const getCycleData = (data: any, fileId: string, cycleName: string) => {
 const formatAllCycleData = (data: any) => {
   const formattedCycles = [];
   const cycleAggregations = [];
+  const cycleMetadata = {};
 
   // for each cycle, collect data
   for (let i = 0; i < data.length; i++) {
+	const metadata = data[i].metadata;
     const { formattedCycle, cycleAggregation } = getCycleData(
-		data[i].data, data[i].fileId, data[i].name
+		data[i].data, metadata
     );
     cycleAggregations.push(cycleAggregation);
-    formattedCycles.push(formattedCycle);
+	formattedCycles.push(formattedCycle);
+	cycleMetadata[metadata.name] = metadata.formattedName;
+	cycleMetadata[metadata.formattedName] = metadata.name;
   }
   // get overall aggregations
   const allCycleAggregations = getAllCyclesAggregations(cycleAggregations);
@@ -118,5 +126,5 @@ const formatAllCycleData = (data: any) => {
     )
   };
 
-  return { allCycleAggregations, cycleAggregations, formattedCycles, assessmentAggregations };
+  return { allCycleAggregations, cycleAggregations, formattedCycles, assessmentAggregations, cycleMetadata };
 };

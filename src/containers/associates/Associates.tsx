@@ -19,6 +19,7 @@ interface AssociatesProps {
   allCycleAggregations: any;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
+  lookup: any;
   history: History;
 }
 
@@ -100,7 +101,8 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
     const {
       allCycleAggregations,
       cycleAggregations,
-      cycles,
+	  cycles,
+	  lookup,
       history
     } = this.props;
     const { showInactive } = this.state;
@@ -148,10 +150,12 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
             {
               tooltip: 'Show Details',
               render: (rowData: any) => {
+				const associate = getItemInArrayByName(associates, rowData.name);
                 return (
                   <AssociateInfo
-                    bodyOnly
-                    associate={getItemInArrayByName(associates, rowData.name)}
+					bodyOnly
+					cycleName={lookup[associate.cycle]}
+                    associate={associate}
                   />
                 );
               }
@@ -183,7 +187,8 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
   cycleAggregations: state.metrics.cycleAggregations,
-  cycles: state.metrics.cycles
+  cycles: state.metrics.cycles,
+  lookup: state.metadata.cycleNameLookup
 });
 
 export default connect(mapStateToProps)(Associates);

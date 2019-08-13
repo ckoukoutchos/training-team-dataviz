@@ -55,8 +55,13 @@ module.exports = class CycleService {
 			.map(async file => {
 				try {
 					let data = await this.retrieveCycleDataFromDrive(drive, file.id)
-					let cycleName = this.processCycleName(file.name);
-					return { fileId: file.id, name: cycleName, data: data };
+					let { name, formattedName } = this.processCycleKeyAndName(file.name);
+					return { 
+						metadata: {
+							fileId: file.id, name: name, formattedName: formattedName
+						},
+						data: data 
+					};
 				} catch(err) {
 					throw err;
 				}
@@ -73,19 +78,23 @@ module.exports = class CycleService {
 	 * @param {String} fileName the name of the event data file
 	 * @returns {String} a readable cycle name
 	 */
-	processCycleName(fileName) {
+	processCycleKeyAndName(fileName) {
 		let cycleNameArray = fileName.split('_');
 		let cycleName = '';
+		let cycleFormattedName = '';
 		if(cycleNameArray.length > 6) {
 			let location = cycleNameArray[2];
 			let year = cycleNameArray[3];
 			let type = cycleNameArray[5];
-			cycleName += type.includes('Trad') ? 'trad' : 'ml';
-			cycleName += location + year;
+			// process cycle key
+			cycleName = type.toLowerCase() + location + year;
+			// process cycle formatted name
+			cycleFormattedName = `${type.includes('ML') ? 'Mastery Learning' : `${type} Cycle`} ${location} ${year}`;
 		} else {
 			cycleName = fileName;
+			cycleFormattedName = cycleNameArray.join(' ');
 		}
-		return cycleName;
+		return { name: cycleName, formattedName: cycleFormattedName };
 	}
 
 	/**

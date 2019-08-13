@@ -2,16 +2,16 @@ import React from 'react';
 import { Divider, Paper, Typography } from '@material-ui/core';
 import styles from './AssociateInfo.module.css';
 import { calcDaysSince } from '../../shared/dataService';
-import CONSTS from '../../shared/constants';
 import { Associate } from '../../models/types';
 
 interface AssociateInfoProps {
   associate: Associate;
+  cycleName: string;
   bodyOnly?: boolean;
 }
 
 const AssociateInfo = (props: AssociateInfoProps) => {
-  const { associate, bodyOnly } = props;
+  const { associate, cycleName, bodyOnly } = props;
 
   const infoBody = (
     <div className={styles.BodyOnly}>
@@ -52,7 +52,7 @@ const AssociateInfo = (props: AssociateInfoProps) => {
       <div className={styles.Header}>
         <Typography variant='h3'>{associate.name}</Typography>
         <Typography variant='h6' color='textSecondary'>
-          {CONSTS[associate.cycle]}
+          {cycleName}
         </Typography>
       </div>
 

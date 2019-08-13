@@ -16,7 +16,6 @@ import {
   formatPercentile,
   calcPercentiles
 } from '../../shared/dataService';
-import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 import {
   Cycle,
@@ -31,6 +30,7 @@ interface CycleProps {
   allCycleAggregations: CycleAggregation;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
+  lookup: any;
   history: History;
 }
 
@@ -105,7 +105,8 @@ class CycleView extends Component<CycleProps, CycleState> {
     const {
       allCycleAggregations,
       cycleAggregations,
-      cycles,
+	  cycles,
+	  lookup,
       history
     } = this.props;
     const { showInactive } = this.state;
@@ -117,7 +118,7 @@ class CycleView extends Component<CycleProps, CycleState> {
       <div className={styles.Wrapper}>
         <Breadcrumbs path={url} root='cycle' />
 
-        <CycleInfo cycleName={CONSTS[cycleName]} cycle={cycle} />
+        <CycleInfo cycleName={lookup[cycleName]} cycle={cycle} />
 
         <RadarGraph
           title='Running Averages of Assessments'
@@ -195,15 +196,16 @@ class CycleView extends Component<CycleProps, CycleState> {
             detailPanel={[
               {
                 tooltip: 'Show Details',
-                render: (rowData: any) => (
-                  <AssociateInfo
-                    bodyOnly
-                    associate={getItemInArrayByName(
-                      cycle.associates,
-                      rowData.name
-                    )}
-                  />
-                )
+                render: (rowData: any) => {
+					const associate = getItemInArrayByName(cycle.associates, rowData.name);
+					return (
+					  <AssociateInfo
+						bodyOnly
+						cycleName={lookup[associate.cycle]}
+						associate={associate}
+					  />
+					);
+				  }
               }
             ]}
             actions={[
@@ -229,7 +231,8 @@ class CycleView extends Component<CycleProps, CycleState> {
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
   cycleAggregations: state.metrics.cycleAggregations,
-  cycles: state.metrics.cycles
+  cycles: state.metrics.cycles,
+  lookup: state.metadata.cycleNameLookup
 });
 
 export default connect(mapStateToProps)(CycleView);
