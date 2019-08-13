@@ -1,4 +1,5 @@
-import { put, all, takeEvery, select, delay } from 'redux-saga/effects';
+/* global gapi */
+import { put, all, takeEvery, select } from 'redux-saga/effects';
 import axios from 'axios';
 import { FETCH_ALL_CYCLES_METRICS } from '../actionTypes';
 import {
