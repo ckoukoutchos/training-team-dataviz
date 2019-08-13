@@ -19,6 +19,7 @@ interface AssociateProps {
   allCycleAggregations: CycleAggregation;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
+  lookup: any;
   history: History;
 }
 
@@ -27,7 +28,8 @@ class AssociateView extends Component<AssociateProps> {
     const {
       allCycleAggregations,
       cycleAggregations,
-      cycles,
+	  cycles,
+	  lookup,
       history
     } = this.props;
     const { url, cycle: cycleName, associate: associateName } = getUrlParams(
@@ -45,7 +47,7 @@ class AssociateView extends Component<AssociateProps> {
       <div className={styles.Wrapper}>
         <Breadcrumbs path={url} root='cycle' />
 
-        <AssociateInfo associate={associate} />
+        <AssociateInfo associate={associate} cycleName={lookup[cycleName]} />
 
         <RadarGraph
           title='Running Average of Assesments'
@@ -121,7 +123,8 @@ class AssociateView extends Component<AssociateProps> {
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
   cycleAggregations: state.metrics.cycleAggregations,
-  cycles: state.metrics.cycles
+  cycles: state.metrics.cycles,
+  lookup: state.metadata.cycleNameLookup
 });
 
 export default connect(mapStateToProps)(AssociateView);

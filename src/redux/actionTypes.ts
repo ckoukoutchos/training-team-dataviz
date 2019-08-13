@@ -25,6 +25,7 @@ interface FetchAllCycleMetricsSuccess {
   cycleAggregations: CycleAggregation[];
   formattedCycles: Cycle[];
   assessmentAggregations: any;
+  cycleMetadata: any;
 }
 
 interface ResetError {

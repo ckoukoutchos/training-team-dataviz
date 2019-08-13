@@ -6,7 +6,6 @@ import { AppState } from '../../redux/reducers/rootReducer';
 import { ActionTypes } from '../../redux/actionTypes';
 import { fetchAllCyclesMetrics } from '../../redux/actions';
 import { Cycle } from '../../models/types';
-import CONSTS from '../../shared/constants';
 
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import ExpansionPanel from '../../components/expansion-panel/ExpansionPanel';
@@ -16,6 +15,7 @@ import MLCycleProgress from '../../components/progression/ml-cycle-progress/MLCy
 
 interface OverviewProps {
   cycles: Cycle[];
+  lookup: any;
   fetchAllCycles: () => ActionTypes;
 }
 
@@ -27,7 +27,7 @@ class Overview extends Component<OverviewProps> {
   }
 
   render() {
-    const { cycles } = this.props;
+    const { cycles, lookup } = this.props;
 
     const cycleProgressions = cycles.map((cycle: Cycle, index: number) => {
       if (cycle.type !== 'Mastery Learning') {
@@ -36,10 +36,7 @@ class Overview extends Component<OverviewProps> {
             item={cycle}
             key={index}
             subtitle={cycle.type}
-            title={CONSTS[cycle.name]
-              .split(' ')
-              .slice(2)
-              .join(' ')}
+            title={lookup[cycle.name]}
           >
             <ExpansionPanel>
               <CycleInfo bodyOnly cycle={cycle} cycleName={cycle.name} />
@@ -52,10 +49,7 @@ class Overview extends Component<OverviewProps> {
             cycle={cycle}
             key={index}
             subtitle={cycle.type}
-            title={CONSTS[cycle.name]
-              .split(' ')
-              .slice(2)
-              .join(' ')}
+            title={lookup[cycle.name]}
           >
             <ExpansionPanel>
               <CycleInfo bodyOnly cycle={cycle} cycleName={cycle.name} />
@@ -75,7 +69,8 @@ class Overview extends Component<OverviewProps> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  cycles: state.metrics.cycles
+  cycles: state.metrics.cycles,
+  lookup: state.metadata.cycleNameLookup
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

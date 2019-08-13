@@ -18,13 +18,15 @@ export const fetchAllCyclesMetricsSuccess = (
   allCycleAggregations: any,
   cycleAggregations: CycleAggregation[],
   formattedCycles: Cycle[],
-  assessmentAggregations: any
+  assessmentAggregations: any,
+  cycleMetadata: any
 ): ActionTypes => ({
   type: FETCH_ALL_CYCLES_METRICS_SUCCESS,
   allCycleAggregations,
   cycleAggregations,
   formattedCycles,
-  assessmentAggregations
+  assessmentAggregations,
+  cycleMetadata
 });
 
 export const fetchAllCyclesMetricsFail = (error: any): ActionTypes => ({

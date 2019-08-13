@@ -13,7 +13,6 @@ import {
   getItemInArrayByName
 } from '../../shared/dataService';
 import styles from './Cycles.module.css';
-import CONSTS from '../../shared/constants';
 import { CycleAggregation, Cycle } from '../../models/types';
 
 import CycleInfo from '../../components/cycle-info/CycleInfo';
@@ -22,6 +21,7 @@ interface CyclesProps {
   allCycleAggregations: any;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
+  lookup: any;
   history: History;
   fetchAllCycles: () => ActionTypes;
 }
@@ -31,7 +31,8 @@ class Cycles extends Component<CyclesProps> {
     const {
       allCycleAggregations,
       cycleAggregations,
-      cycles,
+	  cycles,
+	  lookup,
       history
     } = this.props;
 
@@ -46,7 +47,7 @@ class Cycles extends Component<CyclesProps> {
             { title: 'Soft Skills', field: 'softSkillsAvg' }
           ]}
           data={cycleAggregations.map((aggregation: CycleAggregation) => ({
-            name: CONSTS[aggregation.name],
+            name: lookup[aggregation.name],
             projectAvg: `${aggregation.projects}% / ${formatPercentile(
               calcPercentiles(
                 allCycleAggregations.projectScores,
@@ -77,7 +78,7 @@ class Cycles extends Component<CyclesProps> {
               render: rowData => {
                 const cycle = getItemInArrayByName(
                   cycles,
-                  CONSTS[rowData.name]
+                  lookup[rowData.name]
                 );
                 return (
                   <CycleInfo bodyOnly cycleName={rowData.name} cycle={cycle} />
@@ -90,7 +91,7 @@ class Cycles extends Component<CyclesProps> {
               icon: 'search',
               tooltip: 'View Cycle',
               onClick: (event: any, rowData: any) => {
-                history.push(`/cycle/${CONSTS[rowData.name]}`);
+                history.push(`/cycle/${lookup[rowData.name]}`);
               }
             }
           ]}
@@ -103,7 +104,8 @@ class Cycles extends Component<CyclesProps> {
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
   cycleAggregations: state.metrics.cycleAggregations,
-  cycles: state.metrics.cycles
+  cycles: state.metrics.cycles,
+  lookup: state.metadata.cycleNameLookup
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

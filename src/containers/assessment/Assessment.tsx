@@ -18,12 +18,12 @@ import {
 } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
 import Metadata from '../../shared/metadata';
-import CONSTS from '../../shared/constants';
 import { Metric } from '../../models/types';
 
 interface AssessmentProps {
   allCycleAggregations: any;
   assessmentAggregations: any;
+  lookup: any;
   history: History;
 }
 
@@ -37,6 +37,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
   };
 
   getGraphData(assessment: any, maxScore: number) {
+	const { lookup } = this.props;
     let scoreDistribution: any = {
       '0': 0,
       '10': 0,
@@ -72,7 +73,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
     }
 
     const id = assessment.cycle
-      ? CONSTS[assessment.cycle]
+      ? lookup[assessment.cycle]
           .split(' ')
           .slice(2)
           .join(' ')
@@ -279,7 +280,8 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
 
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
-  assessmentAggregations: state.metrics.assessmentAggregations
+  assessmentAggregations: state.metrics.assessmentAggregations,
+  lookup: state.metadata.cycleNameLookup
 });
 
 export default connect(mapStateToProps)(Assessment);

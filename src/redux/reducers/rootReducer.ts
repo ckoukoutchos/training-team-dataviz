@@ -3,11 +3,13 @@ import metricsReducer from './metricsReducer';
 import sessionReducer from './sessionReducer';
 import signInReducer from './signInReducer';
 import { SIGN_OUT } from '../actionTypes';
+import metadataReducer from './metadataReducer';
 
 const appReducer = combineReducers({
   metrics: metricsReducer,
   session: sessionReducer,
-  user: signInReducer
+  user: signInReducer,
+  metadata: metadataReducer
 });
 
 const rootReducer = (state: any, action: any) => {
