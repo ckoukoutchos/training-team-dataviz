@@ -14,8 +14,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-	"suppressImplicitAnyIndexErrors": true,
-	"types": ["gapi", "gapi.auth2"]
+    "suppressImplicitAnyIndexErrors": true,
+    "types": []
   },
   "include": ["src"]
 }

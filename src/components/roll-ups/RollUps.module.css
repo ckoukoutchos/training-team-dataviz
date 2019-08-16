@@ -1,0 +1,105 @@
+.Paper {
+  margin: 16px auto;
+  padding: 8px;
+  width: 800px;
+}
+
+.Body {
+  align-items: center;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+}
+
+.Burst8 {
+  background: green;
+  width: 80px;
+  height: 80px;
+  position: relative;
+  text-align: center;
+  transform: rotate(20deg);
+}
+.Burst8:before {
+  background: green;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 80px;
+  width: 80px;
+  transform: rotate(135deg);
+}
+
+.Burst12 {
+  background: green;
+  width: 80px;
+  height: 80px;
+  position: relative;
+  text-align: center;
+}
+.Burst12:before,
+.Burst12:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 80px;
+  width: 80px;
+  background: green;
+}
+.Burst12:before {
+  transform: rotate(30deg);
+}
+.Burst12:after {
+  transform: rotate(60deg);
+}
+
+.Circle {
+  border-radius: 50%;
+  height: 100px;
+  width: 100px;
+}
+
+.Divider {
+  margin-top: 16px;
+}
+
+.Green {
+  background: green;
+}
+
+.Header {
+  padding-top: 8px;
+  text-align: center;
+}
+
+.Number1 {
+  color: white;
+  position: absolute;
+  left: 24px;
+  top: 3px;
+  z-index: 5;
+}
+
+.Number2 {
+  color: white;
+  position: absolute;
+  left: 10px;
+  top: -6px;
+  z-index: 5;
+}
+
+.Orange {
+  background: orange;
+}
+
+.Red {
+  background: red;
+}
+
+.Tooltip {
+  padding: 2px;
+  position: relative;
+  top: 6px;
+}

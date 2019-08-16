@@ -56,7 +56,7 @@ class MLAssociateProgress extends Component<
           },
           {
             id: 'React',
-            ranges: [70, 98],
+            ranges: [56, 98],
             measures: [modules.moduleLengths[3]],
             markers: []
           }
@@ -66,11 +66,11 @@ class MLAssociateProgress extends Component<
             id: 'Associate',
             ranges: modules.ranges,
             measures: [],
-            markers: [...calcDateMarkers(associate), 266]
+            markers: [...calcDateMarkers(associate), 238]
           },
           {
             id: 'Max Time',
-            ranges: [42, 70, 140, 210, 252, 266],
+            ranges: [42, 70, 140, 196, 224, 238],
             measures: [],
             markers: []
           }

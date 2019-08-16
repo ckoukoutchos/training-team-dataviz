@@ -18,7 +18,7 @@ import Overview from './containers/overview/Overview';
 import Modal from './components/modal/Modal';
 import NavBar from './components/nav-bar/NavBar';
 import Spinner from './components/spinner/Spinner';
-import ProtectedRoute from './ProtectedRoute';
+import ProtectedRoute from './HOC/ProtectedRoute';
 import GoogleApi from './components/auth/GoogleApi';
 import SignInPage from './components/auth/SignInPage';
 
@@ -44,7 +44,7 @@ class App extends Component<AppProps> {
         ) : (
           <main className={styles.Main}>
             <Switch>
-			  <Route path='/signin' exact component={SignInPage} />
+              <Route path='/signin' exact component={SignInPage} />
               <ProtectedRoute path='/cycle' exact component={Cycles} />
               <ProtectedRoute path='/cycle/:cycle' exact component={Cycle} />
               <ProtectedRoute path='/associate' exact component={Associates} />
@@ -53,7 +53,11 @@ class App extends Component<AppProps> {
                 exact
                 component={Associate}
               />
-              <ProtectedRoute path='/assessment' exact component={Assessments} />
+              <ProtectedRoute
+                path='/assessment'
+                exact
+                component={Assessments}
+              />
               <ProtectedRoute
                 path='/assessment/:type/:assessment'
                 exact
@@ -62,8 +66,8 @@ class App extends Component<AppProps> {
               <ProtectedRoute path='/' component={Overview} />
             </Switch>
           </main>
-		)}
-		<GoogleApi />
+        )}
+        <GoogleApi />
 
         {error ? <Modal error={error} toggleModal={this.toggleModal} /> : null}
       </>

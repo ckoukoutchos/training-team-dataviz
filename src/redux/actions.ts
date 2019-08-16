@@ -39,10 +39,10 @@ export const resetError = (): ActionTypes => ({
 });
 
 export const signIn = (user: any): ActionTypes => ({
-	type: SIGN_IN,
-	user
+  type: SIGN_IN,
+  user
 });
 
 export const signOut = (): ActionTypes => ({
-	type: SIGN_OUT
+  type: SIGN_OUT
 });
