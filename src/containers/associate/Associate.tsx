@@ -8,12 +8,21 @@ import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import Calendar from '../../components/calendar/Calendar';
 import MLAssociateProgress from '../../components/progression/ml-associate-progress/MLAssociateProgress';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
+import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
 
 import styles from './Associate.module.css';
-import { getUrlParams, getItemInArrayByName } from '../../shared/dataService';
+import {
+  getUrlParams,
+  getItemInArrayByName,
+  calcScoreAvg,
+  calcStandardDeviation,
+  calcDaysSince,
+  calcModulesLength
+} from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
-import { CycleAggregation, Cycle } from '../../models/types';
-import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
+import { CycleAggregation, Cycle, Associate } from '../../models/types';
+import Metadata from '../../shared/metadata';
+import RollUps from '../../components/roll-ups/RollUps';
 
 interface AssociateProps {
   allCycleAggregations: CycleAggregation;
@@ -28,8 +37,8 @@ class AssociateView extends Component<AssociateProps> {
     const {
       allCycleAggregations,
       cycleAggregations,
-	  cycles,
-	  lookup,
+      cycles,
+      lookup,
       history
     } = this.props;
     const { url, cycle: cycleName, associate: associateName } = getUrlParams(
@@ -49,9 +58,16 @@ class AssociateView extends Component<AssociateProps> {
 
         <AssociateInfo associate={associate} cycleName={lookup[cycleName]} />
 
+        <RollUps
+          cycleAggregation={cycleAggregation}
+          associateAggregation={associateAggregation}
+          cycle={cycle}
+          associate={associate}
+        />
+
         <RadarGraph
-          title='Running Average of Assesments'
-          subtitle='Compared to Cycle & Training Averages'
+          title='Assessments'
+          subtitle='Project, Quiz, and Soft Skill Averages'
           keys={[associateName, 'Cycle Average', 'Training Average']}
           index='avg'
           data={[

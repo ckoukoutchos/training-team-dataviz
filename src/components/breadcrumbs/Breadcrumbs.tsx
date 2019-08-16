@@ -46,7 +46,7 @@ const breadcrumbs = (props: BreadcrumbsProps) => {
 };
 
 const mapStateToProps = (state: AppState) => ({
-	lookup: state.metadata.cycleNameLookup
-  });
-  
+  lookup: state.metadata.cycleNameLookup
+});
+
 export default connect(mapStateToProps)(breadcrumbs);

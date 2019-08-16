@@ -33,12 +33,12 @@ interface ResetError {
 }
 
 interface SignIn {
-    type: typeof SIGN_IN,
-    user: any;
+  type: typeof SIGN_IN,
+  user: any;
 }
 
 interface SignOut {
-    type: typeof SIGN_OUT
+  type: typeof SIGN_OUT
 }
 
 export type ActionTypes =

@@ -37,7 +37,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
   };
 
   getGraphData(assessment: any, maxScore: number) {
-	const { lookup } = this.props;
+    const { lookup } = this.props;
     let scoreDistribution: any = {
       '0': 0,
       '10': 0,

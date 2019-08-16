@@ -29,38 +29,39 @@ export default function* watchCycle() {
 }
 
 function* getHeaders() {
-	const token = yield select(getToken);
-	return { headers: { 'x-access-token': token }};
+  const token = yield select(getToken);
+  return { headers: { 'x-access-token': token } };
 }
 
 function* fetchAllCyclesMetrics(): IterableIterator<{}> {
   try {
-	const headers = yield getHeaders();
-	const res = yield axios.get('/api/cycle', headers);
-	const data = res.data;
+    const headers = yield getHeaders();
+    const res = yield axios.get('/api/cycle', headers);
+    const data = res.data;
     const {
       allCycleAggregations,
       cycleAggregations,
       formattedCycles,
-	  assessmentAggregations,
-	  cycleMetadata
+      assessmentAggregations,
+      cycleMetadata
     } = formatAllCycleData(data);
     yield put(
       fetchAllCyclesMetricsSuccess(
         allCycleAggregations,
         cycleAggregations,
         formattedCycles,
-		assessmentAggregations,
-		cycleMetadata
+        assessmentAggregations,
+        cycleMetadata
       )
     );
   } catch (err) {
-	if(err.message && err.message.includes('401')) {
-		let auth2 = gapi.auth2.getAuthInstance();
-		yield auth2.signOut();
-		yield put(signOut());
-	}
-	yield put(fetchAllCyclesMetricsFail(err));
+    if (err.message && err.message.includes('401')) {
+      //@ts-ignore
+      let auth2 = gapi.auth2.getAuthInstance();
+      yield auth2.signOut();
+      yield put(signOut());
+    }
+    yield put(fetchAllCyclesMetricsFail(err));
   }
 }
 
@@ -78,8 +79,8 @@ const getCycleData = (data: any, metadata: any) => {
   const formattedCycle = formatCycleData(
     cycleMetrics,
     formattedAssociates,
-	cycleName,
-	metadata.fileId
+    cycleName,
+    metadata.fileId
   );
   // get associate level aggregations
   const associateAggregations = getAssociateAggregations(formattedAssociates);
@@ -100,14 +101,14 @@ const formatAllCycleData = (data: any) => {
 
   // for each cycle, collect data
   for (let i = 0; i < data.length; i++) {
-	const metadata = data[i].metadata;
+    const metadata = data[i].metadata;
     const { formattedCycle, cycleAggregation } = getCycleData(
-		data[i].data, metadata
+      data[i].data, metadata
     );
     cycleAggregations.push(cycleAggregation);
-	formattedCycles.push(formattedCycle);
-	cycleMetadata[metadata.name] = metadata.formattedName;
-	cycleMetadata[metadata.formattedName] = metadata.name;
+    formattedCycles.push(formattedCycle);
+    cycleMetadata[metadata.name] = metadata.formattedName;
+    cycleMetadata[metadata.formattedName] = metadata.name;
   }
   // get overall aggregations
   const allCycleAggregations = getAllCyclesAggregations(cycleAggregations);

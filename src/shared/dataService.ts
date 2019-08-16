@@ -134,6 +134,15 @@ export const calcScoreAvg = (scores: number[]): number => {
   return scores.length ? Math.round(total / scores.length) : 0;
 };
 
+export const calcStandardDeviation = (scores: number[]): number => {
+  const scoreAvg = calcScoreAvg(scores);
+  const meanSquares = scores.map((score: any) =>
+    Math.pow(score - scoreAvg, 2)
+  );
+  const meanSquaresAvg = calcScoreAvg(meanSquares);
+  return Math.round(Math.sqrt(meanSquaresAvg));
+}
+
 export const combineScores = (
   cycles: CycleAggregation[],
   type: string
