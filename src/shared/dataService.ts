@@ -8,30 +8,33 @@ import {
   CycleAggregation
 } from '../models/types';
 
-export const calcDaysSince = (startDate: string, endDate?: string) => {
-  // format as Date object
-  const startDateSplit = startDate.split('/');
-  const startDateObj = new Date(
-    Number('20' + startDateSplit[2]),
-    Number(startDateSplit[0]) - 1,
-    Number(startDateSplit[1])
-  );
+export const calcDaysInModules = (modules: Module[], exitDate: Date | null): Module[] => {
+  modules.forEach((module: Module) => {
+    if (module.startDate && module.endDate) {
+      module.daysInModule = calcDaysSince(module.startDate, module.endDate);
+      // if module started but cut short by cycle exit
+    } else if (module.startDate && !module.endDate && exitDate) {
+      module.daysInModule = calcDaysSince(module.startDate, exitDate)
+    } else if (module.startDate) {
+      module.daysInModule = calcDaysSince(module.startDate);
+    }
+    // subtract module pause period
+    if (module.modulePause && module.moduleResume) {
+      module.daysInModule -= calcDaysSince(module.modulePause, module.moduleResume);
+    } else if (module.modulePause) {
+      module.daysInModule -= calcDaysSince(module.modulePause);
+    }
+  });
+  return modules;
+}
 
+export const calcDaysSince = (startDate: Date, endDate?: Date | null): number => {
   if (endDate) {
-    // if end date provided, format as Date object and calc time btw start and end
-    const endDateSplit = endDate.split('/');
-    const endDateObj = new Date(
-      Number('20' + endDateSplit[2]),
-      Number(endDateSplit[0]) - 1,
-      Number(endDateSplit[1])
-    );
-    const cycleLength =
-      (endDateObj.valueOf() - startDateObj.valueOf()) / 86400000;
-    return Math.round(cycleLength);
+    return Math.round((endDate.valueOf() - startDate.valueOf()) / 86400000);
   } else {
     // if no end date, calc time btw now and start
-    const daysSinceStart = (Date.now() - startDateObj.valueOf()) / 86400000;
-    return Math.round(daysSinceStart);
+    return Math.round((Date.now() - startDate.valueOf()) / 86400000);
+
   }
 };
 
@@ -82,6 +85,7 @@ export const calcAssessmentAvg = (
 export const calcDateMarkers = (associate: Associate) => {
   return associate.modules.map(module => {
     if (module.startDate) {
+      //@ts-ignore
       return Math.round(calcDaysSince(associate.startDate, module.startDate));
     }
     return 0;
@@ -153,6 +157,15 @@ export const combineScores = (
   );
 };
 
+export const convertStringToDateObject = (date: string): Date => {
+  const splitDate = date.split('/');
+  return new Date(
+    Number('20' + splitDate[2]),
+    Number(splitDate[0]) - 1,
+    Number(splitDate[1])
+  );
+}
+
 export const formatAssociateData = (
   metrics: Metric[],
   cycle: string
@@ -172,22 +185,30 @@ export const formatAssociateData = (
     switch (type) {
       case 'Module Completed':
         if (module) {
-          module.endDate = metric.Date;
+          module.endDate = convertStringToDateObject(metric.Date);
         }
         break;
       case 'Module Started':
         if (module) {
-          module.startDate = metric.Date;
+          module.startDate = convertStringToDateObject(metric.Date);
           module.type = metric.Interaction;
         }
         break;
+      case 'Module Pause':
+        if (module) {
+          module.modulePause = convertStringToDateObject(metric.Date);
+        }
+      case 'Module Resume':
+        if (module) {
+          module.moduleResume = convertStringToDateObject(metric.Date);
+        }
       case 'Associate Start':
         associate.active = true;
-        associate['startDate'] = metric.Date;
+        associate['startDate'] = convertStringToDateObject(metric.Date);
         break;
       case 'Attendance Event':
         associate.attendance.push({
-          date: metric.Date,
+          date: convertStringToDateObject(metric.Date),
           type: metric.Interaction
         });
         break;
@@ -209,13 +230,16 @@ export const formatAssociateData = (
     // multiple exit types, boolean check simpler than cases
     if (RegExp('Cycle Exit').test(type)) {
       associate.active = false;
-      associate['endDate'] = metric.Date;
+      associate.endDate = convertStringToDateObject(metric.Date);
       // Interaction for graduates is empty string
       associate.exitReason = metric.Interaction
         ? metric.Interaction
         : 'Graduated';
     }
   }
+  associate.daysInCycle = calcDaysSince(associate.startDate, associate.endDate);
+  associate.modules = calcDaysInModules(associate.modules, associate.endDate);
+
   return associate;
 };
 
@@ -251,23 +275,22 @@ export const formatCycleData = (
   cycle.name = cycleName;
   cycle.fileId = fileId;
   cycle.type = cycleName[0] === 'm' ? 'Mastery Learning' : 'Traditional Cycle';
-  cycle.metrics = metrics;
   cycle.associates = associates;
 
-  const cycleAssociateCount = getCycleAssociateCount(associates);
-  cycle.totalNumberOfAssociates = cycleAssociateCount[0];
-  cycle.currentNumberOfAssociates = cycleAssociateCount[1];
+  const [total, current] = getCycleAssociateCount(associates);
+  cycle.totalNumberOfAssociates = total;
+  cycle.currentNumberOfAssociates = current;
 
   for (const metric of metrics) {
     const type = metric['Interaction Type'];
 
     switch (type) {
       case 'Cycle Start Date':
-        cycle.startDate = metric.Date;
+        cycle.startDate = convertStringToDateObject(metric.Date);
         cycle.active = true;
         break;
       case 'Cycle End Date':
-        cycle.endDate = metric.Date;
+        cycle.endDate = convertStringToDateObject(metric.Date);
         cycle.active = false;
         break;
       case 'Staff change':
@@ -369,16 +392,6 @@ export const getCycleAssociateCount = (associates: Associate[]): number[] => {
   return [associates.length, activeCount.length];
 };
 
-export const getCycleMetrics = (metrics: Metric[][]): Metric[] => {
-  // find metric array with cycle data
-  const index = metrics.findIndex(
-    metrics =>
-      Metadata.staff.includes(metrics[0].Person) || metrics[0].Person === ''
-  );
-  // remove from associate metrics array and return it
-  return metrics.splice(index, 1)[0];
-};
-
 export const formatAssessments = (assessments: Metric[], maxScores: any): any[] => {
   const formattedAssessments = {};
   // format into obj for each assessment
@@ -464,28 +477,28 @@ export const sortMetricsByAssessmentType = (cycles: Cycle[]) => {
   return { projects, quizzes, softSkills };
 };
 
-export const sortMetircsByAssociate = (metrics: Metric[]): Metric[][] => {
+export const sortMetircsByPerson = (metrics: Metric[]): { associates: Metric[][], cycle: { [key: string]: Metric[] }, staff: Metric[][] } => {
   const associates = {};
+  const cycle = {};
+  const staff = {};
 
   for (const metric of metrics) {
-    // ignore training staff and empty Person
+    // associates
     if (!Metadata.staff.includes(metric.Person) && metric.Person !== '') {
-      // if associate already added, push metric
-      if (associates[metric.Person]) {
-        associates[metric.Person].push(metric);
-      } else {
-        // if field doesn't exist, add one
+      associates[metric.Person] ?
+        associates[metric.Person].push(metric) :
         associates[metric.Person] = [metric];
-      }
+      // cycles
+    } else if (metric.Person === '') {
+      cycle[metric['Interaction Type']] ?
+        cycle[metric['Interaction Type']].push(metric) :
+        cycle[metric['Interaction Type']] = [metric];
+      // staff
     } else {
-      // if cycle already added, push metric
-      if (associates['cycle']) {
-        associates['cycle'].push(metric);
-      } else {
-        // if field doesn't exist, add one
-        associates['cycle'] = [metric];
-      }
+      staff[metric.Person] ?
+        staff[metric.Person].push(metric) :
+        staff[metric.Person] = [metric];
     }
   }
-  return Object.values(associates);
+  return { associates: Object.values(associates), cycle, staff: Object.values(staff) };
 };

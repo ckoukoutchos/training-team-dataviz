@@ -8,9 +8,8 @@ import {
   signOut
 } from '../actions';
 import {
-  sortMetircsByAssociate,
+  sortMetircsByPerson,
   formatAssociateData,
-  getCycleMetrics,
   formatCycleData,
   getAssociateAggregations,
   getCycleAggregations,
@@ -21,6 +20,7 @@ import {
 import { History } from 'history';
 import Metadata from '../../shared/metadata';
 import { getToken } from './selectors';
+import { Metric } from '../../models/types';
 
 export default function* watchCycle() {
   yield all([
@@ -65,17 +65,15 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
   }
 }
 
-const getCycleData = (data: any, metadata: any) => {
+const getCycleData = (data: Metric[], metadata: any) => {
   const cycleName = metadata.name;
-  // sort by associate
-  const sortedMetrics = sortMetircsByAssociate(data);
-  // pull out cycle specific metrics
-  const cycleMetrics = getCycleMetrics(sortedMetrics);
+  // sort metrics by associate/staff/cycle
+  const { associates, cycle, staff } = sortMetircsByPerson(data);
   // format sorted metrics into Associate objects
-  const formattedAssociates = sortedMetrics.map((associate: any) =>
+  const formattedAssociates = associates.map((associate: Metric[]) =>
     formatAssociateData(associate, cycleName)
   );
-  // format Associates into Cycle object
+  // format metrics into Cycle object
   const formattedCycle = formatCycleData(
     cycleMetrics,
     formattedAssociates,

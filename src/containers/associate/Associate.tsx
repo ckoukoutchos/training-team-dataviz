@@ -14,14 +14,9 @@ import styles from './Associate.module.css';
 import {
   getUrlParams,
   getItemInArrayByName,
-  calcScoreAvg,
-  calcStandardDeviation,
-  calcDaysSince,
-  calcModulesLength
 } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
-import { CycleAggregation, Cycle, Associate } from '../../models/types';
-import Metadata from '../../shared/metadata';
+import { CycleAggregation, Cycle } from '../../models/types';
 import RollUps from '../../components/roll-ups/RollUps';
 
 interface AssociateProps {

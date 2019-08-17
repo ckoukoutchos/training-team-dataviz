@@ -32,6 +32,7 @@ class MLAssociateProgress extends Component<
   };
 
   createMLCycleGraph(showModules: boolean, associate: Associate) {
+    //@ts-ignore
     const modules = calcModulesLength(associate.modules, associate.endDate);
 
     let data = showModules

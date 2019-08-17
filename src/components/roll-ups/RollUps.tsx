@@ -30,6 +30,7 @@ const RollUps = (props: RollUpsProps) => {
       'Unexcused Late Arrival': 0,
       'Optional Attendance': 0
     };
+    //@ts-ignore
     associate.attendance.forEach(
       (event: any) => (countOfEvents[event.type] += 1)
     );
@@ -92,6 +93,7 @@ const RollUps = (props: RollUpsProps) => {
   };
 
   const getModuleTimeScore = (associate: Associate): number => {
+    //@ts-ignore
     const modules = calcModulesLength(associate.modules, associate.endDate);
     const index = associate.modules.findIndex((module: any) => !module.endDate);
     let finishedModules = [0];
