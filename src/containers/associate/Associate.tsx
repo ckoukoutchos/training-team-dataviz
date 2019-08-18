@@ -11,12 +11,9 @@ import RadarGraph from '../../components/radar-graph/RadarGraph';
 import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
 
 import styles from './Associate.module.css';
-import {
-  getUrlParams,
-  getItemInArrayByName,
-} from '../../shared/dataService';
+import { getUrlParams, getItemInArrayByName } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
-import { CycleAggregation, Cycle } from '../../models/types';
+import { CycleAggregation, Cycle, Associate } from '../../models/types';
 import RollUps from '../../components/roll-ups/RollUps';
 
 interface AssociateProps {
@@ -39,8 +36,11 @@ class AssociateView extends Component<AssociateProps> {
     const { url, cycle: cycleName, associate: associateName } = getUrlParams(
       history
     );
-    const cycle = getItemInArrayByName(cycles, cycleName);
-    const associate = getItemInArrayByName(cycle.associates, associateName);
+    const cycle: Cycle = getItemInArrayByName(cycles, cycleName);
+    const associate: Associate = getItemInArrayByName(
+      cycle.associates,
+      associateName
+    );
     const cycleAggregation = getItemInArrayByName(cycleAggregations, cycleName);
     const associateAggregation = getItemInArrayByName(
       cycleAggregation.aggregations,

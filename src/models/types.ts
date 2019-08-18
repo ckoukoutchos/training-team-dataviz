@@ -55,18 +55,19 @@ export interface AssessmentAggregation {
 }
 
 export interface Attendance {
-  [AttendanceType.EXCUSED_ABSENCE]: number;
-  [AttendanceType.UNEXCUSED_ABSENCE]: number;
-  [AttendanceType.EXCUSED_LATE]: number;
-  [AttendanceType.UNEXCUSED_LATE]: number;
-  [AttendanceType.OPTIONAL]: number;
-  attendanceEvents: AttendanceEvent[];
+  events: AttendanceEvent[];
+  count: {
+    'Excused Absence': number;
+    'Unexcused Absence': number;
+    'Excused Late Arrival': number;
+    'Unexcused Late Arrival': number;
+    'Optional Attendance': number;
+  }
 }
 
 export class Associate implements Person {
   active: boolean;
-  // attendance: Attendance;
-  attendance: any[];
+  attendance: Attendance;
   cycle: string;
   daysInCycle: number;
   endDate: Date | null;
@@ -78,20 +79,20 @@ export class Associate implements Person {
   projects: Metric[];
   quizzes: Metric[];
   softSkills: Metric[];
-  staff: Staff[];
   startDate: Date;
 
   constructor() {
     this.active = false;
-    // this.attendance = {
-    //   [AttendanceType.EXCUSED_ABSENCE]: 0,
-    //   [AttendanceType.UNEXCUSED_ABSENCE]: 0,
-    //   [AttendanceType.EXCUSED_LATE]: 0,
-    //   [AttendanceType.UNEXCUSED_LATE]: 0,
-    //   [AttendanceType.OPTIONAL]: 0,
-    //   attendanceEvents: []
-    // };
-    this.attendance = [];
+    this.attendance = {
+      events: [],
+      count: {
+        [AttendanceType.EXCUSED_ABSENCE]: 0,
+        [AttendanceType.UNEXCUSED_ABSENCE]: 0,
+        [AttendanceType.EXCUSED_LATE]: 0,
+        [AttendanceType.UNEXCUSED_LATE]: 0,
+        [AttendanceType.OPTIONAL]: 0
+      }
+    };
     this.cycle = '';
     this.daysInCycle = 0;
     this.endDate = null;
@@ -140,7 +141,6 @@ export class Associate implements Person {
     this.projects = [];
     this.quizzes = [];
     this.softSkills = [];
-    this.staff = [];
     this.startDate = new Date();
   }
 }
@@ -157,10 +157,9 @@ export class Cycle {
   endDate: Date | null;
   name: string;
   fileId: string;
+  staff: Staff[];
   startDate: Date;
   totalNumberOfAssociates: number;
-  trainers: string[];
-  TAs: string[];
   type: string;
 
   constructor() {
@@ -170,10 +169,9 @@ export class Cycle {
     this.endDate = null;
     this.name = '';
     this.fileId = '';
+    this.staff = [];
     this.startDate = new Date();
     this.totalNumberOfAssociates = 0;
-    this.trainers = [];
-    this.TAs = [];
     this.type = '';
   }
 }
@@ -205,6 +203,7 @@ export interface Module {
 }
 
 export interface Person {
+  active: boolean;
   cycle: string;
   endDate: Date | null;
   metrics: Metric[];
@@ -212,6 +211,22 @@ export interface Person {
   startDate: Date;
 }
 
-export interface Staff extends Person {
+export class Staff implements Person {
+  active: boolean;
+  cycle: string;
+  endDate: Date | null;
+  metrics: Metric[];
+  name: string;
   role: StaffRole;
+  startDate: Date;
+
+  constructor() {
+    this.active = false;
+    this.cycle = '';
+    this.endDate = null;
+    this.metrics = [];
+    this.name = '';
+    this.role = StaffRole.TRAINER;
+    this.startDate = new Date();
+  }
 }

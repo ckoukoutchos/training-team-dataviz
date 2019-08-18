@@ -8,13 +8,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@material-ui/core';
-import {
-  Assessment,
-  ArrowUpward,
-  Autorenew,
-  Home,
-  Person
-} from '@material-ui/icons';
+import { Assessment, Autorenew, Home, Person } from '@material-ui/icons';
 
 interface SidedrawerProps {
   onClose: () => void;

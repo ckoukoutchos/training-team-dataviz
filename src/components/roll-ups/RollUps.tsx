@@ -2,10 +2,9 @@ import React from 'react';
 import { Divider, Paper, Tooltip, Typography } from '@material-ui/core';
 import { HelpOutline } from '@material-ui/icons';
 import styles from './RollUps.module.css';
-import { Cycle, Associate } from '../../models/types';
+import { Cycle, Associate, Module } from '../../models/types';
 import {
   calcDaysSince,
-  calcModulesLength,
   getItemInArrayByName,
   calcScoreAvg,
   calcStandardDeviation
@@ -22,24 +21,12 @@ interface RollUpsProps {
 const RollUps = (props: RollUpsProps) => {
   const { cycleAggregation, associateAggregation, cycle, associate } = props;
 
-  const getAttendanceScore = (associate: Associate): number => {
-    const countOfEvents = {
-      'Excused Absence': 0,
-      'Unexcused Absence': 0,
-      'Excused Late Arrival': 0,
-      'Unexcused Late Arrival': 0,
-      'Optional Attendance': 0
-    };
-    //@ts-ignore
-    associate.attendance.forEach(
-      (event: any) => (countOfEvents[event.type] += 1)
-    );
-
+  const getAttendanceScore = (count: any): number => {
     const attendanceModifier =
-      countOfEvents['Excused Absence'] * -0.5 +
-      countOfEvents['Unexcused Absence'] * -5 +
-      countOfEvents['Excused Late Arrival'] * -0.2 +
-      countOfEvents['Unexcused Late Arrival'] * -1;
+      count['Excused Absence'] * -0.5 +
+      count['Unexcused Absence'] * -5 +
+      count['Excused Late Arrival'] * -0.2 +
+      count['Unexcused Late Arrival'] * -1;
 
     const daysInCycle = associate.endDate
       ? calcDaysSince(associate.startDate, associate.endDate)
@@ -93,24 +80,28 @@ const RollUps = (props: RollUpsProps) => {
   };
 
   const getModuleTimeScore = (associate: Associate): number => {
-    //@ts-ignore
-    const modules = calcModulesLength(associate.modules, associate.endDate);
-    const index = associate.modules.findIndex((module: any) => !module.endDate);
-    let finishedModules = [0];
-    if (index === 0) {
-      const timeIn = calcDaysSince(associate.startDate);
-      finishedModules = [timeIn < 25 ? 25 : timeIn];
-    } else if (index > 0 && index < 4) {
-      finishedModules = modules.moduleLengths.slice(0, index);
-    } else if (index >= 4 || index < 0) {
-      finishedModules = modules.moduleLengths.slice(0, 4);
-    }
-    const moduleTimes = finishedModules.map(
-      (moduleTime: any, index: number) =>
-        (Metadata.maxTimePerModule[index] / moduleTime) * 0.6
+    const workedModules = associate.modules.filter(
+      (module: Module, index: number) => module.daysInModule > 0 && index < 4
     );
-    const total = moduleTimes.reduce((acc: any, curr: any) => acc + curr, 0);
-    return Math.round((total / moduleTimes.length) * 100);
+    const workedModuleTimes = workedModules.map(
+      (module: Module, index: number) => {
+        // if module in-progress and less than half alloted time, just give 100%
+        if (
+          module.daysInModule < Metadata.maxTimePerModule[index] * 0.6 &&
+          !module.endDate
+        ) {
+          return 1;
+        }
+        // 0.6 is ratio of ML to traditional cycle module lengths
+        return (Metadata.maxTimePerModule[index] / module.daysInModule) * 0.6;
+      }
+    );
+
+    const total = workedModuleTimes.reduce(
+      (acc: any, curr: any) => acc + curr,
+      0
+    );
+    return Math.round((total / workedModuleTimes.length) * 100);
   };
 
   const getWeightedAssessmentScore = (aggregation: any): number => {
@@ -137,20 +128,20 @@ const RollUps = (props: RollUpsProps) => {
   ) => {
     const assessmentsScore = getWeightedAssessmentScore(associateAgg);
     const moduleTimeScore = getModuleTimeScore(associate);
-    const attendanceScore = getAttendanceScore(associate);
+    const attendanceScore = getAttendanceScore(associate.attendance.count);
     const associateScore = Math.round(
-      assessmentsScore * 0.4 + attendanceScore * 0.4 + moduleTimeScore * 0.2
+      assessmentsScore * 0.5 + attendanceScore * 0.25 + moduleTimeScore * 0.25
     );
 
     const scores: any = [];
     cycleAgg.aggregations.forEach((item: any) => {
       const associate = getItemInArrayByName(cycle.associates, item.name);
       const assessments = getWeightedAssessmentScore(item);
-      const attendance = getAttendanceScore(associate);
+      const attendance = getAttendanceScore(associate.attendance.count);
       const moduleTime = getModuleTimeScore(associate);
       if (assessments && attendance && moduleTime) {
         scores.push(
-          Math.round(assessments * 0.4 + attendance * 0.4 + moduleTime * 0.2)
+          Math.round(assessments * 0.5 + attendance * 0.25 + moduleTime * 0.25)
         );
       }
     });
@@ -173,7 +164,7 @@ const RollUps = (props: RollUpsProps) => {
     associate: Associate
   ) => {
     const assessmentsScore = getWeightedAssessmentScore(associateAgg);
-    const attendanceScore = getAttendanceScore(associate);
+    const attendanceScore = getAttendanceScore(associate.attendance.count);
     const associateScore = Math.round(
       assessmentsScore * 0.6 + attendanceScore * 0.4
     );
@@ -182,7 +173,7 @@ const RollUps = (props: RollUpsProps) => {
     cycleAgg.aggregations.forEach((item: any) => {
       const associate = getItemInArrayByName(cycle.associates, item.name);
       const assessments = getWeightedAssessmentScore(item);
-      const attendance = getAttendanceScore(associate);
+      const attendance = getAttendanceScore(associate.attendance.count);
       if (assessments && attendance) {
         scores.push(Math.round(assessments * 0.6 + attendance * 0.4));
       }

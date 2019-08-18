@@ -7,7 +7,6 @@ import {
   SIGN_OUT,
   ActionTypes
 } from './actionTypes';
-import { History } from 'history';
 import { CycleAggregation, Cycle } from '../models/types';
 
 export const fetchAllCyclesMetrics = (): ActionTypes => ({

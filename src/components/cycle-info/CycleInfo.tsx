@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Paper, Typography } from '@material-ui/core';
 import styles from './CycleInfo.module.css';
-import { Cycle } from '../../models/types';
+import { Cycle, Staff, StaffRole } from '../../models/types';
 
 interface CycleInfoProps {
   bodyOnly?: boolean;
@@ -15,18 +15,30 @@ const CycleInfo = (props: CycleInfoProps) => {
     .split(' ')
     .slice(2)
     .join(' ');
+  const activeTrainers: string[] = [];
+  cycle.staff.forEach((staff: Staff) => {
+    if (staff.active && staff.role === StaffRole.TRAINER) {
+      activeTrainers.push(staff.name);
+    }
+  });
+  const activeTAs: string[] = [];
+  cycle.staff.forEach((staff: Staff) => {
+    if (staff.active && staff.role === StaffRole.TA) {
+      activeTAs.push(staff.name);
+    }
+  });
 
   const infoBody = (
     <div className={styles.Body}>
       <div>
         <Typography variant='body2'>
           <strong>Trainer(s): </strong>
-          {cycle.trainers.join(' | ')}
+          {activeTrainers.join(' | ')}
         </Typography>
 
         <Typography variant='body2'>
           <strong>TA(s): </strong>
-          {cycle.TAs.join(' | ')}
+          {activeTAs.join(' | ')}
         </Typography>
 
         <Typography variant='body2'>
@@ -38,12 +50,12 @@ const CycleInfo = (props: CycleInfoProps) => {
       <div>
         <Typography variant='body2'>
           <strong>Start Date(s): </strong>
-          {cycle.startDate}
+          {cycle.startDate.toDateString()}
         </Typography>
 
         <Typography variant='body2'>
           <strong>End Date: </strong>
-          {cycle.endDate}
+          {cycle.endDate ? cycle.endDate.toDateString() : null}
         </Typography>
 
         <Typography variant='body2'>

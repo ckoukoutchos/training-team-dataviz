@@ -15,7 +15,7 @@ const TrainingInfo = (props: TrainingInfoProps) => {
   let activeCycles = 0;
 
   for (const cycle of cycles) {
-    staffCount += cycle.TAs.length + cycle.trainers.length;
+    // staffCount += cycle.TAs.length + cycle.trainers.length;
     associateCount += cycle.currentNumberOfAssociates;
     if (cycle.active) activeCycles++;
   }

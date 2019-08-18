@@ -15,9 +15,9 @@ import {
   getCycleAggregations,
   getAllCyclesAggregations,
   sortMetricsByAssessmentType,
-  formatAssessments
+  formatAssessments,
+  formatStaffData
 } from '../../shared/dataService';
-import { History } from 'history';
 import Metadata from '../../shared/metadata';
 import { getToken } from './selectors';
 import { Metric } from '../../models/types';
@@ -73,9 +73,14 @@ const getCycleData = (data: Metric[], metadata: any) => {
   const formattedAssociates = associates.map((associate: Metric[]) =>
     formatAssociateData(associate, cycleName)
   );
+  // format sorted metrics into Staff objects
+  const formattedStaff = staff.map((staff: Metric[]) =>
+    formatStaffData(staff, cycleName)
+  );
   // format metrics into Cycle object
   const formattedCycle = formatCycleData(
-    cycleMetrics,
+    cycle,
+    formattedStaff,
     formattedAssociates,
     cycleName,
     metadata.fileId

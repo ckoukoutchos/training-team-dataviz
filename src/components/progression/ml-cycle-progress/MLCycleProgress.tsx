@@ -5,7 +5,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import Legend from '../../legend/Legend';
 
 import styles from './MLCycleProgress.module.css';
-import { Cycle } from '../../../models/types';
+import { Cycle, Module } from '../../../models/types';
 import Metadata from '../../../shared/metadata';
 import CONSTS from '../../../shared/constants';
 
@@ -29,9 +29,14 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
   };
 
   for (const associate of cycle.associates) {
-    associate.modules.forEach((module: any) => {
-      if (associate.active) {
-        if (module.startDate && !module.endDate) {
+    associate.modules.forEach((module: Module) => {
+      // if active and module not completed
+      if (associate.active && module.startDate && !module.endDate) {
+        // and module isn't currently paused
+        if (!module.modulePause) {
+          moduleCount[module.type]++;
+          // or module was paused but no longer is
+        } else if (module.modulePause && module.moduleResume) {
           moduleCount[module.type]++;
         }
       }

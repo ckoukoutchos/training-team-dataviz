@@ -5,7 +5,10 @@ import {
   Associate,
   Module,
   Aggregation,
-  CycleAggregation
+  CycleAggregation,
+  Staff,
+  StaffRole,
+  AttendanceEvent
 } from '../models/types';
 
 export const calcDaysInModules = (modules: Module[], exitDate: Date | null): Module[] => {
@@ -15,12 +18,14 @@ export const calcDaysInModules = (modules: Module[], exitDate: Date | null): Mod
       // if module started but cut short by cycle exit
     } else if (module.startDate && !module.endDate && exitDate) {
       module.daysInModule = calcDaysSince(module.startDate, exitDate)
+      // if still on-going
     } else if (module.startDate) {
       module.daysInModule = calcDaysSince(module.startDate);
     }
     // subtract module pause period
     if (module.modulePause && module.moduleResume) {
       module.daysInModule -= calcDaysSince(module.modulePause, module.moduleResume);
+      // subtract on-going pause period
     } else if (module.modulePause) {
       module.daysInModule -= calcDaysSince(module.modulePause);
     }
@@ -80,47 +85,6 @@ export const calcAssessmentAvg = (
   );
   // convert to percent and round to nearest int
   return Math.round((metricAvg[0] / metricAvg[1]) * 100);
-};
-
-export const calcDateMarkers = (associate: Associate) => {
-  return associate.modules.map(module => {
-    if (module.startDate) {
-      //@ts-ignore
-      return Math.round(calcDaysSince(associate.startDate, module.startDate));
-    }
-    return 0;
-  });
-};
-
-export const calcModulesLength = (
-  modules: any[],
-  cycleEndDate: string | null
-) => {
-  let prevTotal = 0;
-  const moduleLengths: any = [];
-  const ranges = modules.map(module => {
-    if (module.startDate && module.endDate) {
-      const days = Math.round(calcDaysSince(module.startDate, module.endDate));
-      moduleLengths.push(days);
-      const range = days + prevTotal;
-      prevTotal = range;
-      return range;
-    } else if (module.startDate) {
-      if (cycleEndDate) {
-        const days = Math.round(calcDaysSince(module.startDate, cycleEndDate));
-        moduleLengths.push(days);
-        return days + prevTotal;
-      } else {
-        const days = Math.round(calcDaysSince(module.startDate));
-        moduleLengths.push(days);
-        return days + prevTotal;
-      }
-    } else {
-      moduleLengths.push(0);
-      return 0;
-    }
-  });
-  return { moduleLengths, ranges };
 };
 
 export const calcPercent = (score: number, maxScore: number): number => {
@@ -198,19 +162,22 @@ export const formatAssociateData = (
         if (module) {
           module.modulePause = convertStringToDateObject(metric.Date);
         }
+        break;
       case 'Module Resume':
         if (module) {
           module.moduleResume = convertStringToDateObject(metric.Date);
         }
+        break;
       case 'Associate Start':
         associate.active = true;
-        associate['startDate'] = convertStringToDateObject(metric.Date);
+        associate.startDate = convertStringToDateObject(metric.Date);
         break;
       case 'Attendance Event':
-        associate.attendance.push({
+        associate.attendance.events.push({
           date: convertStringToDateObject(metric.Date),
           type: metric.Interaction
         });
+        associate.attendance.count[metric.Interaction]++;
         break;
       case 'Exercise':
         associate.exercises.push(metric);
@@ -243,30 +210,18 @@ export const formatAssociateData = (
   return associate;
 };
 
-export const formatAttendanceEvents = (attendance: any) =>
-  attendance.map((event: any) => ({
-    day: formatCalendarDate(event.date),
-    value: Metadata.attendance[event.type]
-  }));
-
-export const formatCalendarDate = (date: string) => {
-  if (date) {
-    const dateSplit = date.split('/');
-    if (dateSplit[0].length === 1) {
-      dateSplit[0] = '0' + dateSplit[0];
+export const formatAttendanceEvents = (attendance: AttendanceEvent[]): { day: string, value: number }[] =>
+  attendance.map((event: AttendanceEvent) => {
+    const day = event.date.toISOString().split('T')[0];
+    return {
+      day,
+      value: Metadata.attendance[event.type]
     }
-    if (dateSplit[1].length === 1) {
-      dateSplit[1] = '0' + dateSplit[1];
-    }
-    return ['20' + dateSplit[2], dateSplit[0], dateSplit[1]].join('-');
-  } else {
-    const date = new Date(Date.now());
-    return date.toISOString();
-  }
-};
+  });
 
 export const formatCycleData = (
-  metrics: Metric[],
+  metrics: { [key: string]: string },
+  staff: Staff[],
   associates: Associate[],
   cycleName: string,
   fileId: string
@@ -275,39 +230,59 @@ export const formatCycleData = (
   cycle.name = cycleName;
   cycle.fileId = fileId;
   cycle.type = cycleName[0] === 'm' ? 'Mastery Learning' : 'Traditional Cycle';
+
   cycle.associates = associates;
+  cycle.staff = staff;
 
   const [total, current] = getCycleAssociateCount(associates);
   cycle.totalNumberOfAssociates = total;
   cycle.currentNumberOfAssociates = current;
 
-  for (const metric of metrics) {
-    const type = metric['Interaction Type'];
+  cycle.startDate = convertStringToDateObject(metrics.startDate);
+  cycle.active = true;
 
-    switch (type) {
-      case 'Cycle Start Date':
-        cycle.startDate = convertStringToDateObject(metric.Date);
-        cycle.active = true;
-        break;
-      case 'Cycle End Date':
-        cycle.endDate = convertStringToDateObject(metric.Date);
-        cycle.active = false;
-        break;
-      case 'Staff change':
-        if (metric.Interaction === 'Trainer Start') {
-          cycle.trainers.push(metric.Person);
-        } else if (metric.Interaction === 'TA Start') {
-          cycle.TAs.push(metric.Person);
-        }
-        break;
-      default:
-        break;
-    }
+  if (metrics.endDate) {
+    cycle.endDate = convertStringToDateObject(metrics.endDate);
+    cycle.active = false;
   }
   return cycle;
 };
 
-export const formatPercentile = (percentile: any) => {
+export const formatStaffData = (metrics: Metric[], cycleName: string): Staff => {
+  const staff = new Staff();
+  staff.name = metrics[0].Person;
+  staff.cycle = cycleName;
+  staff.metrics = metrics;
+
+  for (const metric of metrics) {
+    const type = metric.Interaction;
+
+    switch (type) {
+      case 'Trainer Start':
+        staff.role = StaffRole.TRAINER;
+        staff.startDate = convertStringToDateObject(metric.Date);
+        staff.active = true;
+        break;
+      case 'TA Start':
+        staff.role = StaffRole.TA;
+        staff.startDate = convertStringToDateObject(metric.Date);
+        staff.active = true;
+        break;
+      case 'Trainer Exit':
+        staff.endDate = convertStringToDateObject(metric.Date);
+        staff.active = false;
+        break;
+      case 'TA Exit':
+        staff.endDate = convertStringToDateObject(metric.Date);
+        staff.active = false;
+        break;
+      default: break;
+    }
+  }
+  return staff;
+}
+
+export const formatPercentile = (percentile: number): string => {
   if (percentile % 10 === 1) {
     return percentile + 'st';
   } else if (percentile % 10 === 2) {
@@ -477,7 +452,7 @@ export const sortMetricsByAssessmentType = (cycles: Cycle[]) => {
   return { projects, quizzes, softSkills };
 };
 
-export const sortMetircsByPerson = (metrics: Metric[]): { associates: Metric[][], cycle: { [key: string]: Metric[] }, staff: Metric[][] } => {
+export const sortMetircsByPerson = (metrics: Metric[]): { associates: Metric[][], cycle: { [key: string]: string }, staff: Metric[][] } => {
   const associates = {};
   const cycle = {};
   const staff = {};
@@ -490,9 +465,9 @@ export const sortMetircsByPerson = (metrics: Metric[]): { associates: Metric[][]
         associates[metric.Person] = [metric];
       // cycles
     } else if (metric.Person === '') {
-      cycle[metric['Interaction Type']] ?
-        cycle[metric['Interaction Type']].push(metric) :
-        cycle[metric['Interaction Type']] = [metric];
+      metric['Interaction Type'] === 'Cycle Start Date' ?
+        cycle['startDate'] = metric.Date :
+        cycle['endDate'] = metric.Date;
       // staff
     } else {
       staff[metric.Person] ?

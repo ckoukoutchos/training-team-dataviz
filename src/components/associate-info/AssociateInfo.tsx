@@ -1,7 +1,6 @@
 import React from 'react';
 import { Divider, Paper, Typography } from '@material-ui/core';
 import styles from './AssociateInfo.module.css';
-import { calcDaysSince } from '../../shared/dataService';
 import { Associate } from '../../models/types';
 
 interface AssociateInfoProps {
@@ -17,23 +16,21 @@ const AssociateInfo = (props: AssociateInfoProps) => {
     <div className={styles.BodyOnly}>
       <div>
         <Typography variant='body2'>
-          <strong>Start Date:</strong> {associate.startDate}
+          <strong>Start Date:</strong> {associate.startDate.toDateString()}
         </Typography>
 
         {associate.endDate && (
           <Typography variant='body2'>
             <strong>End Date: </strong>
-            {associate.endDate}
+            {associate.endDate.toDateString()}
           </Typography>
         )}
       </div>
 
       <div>
         <Typography variant='body2'>
-          <strong>Days in Cycle:</strong>{' '}
-          {associate.endDate
-            ? calcDaysSince(associate.startDate, associate.endDate)
-            : calcDaysSince(associate.startDate)}
+          <strong>Days in Cycle:</strong>
+          {associate.daysInCycle}
         </Typography>
 
         {associate.endDate && (
