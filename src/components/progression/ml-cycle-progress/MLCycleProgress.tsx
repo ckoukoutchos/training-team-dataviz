@@ -46,9 +46,9 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h4'>{title}</Typography>
+        <Typography variant='h3'>{title}</Typography>
         {subtitle && (
-          <Typography variant='subtitle1' color='textSecondary'>
+          <Typography variant='h6' color='textSecondary'>
             {subtitle}
           </Typography>
         )}
@@ -68,7 +68,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
           ]}
           keys={CONSTS.modules}
           indexBy=''
-          margin={{ top: 10, right: 85, bottom: 10, left: 85 }}
+          margin={{ top: 0, right: 85, bottom: 10, left: 85 }}
           padding={0.3}
           colors={{ scheme: 'red_yellow_blue' }}
           layout='horizontal'

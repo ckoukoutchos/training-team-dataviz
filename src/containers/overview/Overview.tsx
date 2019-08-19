@@ -6,6 +6,7 @@ import { AppState } from '../../redux/reducers/rootReducer';
 import { ActionTypes } from '../../redux/actionTypes';
 import { fetchAllCyclesMetrics } from '../../redux/actions';
 import { Cycle } from '../../models/types';
+import CONSTS from '../../shared/constants';
 
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import ExpansionPanel from '../../components/expansion-panel/ExpansionPanel';
@@ -36,7 +37,7 @@ class Overview extends Component<OverviewProps> {
             item={cycle}
             key={index}
             subtitle={cycle.type}
-            title={lookup[cycle.name]}
+            title={CONSTS[cycle.name]}
           >
             <ExpansionPanel>
               <CycleInfo bodyOnly cycle={cycle} cycleName={cycle.name} />
@@ -49,7 +50,7 @@ class Overview extends Component<OverviewProps> {
             cycle={cycle}
             key={index}
             subtitle={cycle.type}
-            title={lookup[cycle.name]}
+            title={CONSTS[cycle.name]}
           >
             <ExpansionPanel>
               <CycleInfo bodyOnly cycle={cycle} cycleName={cycle.name} />

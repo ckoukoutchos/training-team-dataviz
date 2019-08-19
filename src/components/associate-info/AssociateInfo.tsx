@@ -5,8 +5,8 @@ import { Associate } from '../../models/types';
 
 interface AssociateInfoProps {
   associate: Associate;
-  cycleName: string;
   bodyOnly?: boolean;
+  cycleName: string;
 }
 
 const AssociateInfo = (props: AssociateInfoProps) => {
@@ -15,12 +15,12 @@ const AssociateInfo = (props: AssociateInfoProps) => {
   const infoBody = (
     <div className={styles.BodyOnly}>
       <div>
-        <Typography variant='body2'>
-          <strong>Start Date:</strong> {associate.startDate.toDateString()}
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+          <strong>Start Date: </strong> {associate.startDate.toDateString()}
         </Typography>
 
         {associate.endDate && (
-          <Typography variant='body2'>
+          <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
             <strong>End Date: </strong>
             {associate.endDate.toDateString()}
           </Typography>
@@ -28,13 +28,14 @@ const AssociateInfo = (props: AssociateInfoProps) => {
       </div>
 
       <div>
-        <Typography variant='body2'>
-          <strong>Days in Cycle:</strong>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+          <strong>Days in Cycle: </strong>
           {associate.daysInCycle}
         </Typography>
 
         {associate.endDate && (
-          <Typography variant='button' display='block'>
+          <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+            <strong>Exit Reason: </strong>
             {associate.exitReason}
           </Typography>
         )}
@@ -47,8 +48,8 @@ const AssociateInfo = (props: AssociateInfoProps) => {
   ) : (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h3'>{associate.name}</Typography>
-        <Typography variant='h6' color='textSecondary'>
+        <Typography variant='h2'>{associate.name}</Typography>
+        <Typography variant='h5' color='textSecondary'>
           {cycleName}
         </Typography>
       </div>

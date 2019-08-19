@@ -23,8 +23,8 @@ const Calendar = (props: CalendarProps) => {
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h4'>Attendance</Typography>
-        <Typography variant='subtitle1' color='textSecondary'>
+        <Typography variant='h3'>Attendance</Typography>
+        <Typography variant='h6' color='textSecondary'>
           Absences & Late Arrivals
         </Typography>
       </div>

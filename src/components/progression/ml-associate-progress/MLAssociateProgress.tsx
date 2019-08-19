@@ -81,7 +81,7 @@ class MLAssociateProgress extends Component<
       <div className={showModules ? styles.Graph : styles.Graph2}>
         <ResponsiveBullet
           data={data}
-          margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
+          margin={{ top: 20, right: 90, bottom: 50, left: 90 }}
           spacing={46}
           titleAlign='start'
           titleOffsetX={-70}
@@ -108,9 +108,9 @@ class MLAssociateProgress extends Component<
     return (
       <Paper className={styles.Paper}>
         <div className={styles.Header}>
-          <Typography variant='h4'>{title}</Typography>
+          <Typography variant='h3'>{title}</Typography>
           {subtitle && (
-            <Typography variant='subtitle1' color='textSecondary'>
+            <Typography variant='h6' color='textSecondary'>
               {subtitle}
             </Typography>
           )}

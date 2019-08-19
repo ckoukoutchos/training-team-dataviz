@@ -31,34 +31,34 @@ const CycleInfo = (props: CycleInfoProps) => {
   const infoBody = (
     <div className={styles.Body}>
       <div>
-        <Typography variant='body2'>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>Trainer(s): </strong>
           {activeTrainers.join(' | ')}
         </Typography>
 
-        <Typography variant='body2'>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>TA(s): </strong>
           {activeTAs.join(' | ')}
         </Typography>
 
-        <Typography variant='body2'>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>Total # Associates: </strong>
           {cycle.totalNumberOfAssociates}
         </Typography>
       </div>
 
       <div>
-        <Typography variant='body2'>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>Start Date(s): </strong>
           {cycle.startDate.toDateString()}
         </Typography>
 
-        <Typography variant='body2'>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>End Date: </strong>
-          {cycle.endDate ? cycle.endDate.toDateString() : null}
+          {cycle.endDate ? cycle.endDate.toDateString() : 'Active'}
         </Typography>
 
-        <Typography variant='body2'>
+        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>Current # Associates: </strong>
           {cycle.currentNumberOfAssociates}
         </Typography>
@@ -71,9 +71,9 @@ const CycleInfo = (props: CycleInfoProps) => {
   ) : (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h3'>{formattedName}</Typography>
+        <Typography variant='h2'>{formattedName}</Typography>
 
-        <Typography variant='h6' color='textSecondary'>
+        <Typography variant='h5' color='textSecondary'>
           {cycle.type}
         </Typography>
       </div>

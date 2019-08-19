@@ -14,6 +14,8 @@ import {
   calcPercentiles,
   getItemInArrayByName
 } from '../../shared/dataService';
+import { Button, Typography, Paper } from '@material-ui/core';
+import CONSTS from '../../shared/constants';
 
 interface AssociatesProps {
   allCycleAggregations: any;
@@ -25,14 +27,30 @@ interface AssociatesProps {
 
 interface AssociatesState {
   showInactive: boolean;
+  showInactiveAggr: boolean;
+  [key: string]: any;
 }
 
 class Associates extends Component<AssociatesProps, AssociatesState> {
   state = {
-    showInactive: false
+    showInactive: false,
+    showInactiveAggr: false
   };
 
-  createTableData = (
+  createTableData = (associates: Associate[], showInactive: boolean) => {
+    const filteredAssociates = associates.filter(
+      (associate: Associate) => !associate.active === showInactive
+    );
+
+    return filteredAssociates.map((associate: Associate) => ({
+      name: associate.name,
+      cycle: CONSTS[associate.cycle],
+      startDate: associate.startDate.toDateString(),
+      endDate: associate.endDate ? associate.endDate.toDateString() : 'Active'
+    }));
+  };
+
+  createAggrTableData = (
     allCycleAggregations: CycleAggregation,
     cycleAggregations: CycleAggregation[],
     cycles: Cycle[],
@@ -91,9 +109,9 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
     });
   };
 
-  toggleHandler = () => {
+  toggleHandler = (type: string) => () => {
     this.setState((prevState: AssociatesState) => ({
-      showInactive: !prevState.showInactive
+      [type]: !prevState[type]
     }));
   };
 
@@ -101,85 +119,130 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
     const {
       allCycleAggregations,
       cycleAggregations,
-	  cycles,
-	  lookup,
+      cycles,
+      lookup,
       history
     } = this.props;
-    const { showInactive } = this.state;
+    const { showInactive, showInactiveAggr } = this.state;
     const associates = cycles.reduce(
       (acc: any, curr: any) => acc.concat(curr.associates),
       []
     );
 
     return (
-      <div className={styles.Paper}>
-        <MaterialTable
-          title='Associate Assessment Average & Percentile'
-          columns={[
-            { title: 'Associate', field: 'name' },
-            { title: 'Projects', field: 'projectAvg' },
-            { title: 'Quizzes', field: 'quizAvg' },
-            { title: 'Soft Skills', field: 'softSkillsAvg' },
-            { title: 'Attempt/Pass', field: 'attemptPass' }
-          ]}
-          data={this.createTableData(
-            allCycleAggregations,
-            cycleAggregations,
-            cycles,
-            showInactive
-          )}
-          options={{
-            sorting: true,
-            pageSize: 20,
-            pageSizeOptions: [10, 20, 50]
-          }}
-          components={{
-            Toolbar: props => (
-              <>
-                <MTableToolbar {...props} />
-                <Toggle
-                  checked={showInactive}
-                  onChange={this.toggleHandler}
-                  leftLabel='Active'
-                  rightLabel='Inactive'
-                />
-              </>
-            )
-          }}
-          detailPanel={[
-            {
-              tooltip: 'Show Details',
-              render: (rowData: any) => {
-				const associate = getItemInArrayByName(associates, rowData.name);
-                return (
-                  <AssociateInfo
-					bodyOnly
-					cycleName={lookup[associate.cycle]}
-                    associate={associate}
+      <>
+        <Paper className={styles.Card}>
+          <Typography variant='h2'>Associates</Typography>
+          <Typography variant='h5' color='textSecondary'>
+            Look Up & Scores
+          </Typography>
+        </Paper>
+
+        <div className={styles.Paper}>
+          <MaterialTable
+            columns={[
+              {
+                title: 'Associate',
+                field: 'name',
+                render: (rowData: any) => (
+                  <Button
+                    color='primary'
+                    onClick={() =>
+                      history.push(
+                        `/cycle/${
+                          CONSTS[rowData.cycle]
+                        }/associate/${rowData.name.split(' ').join('-')}`
+                      )
+                    }
+                  >
+                    {rowData.name}
+                  </Button>
+                )
+              },
+              { title: 'Cycle', field: 'cycle' },
+              { title: 'Start Date', field: 'startDate', type: 'date' },
+              { title: 'End Date', field: 'endDate' }
+            ]}
+            data={this.createTableData(associates, showInactive)}
+            options={{
+              sorting: true,
+              pageSize: 10,
+              pageSizeOptions: [10, 20, 50],
+              showTitle: false
+            }}
+            components={{
+              Toolbar: props => (
+                <div className={styles.Rows}>
+                  <div className={styles.Toggle}>
+                    <Toggle
+                      checked={showInactive}
+                      onChange={this.toggleHandler('showInactive')}
+                      leftLabel='Active'
+                      rightLabel='Inactive'
+                    />
+                  </div>
+                  <MTableToolbar {...props} />
+                </div>
+              )
+            }}
+            detailPanel={[
+              {
+                tooltip: 'Show Details',
+                render: (rowData: any) => {
+                  const associate = getItemInArrayByName(
+                    associates,
+                    rowData.name
+                  );
+                  return (
+                    <AssociateInfo
+                      bodyOnly
+                      cycleName={lookup[associate.cycle]}
+                      associate={associate}
+                    />
+                  );
+                }
+              }
+            ]}
+          />
+        </div>
+
+        <div className={styles.Paper}>
+          <MaterialTable
+            title='Associate Assessment Average & Percentile'
+            columns={[
+              { title: 'Associate', field: 'name' },
+              { title: 'Projects', field: 'projectAvg' },
+              { title: 'Quizzes', field: 'quizAvg' },
+              { title: 'Soft Skills', field: 'softSkillsAvg' },
+              { title: 'Attempt/Pass', field: 'attemptPass' }
+            ]}
+            data={this.createAggrTableData(
+              allCycleAggregations,
+              cycleAggregations,
+              cycles,
+              showInactiveAggr
+            )}
+            options={{
+              sorting: true,
+              pageSize: 20,
+              pageSizeOptions: [10, 20, 50]
+            }}
+            components={{
+              Toolbar: props => (
+                <>
+                  <MTableToolbar {...props} />
+                  <Toggle
+                    checked={showInactiveAggr}
+                    onChange={this.toggleHandler('showInactiveAggr')}
+                    leftLabel='Active'
+                    rightLabel='Inactive'
                   />
-                );
-              }
-            }
-          ]}
-          actions={[
-            {
-              icon: 'search',
-              tooltip: 'View Associate',
-              onClick: (event, rowData) => {
-                const associate = getItemInArrayByName(
-                  associates,
-                  rowData.name
-                );
-                history.push(
-                  `/cycle/${associate.cycle}/associate/${associate.name
-                    .split(' ')
-                    .join('-')}`
-                );
-              }
-            }
-          ]}
-        />
-      </div>
+                </>
+              )
+            }}
+          />
+        </div>
+      </>
     );
   }
 }

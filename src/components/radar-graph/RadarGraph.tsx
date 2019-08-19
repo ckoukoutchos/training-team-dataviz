@@ -18,9 +18,9 @@ const RadarGraph = (props: RadarGraphProps) => {
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h4'>{title}</Typography>
+        <Typography variant='h3'>{title}</Typography>
         {subtitle ? (
-          <Typography variant='subtitle1' color='textSecondary'>
+          <Typography variant='h6' color='textSecondary'>
             {subtitle}
           </Typography>
         ) : null}

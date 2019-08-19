@@ -25,7 +25,7 @@ class NavBar extends Component<any, NavBarState> {
   };
 
   render() {
-	const { isSignedIn, history } = this.props;
+    const { isSignedIn } = this.props;
     return (
       <>
         <div style={{ display: 'flex' }}>
@@ -39,19 +39,17 @@ class NavBar extends Component<any, NavBarState> {
             >
               <Menu />
             </IconButton>
-			<Typography variant='h6'
-				style={{ paddingTop: '8px', flexGrow: 1, cursor: 'pointer' }}
-				onClick={() => history.push('/')}>
-            	Beta Training Team DataViz
+            <Typography variant='h6' style={{ paddingTop: '8px', flexGrow: 1 }}>
+              Training Team DataViz <small>Beta</small>
             </Typography>
-			<div className={styles.Space}>
-				<div className={ isSignedIn ? '' : styles.Hide}>
-					<SignOutButton/>
-				</div>
-				<div className={ isSignedIn ? styles.Hide : ''}>
-					<SignInButton/>
-				</div>
-			</div>
+            <div className={styles.Space}>
+              <div className={isSignedIn ? '' : styles.Hide}>
+                <SignOutButton />
+              </div>
+              <div className={isSignedIn ? styles.Hide : ''}>
+                <SignInButton />
+              </div>
+            </div>
           </AppBar>
         </div>
 
@@ -65,7 +63,7 @@ class NavBar extends Component<any, NavBarState> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-	isSignedIn: state.user.isSignedIn
-  });
-  
-  export default withRouter(connect(mapStateToProps)(NavBar));
+  isSignedIn: state.user.isSignedIn
+});
+
+export default withRouter(connect(mapStateToProps)(NavBar));
