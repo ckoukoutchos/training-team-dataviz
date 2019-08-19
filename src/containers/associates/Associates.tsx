@@ -133,9 +133,6 @@ class Associates extends Component<AssociatesProps, AssociatesState> {
       <>
         <Paper className={styles.Card}>
           <Typography variant='h2'>Associates</Typography>
-          <Typography variant='h5' color='textSecondary'>
-            Look Up & Scores
-          </Typography>
         </Paper>
 
         <div className={styles.Paper}>

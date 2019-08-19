@@ -1,5 +1,6 @@
 .Card {
   margin: 16px auto;
+  margin-top: 80px;
   padding: 16px;
   text-align: center;
   width: 800px;
@@ -23,7 +24,6 @@
 
 .Paper {
   margin: 16px auto;
-  padding: 16px 24px;
   width: 800px;
 }
 

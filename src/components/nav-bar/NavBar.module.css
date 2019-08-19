@@ -1,8 +1,16 @@
+.AppBar {
+  z-index: 1301 !important;
+}
+
+.AppBarShift {
+  width: calc(100% - 230px) !important;
+}
+
 .Space {
-	padding-top: .4em;
-	padding-right: 1.5em;
+  padding-top: 0.4em;
+  padding-right: 1.5em;
 }
 
 .Hide {
-	display: none;
+  display: none;
 }

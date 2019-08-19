@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { AppBar, IconButton, Typography } from '@material-ui/core';
+import { AppBar, IconButton, Typography, Toolbar } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
 import Sidedrawer from '../sidedrawer/Sidedrawer';
 import { AppState } from '../../redux/reducers/rootReducer';
@@ -26,35 +26,45 @@ class NavBar extends Component<any, NavBarState> {
 
   render() {
     const { isSignedIn } = this.props;
+    const { sideDrawerOpen } = this.state;
+
     return (
       <>
-        <div style={{ display: 'flex' }}>
-          <AppBar position='static' style={{ flexDirection: 'row' }}>
-            <IconButton
-              edge='start'
-              color='inherit'
-              aria-label='Menu'
-              style={{ margin: '0 16px' }}
-              onClick={this.clickHandler}
-            >
-              <Menu />
-            </IconButton>
-            <Typography variant='h6' style={{ paddingTop: '8px', flexGrow: 1 }}>
-              Training Team DataViz <small>Beta</small>
-            </Typography>
-            <div className={styles.Space}>
-              <div className={isSignedIn ? '' : styles.Hide}>
-                <SignOutButton />
+        <div style={{ flexGrow: 1 }}>
+          <AppBar
+            position='fixed'
+            className={sideDrawerOpen ? styles.AppBarShift : styles.AppBar}
+          >
+            <Toolbar>
+              <IconButton
+                edge='start'
+                color='inherit'
+                aria-label='Menu'
+                onClick={this.clickHandler}
+                style={{ marginRight: '8px' }}
+              >
+                <Menu />
+              </IconButton>
+
+              <Typography variant='h6' style={{ flexGrow: 1 }}>
+                Training Team DataViz <small>Beta</small>
+              </Typography>
+
+              <div className={styles.Space}>
+                <div className={isSignedIn ? '' : styles.Hide}>
+                  <SignOutButton />
+                </div>
+
+                <div className={isSignedIn ? styles.Hide : ''}>
+                  <SignInButton />
+                </div>
               </div>
-              <div className={isSignedIn ? styles.Hide : ''}>
-                <SignInButton />
-              </div>
-            </div>
+            </Toolbar>
           </AppBar>
         </div>
 
         <Sidedrawer
-          open={this.state.sideDrawerOpen && isSignedIn}
+          open={sideDrawerOpen && isSignedIn}
           onClose={this.clickHandler}
         />
       </>

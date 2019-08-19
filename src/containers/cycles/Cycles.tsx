@@ -47,7 +47,8 @@ class Cycles extends Component<CyclesProps, CyclesState> {
       name: CONSTS[cycle.name],
       type: cycle.type,
       startDate: cycle.startDate.toDateString(),
-      endDate: cycle.endDate ? cycle.endDate.toDateString() : 'Active'
+      endDate: cycle.endDate ? cycle.endDate.toDateString() : 'Active',
+      totalNumberOfAssociates: cycle.totalNumberOfAssociates
     }));
   };
 
@@ -71,9 +72,6 @@ class Cycles extends Component<CyclesProps, CyclesState> {
       <>
         <Paper className={styles.Card}>
           <Typography variant='h2'>Cycles</Typography>
-          <Typography variant='h5' color='textSecondary'>
-            Look Up & Scores
-          </Typography>
         </Paper>
 
         <div className={styles.Paper}>
@@ -95,7 +93,11 @@ class Cycles extends Component<CyclesProps, CyclesState> {
               },
               { title: 'Type', field: 'type' },
               { title: 'Start Date', field: 'startDate' },
-              { title: 'End Date', field: 'endDate' }
+              { title: 'End Date', field: 'endDate' },
+              {
+                title: 'Number of Associates',
+                field: 'totalNumberOfAssociates'
+              }
             ]}
             data={this.createTableData(cycles, showInactive)}
             options={{
