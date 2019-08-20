@@ -1,13 +1,36 @@
+.Drawer {
+  flex-shrink: 0;
+  white-space: nowrap;
+  width: 230px;
+}
+
+.DrawerClosed {
+  overflow-x: hidden;
+  width: 60px;
+}
+
+.DrawerOpen {
+  width: 230px;
+}
+
 .Link {
   color: inherit;
   text-decoration: none;
 }
 
-.Space {
-	padding-top: .4em;
-	padding-right: 1.5em;
+.Hide {
+  display: none;
 }
 
-.Hide {
-	display: none;
+.Space {
+  padding-top: 0.4em;
+  padding-right: 1.5em;
+}
+
+.ToolBar {
+  align-items: center;
+  display: flex;
+  height: 64px;
+  justify-content: flex-end;
+  padding: 0 8px;
 }

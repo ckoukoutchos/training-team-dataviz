@@ -1,4 +1,22 @@
+.Card {
+  margin: 16px auto;
+  margin-top: 80px;
+  padding: 16px;
+  text-align: center;
+  width: 800px;
+}
+
 .Paper {
   margin: 16px auto;
   width: 800px;
+}
+
+.Rows {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Toggle {
+  padding-top: 16px;
 }

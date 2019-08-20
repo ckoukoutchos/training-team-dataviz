@@ -105,8 +105,8 @@ class CycleView extends Component<CycleProps, CycleState> {
     const {
       allCycleAggregations,
       cycleAggregations,
-	  cycles,
-	  lookup,
+      cycles,
+      lookup,
       history
     } = this.props;
     const { showInactive } = this.state;
@@ -121,8 +121,8 @@ class CycleView extends Component<CycleProps, CycleState> {
         <CycleInfo cycleName={lookup[cycleName]} cycle={cycle} />
 
         <RadarGraph
-          title='Running Averages of Assessments'
-          subtitle='Compared to Training Average'
+          title='Assessments'
+          subtitle='Project, Quiz, and Soft Skill Averages'
           index='avg'
           data={[
             {
@@ -197,15 +197,18 @@ class CycleView extends Component<CycleProps, CycleState> {
               {
                 tooltip: 'Show Details',
                 render: (rowData: any) => {
-					const associate = getItemInArrayByName(cycle.associates, rowData.name);
-					return (
-					  <AssociateInfo
-						bodyOnly
-						cycleName={lookup[associate.cycle]}
-						associate={associate}
-					  />
-					);
-				  }
+                  const associate = getItemInArrayByName(
+                    cycle.associates,
+                    rowData.name
+                  );
+                  return (
+                    <AssociateInfo
+                      bodyOnly
+                      cycleName={lookup[associate.cycle]}
+                      associate={associate}
+                    />
+                  );
+                }
               }
             ]}
             actions={[

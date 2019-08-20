@@ -5,7 +5,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import Legend from '../../legend/Legend';
 
 import styles from './MLCycleProgress.module.css';
-import { Cycle } from '../../../models/types';
+import { Cycle, Module } from '../../../models/types';
 import Metadata from '../../../shared/metadata';
 import CONSTS from '../../../shared/constants';
 
@@ -29,9 +29,14 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
   };
 
   for (const associate of cycle.associates) {
-    associate.modules.forEach((module: any) => {
-      if (associate.active) {
-        if (module.startDate && !module.endDate) {
+    associate.modules.forEach((module: Module) => {
+      // if active and module not completed
+      if (associate.active && module.startDate && !module.endDate) {
+        // and module isn't currently paused
+        if (!module.modulePause) {
+          moduleCount[module.type]++;
+          // or module was paused but no longer is
+        } else if (module.modulePause && module.moduleResume) {
           moduleCount[module.type]++;
         }
       }
@@ -41,9 +46,9 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h4'>{title}</Typography>
+        <Typography variant='h3'>{title}</Typography>
         {subtitle && (
-          <Typography variant='subtitle1' color='textSecondary'>
+          <Typography variant='h6' color='textSecondary'>
             {subtitle}
           </Typography>
         )}
@@ -63,7 +68,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
           ]}
           keys={CONSTS.modules}
           indexBy=''
-          margin={{ top: 10, right: 85, bottom: 10, left: 85 }}
+          margin={{ top: 0, right: 85, bottom: 10, left: 85 }}
           padding={0.3}
           colors={{ scheme: 'red_yellow_blue' }}
           layout='horizontal'

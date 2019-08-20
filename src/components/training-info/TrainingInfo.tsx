@@ -15,7 +15,7 @@ const TrainingInfo = (props: TrainingInfoProps) => {
   let activeCycles = 0;
 
   for (const cycle of cycles) {
-    staffCount += cycle.TAs.length + cycle.trainers.length;
+    // staffCount += cycle.TAs.length + cycle.trainers.length;
     associateCount += cycle.currentNumberOfAssociates;
     if (cycle.active) activeCycles++;
   }
@@ -23,9 +23,11 @@ const TrainingInfo = (props: TrainingInfoProps) => {
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h3'>Catalyte Training</Typography>
+        <Typography variant='h2' gutterBottom>
+          Catalyte Training
+        </Typography>
 
-        <Typography variant='h6' color='textSecondary'>
+        <Typography variant='h5' color='textSecondary'>
           Active Cycle Overview
         </Typography>
       </div>
@@ -36,24 +38,24 @@ const TrainingInfo = (props: TrainingInfoProps) => {
 
       <div className={styles.Body}>
         <div>
-          <Typography variant='body2'>
+          <Typography variant='subtitle1'>
             <strong>Active Associates: </strong>
             {associateCount}
           </Typography>
 
-          <Typography variant='body2'>
+          <Typography variant='subtitle1'>
             <strong>Active Staff: </strong>
             {staffCount}
           </Typography>
         </div>
 
         <div>
-          <Typography variant='body2'>
+          <Typography variant='subtitle1'>
             <strong>Active Cycles: </strong>
             {activeCycles}
           </Typography>
 
-          <Typography variant='body2'>
+          <Typography variant='subtitle1'>
             <strong>Cycle Locations: </strong>
             {activeCycles}
           </Typography>

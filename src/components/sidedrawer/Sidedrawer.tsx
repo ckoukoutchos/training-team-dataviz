@@ -6,15 +6,12 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  IconButton,
+  Divider
 } from '@material-ui/core';
-import {
-  Assessment,
-  ArrowUpward,
-  Autorenew,
-  Home,
-  Person
-} from '@material-ui/icons';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { Assessment, Autorenew, Home, Person } from '@material-ui/icons';
 
 interface SidedrawerProps {
   onClose: () => void;
@@ -25,51 +22,65 @@ const Sidedrawer = (props: SidedrawerProps) => {
   const { open, onClose } = props;
 
   return (
-    <Drawer open={open} onClose={onClose}>
-      <div
-        style={{ width: '250px' }}
-        role='presentation'
-        onClick={onClose}
-        onKeyDown={onClose}
-      >
-        <List>
-          <Link to='/' className={styles.Link}>
-            <ListItem button>
-              <ListItemIcon>
-                <Home />
-              </ListItemIcon>
-              <ListItemText primary='Overview' />
-            </ListItem>
-          </Link>
-
-          <Link to='/cycle' className={styles.Link}>
-            <ListItem button>
-              <ListItemIcon>
-                <Autorenew />
-              </ListItemIcon>
-              <ListItemText primary='Cycles' />
-            </ListItem>
-          </Link>
-
-          <Link to='/associate' className={styles.Link}>
-            <ListItem button>
-              <ListItemIcon>
-                <Person />
-              </ListItemIcon>
-              <ListItemText primary='Associates' />
-            </ListItem>
-          </Link>
-
-          <Link to='/assessment' className={styles.Link}>
-            <ListItem button>
-              <ListItemIcon>
-                <Assessment />
-              </ListItemIcon>
-              <ListItemText primary='Assessments' />
-            </ListItem>
-          </Link>
-        </List>
+    <Drawer
+      open={open}
+      onClose={onClose}
+      variant='permanent'
+      className={[
+        styles.Drawer,
+        open ? styles.DrawerOpen : styles.DrawerClosed
+      ].join(' ')}
+      classes={{ paper: open ? styles.DrawerOpen : styles.DrawerClosed }}
+    >
+      <div className={styles.ToolBar}>
+        <IconButton onClick={onClose}>
+          <ChevronLeftIcon />
+        </IconButton>
       </div>
+
+      <Divider />
+
+      <List>
+        <Link to='/' className={styles.Link}>
+          <ListItem button>
+            <ListItemIcon>
+              <Home />
+            </ListItemIcon>
+            <ListItemText primary='Overview' />
+          </ListItem>
+        </Link>
+        <Divider />
+
+        <Link to='/cycle' className={styles.Link}>
+          <ListItem button>
+            <ListItemIcon>
+              <Autorenew />
+            </ListItemIcon>
+            <ListItemText primary='Cycles' />
+          </ListItem>
+        </Link>
+        <Divider />
+
+        <Link to='/associate' className={styles.Link}>
+          <ListItem button>
+            <ListItemIcon>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary='Associates' />
+          </ListItem>
+        </Link>
+        <Divider />
+
+        <Link to='/assessment' className={styles.Link}>
+          <ListItem button>
+            <ListItemIcon>
+              <Assessment />
+            </ListItemIcon>
+            <ListItemText primary='Assessments' />
+          </ListItem>
+        </Link>
+        <Divider />
+      </List>
     </Drawer>
   );
 };

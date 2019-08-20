@@ -28,4 +28,14 @@ export default {
   percentiles: [0.1, 0.25, 0.5, 0.75, 0.9],
   projectScore: 'Project (Score)',
   softSkills: 'Soft Skill Assessment',
+  traditionalBaltimore2019: 'Baltimore 2019',
+  traditionalBoston2019: 'Boston 2019',
+  traditionalDenver2019: 'Denver 2019',
+  traditionalChicago2019: 'Chicago 2019',
+  mlPortland2019: 'Portland 2019',
+  'Baltimore 2019': 'traditionalBaltimore2019',
+  'Boston 2019': 'traditionalBoston2019',
+  'Denver 2019': 'traditionalDenver2019',
+  'Chicago 2019': 'traditionalChicago2019',
+  'Portland 2019': 'mlPortland2019'
 }

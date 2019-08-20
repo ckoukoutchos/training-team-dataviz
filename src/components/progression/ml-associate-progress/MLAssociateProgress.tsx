@@ -5,13 +5,9 @@ import { ResponsiveBullet } from '@nivo/bullet';
 import Legend from '../../legend/Legend';
 import Toggle from '../../toggle/Toggle';
 
-import {
-  calcDateMarkers,
-  calcModulesLength
-} from '../../../shared/dataService';
 import Metadata from '../../../shared/metadata';
 import styles from './MLAssociateProgress.module.css';
-import { Associate } from '../../../models/types';
+import { Associate, Module } from '../../../models/types';
 
 interface MLAssociateProgressProps {
   associate: Associate;
@@ -31,42 +27,47 @@ class MLAssociateProgress extends Component<
     showModules: false
   };
 
-  createMLCycleGraph(showModules: boolean, associate: Associate) {
-    const modules = calcModulesLength(associate.modules, associate.endDate);
+  createMLCycleGraph(showModules: boolean, modules: Module[]) {
+    const moduleTimes: number[] = [0];
+    modules.forEach((module: Module) =>
+      moduleTimes.push(
+        moduleTimes[moduleTimes.length - 1] + module.daysInModule
+      )
+    );
 
     let data = showModules
       ? [
           {
             id: 'Basics',
             ranges: [42, 98],
-            measures: [modules.moduleLengths[0]],
+            measures: [modules[0].daysInModule],
             markers: []
           },
           {
             id: 'Databases',
             ranges: [28, 98],
-            measures: [modules.moduleLengths[1]],
+            measures: [modules[1].daysInModule],
             markers: []
           },
           {
             id: 'Java',
             ranges: [70, 98],
-            measures: [modules.moduleLengths[2]],
+            measures: [modules[2].daysInModule],
             markers: []
           },
           {
             id: 'React',
             ranges: [56, 98],
-            measures: [modules.moduleLengths[3]],
+            measures: [modules[3].daysInModule],
             markers: []
           }
         ]
       : [
           {
             id: 'Associate',
-            ranges: modules.ranges,
+            ranges: moduleTimes,
             measures: [],
-            markers: [...calcDateMarkers(associate), 238]
+            markers: [238]
           },
           {
             id: 'Max Time',
@@ -80,7 +81,7 @@ class MLAssociateProgress extends Component<
       <div className={showModules ? styles.Graph : styles.Graph2}>
         <ResponsiveBullet
           data={data}
-          margin={{ top: 50, right: 90, bottom: 50, left: 90 }}
+          margin={{ top: 20, right: 90, bottom: 50, left: 90 }}
           spacing={46}
           titleAlign='start'
           titleOffsetX={-70}
@@ -107,9 +108,9 @@ class MLAssociateProgress extends Component<
     return (
       <Paper className={styles.Paper}>
         <div className={styles.Header}>
-          <Typography variant='h4'>{title}</Typography>
+          <Typography variant='h3'>{title}</Typography>
           {subtitle && (
-            <Typography variant='subtitle1' color='textSecondary'>
+            <Typography variant='h6' color='textSecondary'>
               {subtitle}
             </Typography>
           )}
@@ -126,7 +127,7 @@ class MLAssociateProgress extends Component<
           rightLabel='Per Module'
         />
 
-        {this.createMLCycleGraph(showModules, associate)}
+        {this.createMLCycleGraph(showModules, associate.modules)}
 
         {showModules ? (
           <Legend
