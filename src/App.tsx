@@ -21,6 +21,7 @@ import Spinner from './components/spinner/Spinner';
 import ProtectedRoute from './HOC/ProtectedRoute';
 import GoogleApi from './components/auth/GoogleApi';
 import SignInPage from './components/auth/SignInPage';
+import Staff from './containers/staff/Staff';
 
 interface AppProps {
   error: any | null;
@@ -63,6 +64,7 @@ class App extends Component<AppProps> {
                 exact
                 component={Assessment}
               />
+              <ProtectedRoute path='/staff' exact component={Staff} />
               <ProtectedRoute path='/' component={Overview} />
             </Switch>
           </main>

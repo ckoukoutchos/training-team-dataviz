@@ -11,7 +11,13 @@ import {
   Divider
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { Assessment, Autorenew, Home, Person } from '@material-ui/icons';
+import {
+  Assessment,
+  Autorenew,
+  Home,
+  Person,
+  SupervisorAccount
+} from '@material-ui/icons';
 
 interface SidedrawerProps {
   onClose: () => void;
@@ -77,6 +83,16 @@ const Sidedrawer = (props: SidedrawerProps) => {
               <Assessment />
             </ListItemIcon>
             <ListItemText primary='Assessments' />
+          </ListItem>
+        </Link>
+        <Divider />
+
+        <Link to='/staff' className={styles.Link}>
+          <ListItem button>
+            <ListItemIcon>
+              <SupervisorAccount />
+            </ListItemIcon>
+            <ListItemText primary='Training Staff' />
           </ListItem>
         </Link>
         <Divider />

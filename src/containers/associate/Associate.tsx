@@ -13,12 +13,17 @@ import TraditionalCycleProgress from '../../components/progression/traditional-c
 import styles from './Associate.module.css';
 import { getUrlParams, getItemInArrayByName } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
-import { CycleAggregation, Cycle, Associate } from '../../models/types';
+import {
+  CycleAggregation,
+  Cycle,
+  Associate,
+  Aggregation
+} from '../../models/types';
 import RollUps from '../../components/roll-ups/RollUps';
 
 interface AssociateProps {
-  allCycleAggregations: CycleAggregation;
-  cycleAggregations: CycleAggregation[];
+  allCycleAggregations: any;
+  cycleAggregations: any[];
   cycles: Cycle[];
   lookup: any;
   history: History;
@@ -26,13 +31,7 @@ interface AssociateProps {
 
 class AssociateView extends Component<AssociateProps> {
   render() {
-    const {
-      allCycleAggregations,
-      cycleAggregations,
-      cycles,
-      lookup,
-      history
-    } = this.props;
+    const { cycleAggregations, cycles, lookup, history } = this.props;
     const { url, cycle: cycleName, associate: associateName } = getUrlParams(
       history
     );
@@ -41,8 +40,11 @@ class AssociateView extends Component<AssociateProps> {
       cycle.associates,
       associateName
     );
-    const cycleAggregation = getItemInArrayByName(cycleAggregations, cycleName);
-    const associateAggregation = getItemInArrayByName(
+    const cycleAggregation: CycleAggregation = getItemInArrayByName(
+      cycleAggregations,
+      cycleName
+    );
+    const associateAggregation: Aggregation = getItemInArrayByName(
       cycleAggregation.aggregations,
       associateName
     );
@@ -63,32 +65,28 @@ class AssociateView extends Component<AssociateProps> {
         <RadarGraph
           title='Assessments'
           subtitle='Project, Quiz, and Soft Skill Averages'
-          keys={[associateName, 'Cycle Average', 'Training Average']}
+          keys={[associateName, 'Cycle Average']}
           index='avg'
           data={[
             {
               avg: 'Projects',
               [associateName]: associateAggregation.projects,
-              'Cycle Average': cycleAggregation.projects,
-              'Training Average': allCycleAggregations.projects
+              'Cycle Average': cycleAggregation.projects
             },
             {
               avg: 'Quizzes',
               [associateName]: associateAggregation.quizzes,
-              'Cycle Average': cycleAggregation.quizzes,
-              'Training Average': allCycleAggregations.quizzes
+              'Cycle Average': cycleAggregation.quizzes
             },
             {
               avg: 'Soft Skills',
               [associateName]: associateAggregation.softSkills,
-              'Cycle Average': cycleAggregation.softSkills,
-              'Training Average': allCycleAggregations.softSkills
+              'Cycle Average': cycleAggregation.softSkills
             },
             {
-              avg: 'Attempt/Pass',
-              [associateName]: associateAggregation.attemptPass,
-              'Cycle Average': cycleAggregation.attemptPass,
-              'Training Average': allCycleAggregations.attemptPass
+              avg: 'Exercises',
+              [associateName]: associateAggregation.exercises,
+              'Cycle Average': cycleAggregation.exercises
             }
           ]}
         />

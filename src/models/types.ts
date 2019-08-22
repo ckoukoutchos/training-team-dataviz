@@ -10,7 +10,7 @@ export enum AttendanceType {
   EXCUSED_LATE = 'Excused Late Arrival',
   OPTIONAL = 'Optional Attendance',
   UNEXCUSED_ABSENCE = 'Unexcused Absence',
-  UNEXCUSED_LATE = 'Unexcused Late Arrival',
+  UNEXCUSED_LATE = 'Unexcused Late Arrival'
 }
 
 export enum ModuleType {
@@ -19,20 +19,12 @@ export enum ModuleType {
   FINAL = 'Final Project',
   FRONTEND = 'Front End Frameworks (React)',
   GROUP = 'Group Project',
-  LOGIC_LAYER = 'Logic Layer (Java)',
+  LOGIC_LAYER = 'Logic Layer (Java)'
 }
 
 export enum StaffRole {
   TRAINER = 'Trainer',
   TA = 'TA'
-}
-
-export interface Aggregation {
-  attemptPass: number;
-  name: string;
-  projects: number;
-  quizzes: number;
-  softSkills: number;
 }
 
 export interface Assessment {
@@ -54,6 +46,20 @@ export interface AssessmentAggregation {
   type: AssessmentType;
 }
 
+export interface Aggregation {
+  assessments: number;
+  attendance: number;
+  combined: number;
+  composite: number;
+  cycle: string;
+  exercises: number;
+  moduleTime?: number;
+  name: string;
+  projects: number;
+  quizzes: number;
+  softSkills: number;
+}
+
 export interface Attendance {
   events: AttendanceEvent[];
   count: {
@@ -62,7 +68,7 @@ export interface Attendance {
     'Excused Late Arrival': number;
     'Unexcused Late Arrival': number;
     'Optional Attendance': number;
-  }
+  };
 }
 
 export class Associate implements Person {
@@ -105,37 +111,37 @@ export class Associate implements Person {
         daysInModule: 0,
         endDate: null,
         startDate: null,
-        type: 'Development Basics and Front End',
+        type: 'Development Basics and Front End'
       },
       {
         daysInModule: 0,
         endDate: null,
         startDate: null,
-        type: 'Databases',
+        type: 'Databases'
       },
       {
         daysInModule: 0,
         endDate: null,
         startDate: null,
-        type: 'Logic Layer (Java)',
+        type: 'Logic Layer (Java)'
       },
       {
         daysInModule: 0,
         endDate: null,
         startDate: null,
-        type: 'Front End Frameworks (React)',
+        type: 'Front End Frameworks (React)'
       },
       {
         daysInModule: 0,
         endDate: null,
         startDate: null,
-        type: 'Group Project',
+        type: 'Group Project'
       },
       {
         daysInModule: 0,
         endDate: null,
         startDate: null,
-        type: 'Final Project',
+        type: 'Final Project'
       }
     ];
     this.projects = [];
@@ -178,7 +184,11 @@ export class Cycle {
 
 export interface CycleAggregation extends Aggregation {
   aggregations: Aggregation[];
-  attemptPassScores: number[];
+  assessmentsScores: number[];
+  attendanceScores: number[];
+  combinedScores: number[];
+  exerciseScores: number[];
+  moduleTimeScores: number[];
   projectScores: number[];
   quizScores: number[];
   softSkillsScores: number[];

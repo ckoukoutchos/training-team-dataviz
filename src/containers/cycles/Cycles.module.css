@@ -1,3 +1,10 @@
+.Body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 8px;
+}
+
 .Card {
   margin: 16px auto;
   margin-top: 80px;

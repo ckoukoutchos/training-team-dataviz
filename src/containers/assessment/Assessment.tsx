@@ -18,12 +18,12 @@ import {
 } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
 import Metadata from '../../shared/metadata';
-import { Metric } from '../../models/types';
+import CONSTS from '../../shared/constants';
+import { Metric, AssessmentType } from '../../models/types';
 
 interface AssessmentProps {
   allCycleAggregations: any;
   assessmentAggregations: any;
-  lookup: any;
   history: History;
 }
 
@@ -36,8 +36,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
     showCycles: false
   };
 
-  getGraphData(assessment: any, maxScore: number) {
-    const { lookup } = this.props;
+  getGraphData(assessment: any, maxScore: number, isSoftSkill: boolean) {
     let scoreDistribution: any = {
       '0': 0,
       '10': 0,
@@ -52,32 +51,37 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
       '100': 0
     };
 
-    if (assessment.metrics[0]['Interaction Type'] === 'Soft Skill Assessment') {
+    if (isSoftSkill) {
       scoreDistribution = {
         '0': 0,
-        '20': 0,
-        '40': 0,
-        '60': 0,
-        '80': 0,
-        '100': 0
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0
       };
     }
     for (const score of assessment.scores) {
       // convert to percent
       const percent = calcPercent(score, maxScore);
-      // get leading digit
-      const bracket = Math.floor(percent / 10);
-      // convert to bracket string
-      const bracketString = bracket === 0 ? '0' : String(bracket) + '0';
+      let bracketString = '';
+
+      if (isSoftSkill) {
+        // get leading digit
+        const bracket = Math.floor(percent / 10) / 2;
+        console.log(Math.floor(percent / 10));
+        // convert to bracket string
+        bracketString = bracket === 0 ? '0' : String(bracket);
+      } else {
+        // get leading digit
+        const bracket = Math.floor(percent / 10);
+        // convert to bracket string
+        bracketString = bracket === 0 ? '0' : String(bracket) + '0';
+      }
       scoreDistribution[bracketString]++;
     }
 
-    const id = assessment.cycle
-      ? lookup[assessment.cycle]
-          .split(' ')
-          .slice(2)
-          .join(' ')
-      : 'combined';
+    const id = assessment.cycle ? CONSTS[assessment.cycle] : 'combined';
     return {
       id,
       data: Object.entries(scoreDistribution).map(
@@ -90,9 +94,11 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
     };
   }
 
-  getCycleGraphData(assessment: any, maxScore: number) {
+  getCycleGraphData(assessment: any, maxScore: number, isSoftSkill: boolean) {
     const sortedCycles = this.sortCycleData(assessment.metrics);
-    return sortedCycles.map((cycle: any) => this.getGraphData(cycle, maxScore));
+    return sortedCycles.map((cycle: any) =>
+      this.getGraphData(cycle, maxScore, isSoftSkill)
+    );
   }
 
   sortCycleData(assessments: Metric[]): any[] {
@@ -142,6 +148,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
     );
     // assessment type
     const type = Metadata['Interaction Type'][url[2]];
+    const isSoftSkill = type === AssessmentType.SOFT_SKILLS;
     const maxScore = Metadata[type][assessment.name]['Max Score'];
 
     return (
@@ -173,21 +180,23 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
             <ResponsiveLine
               data={
                 showCycles
-                  ? this.getCycleGraphData(assessment, maxScore)
-                  : [this.getGraphData(assessment, maxScore)]
+                  ? this.getCycleGraphData(assessment, maxScore, isSoftSkill)
+                  : [this.getGraphData(assessment, maxScore, isSoftSkill)]
               }
               margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
               markers={[
                 {
                   axis: 'x',
-                  value: assessment.average,
+                  value: isSoftSkill
+                    ? Math.round(assessment.average / 10 / 2)
+                    : assessment.average,
                   lineStyle: { stroke: 'black', strokeWidth: 3 }
                 }
               ]}
               xScale={{
-                type: 'linear',
+                type: isSoftSkill ? 'point' : 'linear',
                 min: 0,
-                max: 100
+                max: isSoftSkill ? 5 : 100
               }}
               yScale={{
                 type: 'linear',
@@ -203,7 +212,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: 'Score Percent',
+                legend: 'Score',
                 legendOffset: 36,
                 legendPosition: 'middle'
               }}
@@ -280,8 +289,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
 
 const mapStateToProps = (state: AppState) => ({
   allCycleAggregations: state.metrics.allCycleAggregations,
-  assessmentAggregations: state.metrics.assessmentAggregations,
-  lookup: state.metadata.cycleNameLookup
+  assessmentAggregations: state.metrics.assessmentAggregations
 });
 
 export default connect(mapStateToProps)(Assessment);

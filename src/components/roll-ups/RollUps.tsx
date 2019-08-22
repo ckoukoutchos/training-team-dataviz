@@ -206,8 +206,8 @@ const RollUps = (props: RollUpsProps) => {
   return (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h4'>Score Aggregations</Typography>
-        <Typography variant='subtitle1' color='textSecondary'>
+        <Typography variant='h3'>Score Aggregations</Typography>
+        <Typography variant='h6' color='textSecondary'>
           Roll Ups of Assessments, Attendance, and Module Time
         </Typography>
       </div>

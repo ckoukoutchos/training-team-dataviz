@@ -10,7 +10,7 @@ interface TrainingInfoProps {
 const TrainingInfo = (props: TrainingInfoProps) => {
   const { cycles } = props;
 
-  let staffCount = 0;
+  let staffCount = 12;
   let associateCount = 0;
   let activeCycles = 0;
 

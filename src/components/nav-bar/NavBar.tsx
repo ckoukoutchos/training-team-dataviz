@@ -37,11 +37,11 @@ class NavBar extends Component<any, NavBarState> {
           >
             <Toolbar>
               <IconButton
+                className={sideDrawerOpen ? styles.Hide : styles.Icon}
                 edge='start'
                 color='inherit'
                 aria-label='Menu'
                 onClick={this.clickHandler}
-                style={{ marginRight: '8px' }}
               >
                 <Menu />
               </IconButton>
