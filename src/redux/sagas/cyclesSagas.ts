@@ -23,9 +23,7 @@ import { getToken } from './selectors';
 import { Metric } from '../../models/types';
 
 export default function* watchCycle() {
-  yield all([
-    takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics)
-  ]);
+  yield all([takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics)]);
 }
 
 function* getHeaders() {
@@ -87,11 +85,9 @@ const getCycleData = (data: Metric[], metadata: any) => {
   );
   // get associate level aggregations
   const associateAggregations = getAssociateAggregations(formattedAssociates);
+
   // get cycle level aggregations
-  const cycleAggregation = getCycleAggregations(
-    associateAggregations,
-    cycleName
-  );
+  const cycleAggregation = getCycleAggregations(associateAggregations);
 
   // get assessment level aggregations
   return { formattedCycle, cycleAggregation };
@@ -106,7 +102,8 @@ const formatAllCycleData = (data: any) => {
   for (let i = 0; i < data.length; i++) {
     const metadata = data[i].metadata;
     const { formattedCycle, cycleAggregation } = getCycleData(
-      data[i].data, metadata
+      data[i].data,
+      metadata
     );
     cycleAggregations.push(cycleAggregation);
     formattedCycles.push(formattedCycle);
@@ -130,5 +127,11 @@ const formatAllCycleData = (data: any) => {
     )
   };
 
-  return { allCycleAggregations, cycleAggregations, formattedCycles, assessmentAggregations, cycleMetadata };
+  return {
+    allCycleAggregations,
+    cycleAggregations,
+    formattedCycles,
+    assessmentAggregations,
+    cycleMetadata
+  };
 };

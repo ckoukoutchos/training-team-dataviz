@@ -1,3 +1,5 @@
+/* could you do all these without important tags, of course,
+but its far more fun to give the one css guy in the team a heart attack */
 .AppBar {
   z-index: 1301 !important;
 }
@@ -6,11 +8,15 @@
   width: calc(100% - 230px) !important;
 }
 
+.Icon {
+  margin-right: 8px !important;
+}
+
 .Space {
   padding-top: 0.4em;
   padding-right: 1.5em;
 }
 
 .Hide {
-  display: none;
+  display: none !important;
 }
