@@ -13,14 +13,12 @@ import {
   formatCycleData,
   getAssociateAggregations,
   getCycleAggregations,
-  getAllCyclesAggregations,
-  sortMetricsByAssessmentType,
-  formatAssessments,
-  formatStaffData
+  formatStaffData,
+  getAssessmentAggregations
 } from '../../shared/dataService';
 import Metadata from '../../shared/metadata';
 import { getToken } from './selectors';
-import { Metric } from '../../models/types';
+import { Metric, AssessmentAggregation, Associate } from '../../models/types';
 
 export default function* watchCycle() {
   yield all([takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics)]);
@@ -37,18 +35,18 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
     const res = yield axios.get('/api/cycle', headers);
     const data = res.data;
     const {
-      allCycleAggregations,
-      cycleAggregations,
-      formattedCycles,
+      assessments,
       assessmentAggregations,
+      cycles,
+      cycleAggregations,
       cycleMetadata
     } = formatAllCycleData(data);
     yield put(
       fetchAllCyclesMetricsSuccess(
-        allCycleAggregations,
-        cycleAggregations,
-        formattedCycles,
+        assessments,
         assessmentAggregations,
+        cycles,
+        cycleAggregations,
         cycleMetadata
       )
     );
@@ -85,53 +83,56 @@ const getCycleData = (data: Metric[], metadata: any) => {
   );
   // get associate level aggregations
   const associateAggregations = getAssociateAggregations(formattedAssociates);
-
   // get cycle level aggregations
   const cycleAggregation = getCycleAggregations(associateAggregations);
-
   // get assessment level aggregations
-  return { formattedCycle, cycleAggregation };
+  const assessmentAggregation = getAssessmentAggregations(formattedAssociates);
+  return { formattedCycle, cycleAggregation, assessmentAggregation };
 };
 
 const formatAllCycleData = (data: any) => {
-  const formattedCycles = [];
+  const assessments: any = {
+    projects: [],
+    quizzes: [],
+    softSkills: []
+  };
+  const assessmentAggregations: any = {
+    projects: [],
+    quizzes: [],
+    softSkills: []
+  };
+  const cycles = [];
   const cycleAggregations = [];
   const cycleMetadata = {};
 
   // for each cycle, collect data
   for (let i = 0; i < data.length; i++) {
     const metadata = data[i].metadata;
-    const { formattedCycle, cycleAggregation } = getCycleData(
-      data[i].data,
-      metadata
-    );
+    const {
+      formattedCycle,
+      cycleAggregation,
+      assessmentAggregation: { projects, quizzes, softSkills }
+    } = getCycleData(data[i].data, metadata);
+
     cycleAggregations.push(cycleAggregation);
-    formattedCycles.push(formattedCycle);
+    cycles.push(formattedCycle);
+    assessmentAggregations.projects.push(...projects);
+    assessmentAggregations.quizzes.push(...quizzes);
+    assessmentAggregations.softSkills.push(...softSkills);
     cycleMetadata[metadata.name] = metadata.formattedName;
     cycleMetadata[metadata.formattedName] = metadata.name;
+    formattedCycle.associates.forEach((associate: Associate) => {
+      assessments.projects.push(...associate.projects);
+      assessments.quizzes.push(...associate.quizzes);
+      assessments.softSkills.push(...associate.softSkills);
+    });
   }
-  // get overall aggregations
-  const allCycleAggregations = getAllCyclesAggregations(cycleAggregations);
-  // sort assessments by type
-  const sortedAssessments = sortMetricsByAssessmentType(formattedCycles);
-  // format assessments & calc average
-  const assessmentAggregations = {
-    projects: formatAssessments(
-      sortedAssessments.projects,
-      Metadata['Project (Score)']
-    ),
-    quizzes: formatAssessments(sortedAssessments.quizzes, Metadata.Quiz),
-    softSkills: formatAssessments(
-      sortedAssessments.softSkills,
-      Metadata['Soft Skill Assessment']
-    )
-  };
 
   return {
-    allCycleAggregations,
     cycleAggregations,
-    formattedCycles,
+    cycles,
     assessmentAggregations,
+    assessments,
     cycleMetadata
   };
 };

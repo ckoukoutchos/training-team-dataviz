@@ -2,42 +2,14 @@ import React from 'react';
 import { Divider, Paper, Tooltip, Typography } from '@material-ui/core';
 import { HelpOutline } from '@material-ui/icons';
 import styles from './RollUps.module.css';
-import { Cycle, Associate, Module } from '../../models/types';
-import {
-  calcDaysSince,
-  getItemInArrayByName,
-  calcScoreAvg,
-  calcStandardDeviation
-} from '../../shared/dataService';
-import Metadata from '../../shared/metadata';
+import { Aggregation } from '../../models/types';
 
 interface RollUpsProps {
-  cycleAggregation: any;
-  associateAggregation: any;
-  cycle: Cycle;
-  associate: Associate;
+  aggregation: Aggregation;
 }
 
 const RollUps = (props: RollUpsProps) => {
-  const { cycleAggregation, associateAggregation, cycle, associate } = props;
-
-  const getAttendanceScore = (count: any): number => {
-    const attendanceModifier =
-      count['Excused Absence'] * -0.5 +
-      count['Unexcused Absence'] * -5 +
-      count['Excused Late Arrival'] * -0.2 +
-      count['Unexcused Late Arrival'] * -1;
-
-    const daysInCycle = associate.endDate
-      ? calcDaysSince(associate.startDate, associate.endDate)
-      : calcDaysSince(associate.startDate);
-    const daysOff = associate.cycle[0] === 'm' ? 4 : 2;
-    const daysInClass = daysInCycle - Math.round((daysInCycle / 7) * daysOff);
-    const attendanceScore = Math.round(
-      ((daysInClass + attendanceModifier) / daysInClass) * 100
-    );
-    return attendanceScore;
-  };
+  const { aggregation } = props;
 
   const getCompositeBackground = (score: number) => {
     switch (score) {
@@ -55,153 +27,7 @@ const RollUps = (props: RollUpsProps) => {
         return ['Circle', 'Red', 'Number1'];
     }
   };
-
-  const getCompositeScore = (
-    scores: number[],
-    associateScore: number
-  ): number => {
-    const combinedScoreAvg = calcScoreAvg(scores);
-    const SD = calcStandardDeviation(scores);
-    const associateDeviation = (associateScore - combinedScoreAvg) / SD;
-    let compositeScore = 0;
-    if (Math.abs(associateDeviation) < 0.5) {
-      compositeScore = 3;
-    } else if (associateDeviation >= 0.5 && associateDeviation < 1) {
-      compositeScore = 4;
-    } else if (associateDeviation >= 1) {
-      compositeScore = 5;
-    } else if (associateDeviation <= -0.5 && associateDeviation > -1) {
-      compositeScore = 2;
-    } else {
-      compositeScore = 1;
-    }
-
-    return compositeScore;
-  };
-
-  const getModuleTimeScore = (associate: Associate): number => {
-    const workedModules = associate.modules.filter(
-      (module: Module, index: number) => module.daysInModule > 0 && index < 4
-    );
-    const workedModuleTimes = workedModules.map(
-      (module: Module, index: number) => {
-        // if module in-progress and less than half alloted time, just give 100%
-        if (
-          module.daysInModule < Metadata.maxTimePerModule[index] * 0.6 &&
-          !module.endDate
-        ) {
-          return 1;
-        }
-        // 0.6 is ratio of ML to traditional cycle module lengths
-        return (Metadata.maxTimePerModule[index] / module.daysInModule) * 0.6;
-      }
-    );
-
-    const total = workedModuleTimes.reduce(
-      (acc: any, curr: any) => acc + curr,
-      0
-    );
-    return Math.round((total / workedModuleTimes.length) * 100);
-  };
-
-  const getWeightedAssessmentScore = (aggregation: any): number => {
-    if (aggregation.softSkills && aggregation.quizzes && aggregation.projects) {
-      return Math.round(
-        aggregation.projects * 0.45 +
-          aggregation.softSkills * 0.45 +
-          aggregation.quizzes * 0.1
-      );
-    } else if (aggregation.projects && aggregation.quizzes) {
-      return Math.round(aggregation.projects * 0.7 + aggregation.quizzes * 0.3);
-    } else if (aggregation.projects) {
-      return aggregation.projects;
-    } else {
-      return 0;
-    }
-  };
-
-  const getMLRollUp = (
-    cycleAgg: any,
-    associateAgg: any,
-    cycle: Cycle,
-    associate: Associate
-  ) => {
-    const assessmentsScore = getWeightedAssessmentScore(associateAgg);
-    const moduleTimeScore = getModuleTimeScore(associate);
-    const attendanceScore = getAttendanceScore(associate.attendance.count);
-    const associateScore = Math.round(
-      assessmentsScore * 0.5 + attendanceScore * 0.25 + moduleTimeScore * 0.25
-    );
-
-    const scores: any = [];
-    cycleAgg.aggregations.forEach((item: any) => {
-      const associate = getItemInArrayByName(cycle.associates, item.name);
-      const assessments = getWeightedAssessmentScore(item);
-      const attendance = getAttendanceScore(associate.attendance.count);
-      const moduleTime = getModuleTimeScore(associate);
-      if (assessments && attendance && moduleTime) {
-        scores.push(
-          Math.round(assessments * 0.5 + attendance * 0.25 + moduleTime * 0.25)
-        );
-      }
-    });
-
-    const compositeScore = getCompositeScore(scores, associateScore);
-
-    return {
-      assessmentsScore,
-      associateScore,
-      attendanceScore,
-      compositeScore,
-      moduleTimeScore
-    };
-  };
-
-  const getTradRollUp = (
-    cycleAgg: any,
-    associateAgg: any,
-    cycle: Cycle,
-    associate: Associate
-  ) => {
-    const assessmentsScore = getWeightedAssessmentScore(associateAgg);
-    const attendanceScore = getAttendanceScore(associate.attendance.count);
-    const associateScore = Math.round(
-      assessmentsScore * 0.6 + attendanceScore * 0.4
-    );
-
-    const scores: any = [];
-    cycleAgg.aggregations.forEach((item: any) => {
-      const associate = getItemInArrayByName(cycle.associates, item.name);
-      const assessments = getWeightedAssessmentScore(item);
-      const attendance = getAttendanceScore(associate.attendance.count);
-      if (assessments && attendance) {
-        scores.push(Math.round(assessments * 0.6 + attendance * 0.4));
-      }
-    });
-
-    const compositeScore = getCompositeScore(scores, assessmentsScore);
-
-    return {
-      assessmentsScore,
-      associateScore,
-      attendanceScore,
-      compositeScore,
-      moduleTimeScore: null
-    };
-  };
-
-  const {
-    assessmentsScore,
-    associateScore,
-    attendanceScore,
-    compositeScore,
-    moduleTimeScore
-  } =
-    associate.cycle[0] === 'm'
-      ? getMLRollUp(cycleAggregation, associateAggregation, cycle, associate)
-      : getTradRollUp(cycleAggregation, associateAggregation, cycle, associate);
-
-  const background = getCompositeBackground(compositeScore);
+  const background = getCompositeBackground(aggregation.composite);
 
   return (
     <Paper className={styles.Paper}>
@@ -218,7 +44,7 @@ const RollUps = (props: RollUpsProps) => {
 
       <div className={styles.Body}>
         <Typography variant='h6'>
-          <strong>Combined:</strong> {associateScore}%
+          <strong>Combined:</strong> {aggregation.combined}%
           <Tooltip
             className={styles.Tooltip}
             title={
@@ -289,14 +115,14 @@ const RollUps = (props: RollUpsProps) => {
               )}
             />
             <Typography variant='h1' className={styles[background[2]]}>
-              {compositeScore}
+              {aggregation.composite}
             </Typography>
           </div>
         </Tooltip>
 
         <div>
           <Typography variant='subtitle1'>
-            <strong>Assessments:</strong> {assessmentsScore}%
+            <strong>Assessments:</strong> {aggregation.assessments}%
             <Tooltip
               className={styles.Tooltip}
               title={
@@ -322,7 +148,7 @@ const RollUps = (props: RollUpsProps) => {
 
           <div>
             <Typography variant='subtitle1'>
-              <strong>Attendance:</strong> {attendanceScore}%
+              <strong>Attendance:</strong> {aggregation.attendance}%
               <Tooltip
                 className={styles.Tooltip}
                 title={
@@ -372,9 +198,9 @@ const RollUps = (props: RollUpsProps) => {
             </Typography>
           </div>
 
-          {moduleTimeScore && (
+          {aggregation.moduleTime === aggregation.moduleTime && (
             <Typography variant='subtitle1'>
-              <strong>Module Time:</strong> {moduleTimeScore}%
+              <strong>Module Time:</strong> {aggregation.moduleTime}%
               <Tooltip
                 className={styles.Tooltip}
                 title={

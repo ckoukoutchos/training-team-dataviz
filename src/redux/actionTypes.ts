@@ -1,4 +1,9 @@
-import { Cycle, CycleAggregation } from '../models/types';
+import {
+  Assessment,
+  Cycle,
+  CycleAggregation,
+  AssessmentTypeAggregation
+} from '../models/types';
 
 export const FETCH_ALL_CYCLES_METRICS = 'FETCH_ALL_CYCLES_METRICS';
 export const FETCH_ALL_CYCLES_METRICS_SUCCESS =
@@ -21,10 +26,10 @@ interface FetchAllCycleMetricsFail {
 
 interface FetchAllCycleMetricsSuccess {
   type: typeof FETCH_ALL_CYCLES_METRICS_SUCCESS;
-  allCycleAggregations: any;
+  assessments: AssessmentTypeAggregation;
+  assessmentAggregations: AssessmentTypeAggregation;
+  cycles: Cycle[];
   cycleAggregations: CycleAggregation[];
-  formattedCycles: Cycle[];
-  assessmentAggregations: any;
   cycleMetadata: any;
 }
 
@@ -33,12 +38,12 @@ interface ResetError {
 }
 
 interface SignIn {
-  type: typeof SIGN_IN,
+  type: typeof SIGN_IN;
   user: any;
 }
 
 interface SignOut {
-  type: typeof SIGN_OUT
+  type: typeof SIGN_OUT;
 }
 
 export type ActionTypes =

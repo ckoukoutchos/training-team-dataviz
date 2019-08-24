@@ -5,7 +5,6 @@ import { History } from 'history';
 
 import styles from './Assessments.module.css';
 import { AppState } from '../../redux/reducers/rootReducer';
-import { formatPercentile, calcPercentiles } from '../../shared/dataService';
 import {
   Paper,
   Typography,
@@ -15,9 +14,10 @@ import {
   Button
 } from '@material-ui/core';
 import { RecordVoiceOver, School, Web } from '@material-ui/icons';
+import Metadata from '../../shared/metadata';
+import { AssessmentType } from '../../models/types';
 
 interface AssessemntsProps {
-  allCycleAggregations: any;
   assessmentAggregations: any;
   history: History;
 }
@@ -31,13 +31,12 @@ class Assessemnts extends Component<AssessemntsProps, AssessmentsState> {
     activeTab: 0
   };
 
-  createTableData(assessments: any, allCycleAggregationsScores: any) {
-    return assessments.map((assessment: any) => ({
-      name: assessment.name,
-      module: assessment.module,
-      average: `${assessment.average}% / ${formatPercentile(
-        calcPercentiles(allCycleAggregationsScores, assessment.average)
-      )}`
+  createTableData(type: string) {
+    const assessments = Object.entries(Metadata[type]);
+    return assessments.map(([key, value]: any) => ({
+      name: key,
+      module: value.Module,
+      average: 50
     }));
   }
 
@@ -46,11 +45,7 @@ class Assessemnts extends Component<AssessemntsProps, AssessmentsState> {
   };
 
   render() {
-    const {
-      allCycleAggregations,
-      assessmentAggregations,
-      history
-    } = this.props;
+    const { assessmentAggregations, history } = this.props;
     const { activeTab } = this.state;
 
     return (
@@ -93,13 +88,9 @@ class Assessemnts extends Component<AssessemntsProps, AssessmentsState> {
                     </Button>
                   )
                 },
-                { title: 'Module', field: 'module' },
-                { title: 'Average/Percentile', field: 'average' }
+                { title: 'Module', field: 'module' }
               ]}
-              data={this.createTableData(
-                assessmentAggregations.projects,
-                allCycleAggregations.projectScores
-              )}
+              data={this.createTableData(AssessmentType.PROJECT)}
               options={{
                 sorting: true,
                 pageSize: 10,
@@ -128,13 +119,9 @@ class Assessemnts extends Component<AssessemntsProps, AssessmentsState> {
                     </Button>
                   )
                 },
-                { title: 'Module', field: 'module' },
-                { title: 'Average/Percentile', field: 'average' }
+                { title: 'Module', field: 'module' }
               ]}
-              data={this.createTableData(
-                assessmentAggregations.quizzes,
-                allCycleAggregations.quizScores
-              )}
+              data={this.createTableData(AssessmentType.QUIZ)}
               options={{
                 sorting: true,
                 pageSize: 10,
@@ -162,13 +149,9 @@ class Assessemnts extends Component<AssessemntsProps, AssessmentsState> {
                       {rowData.name}
                     </Button>
                   )
-                },
-                { title: 'Average/Percentile', field: 'average' }
+                }
               ]}
-              data={this.createTableData(
-                assessmentAggregations.softSkills,
-                allCycleAggregations.softSkillsScores
-              )}
+              data={this.createTableData(AssessmentType.SOFT_SKILLS)}
               options={{
                 sorting: true,
                 pageSize: 5,
@@ -184,7 +167,6 @@ class Assessemnts extends Component<AssessemntsProps, AssessmentsState> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  allCycleAggregations: state.metrics.allCycleAggregations,
   assessmentAggregations: state.metrics.assessmentAggregations
 });
 

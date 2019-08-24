@@ -32,18 +32,27 @@ export interface Assessment {
   attemptNumber: number;
   cycle: string;
   date: Date;
-  module: ModuleType;
+  maxScore: number;
+  module?: ModuleType;
   name: string;
+  rawScore: number;
   score: number;
-  type: AssessmentType;
+  type: string;
 }
 
 export interface AssessmentAggregation {
   average: number;
+  cycle: string;
   module: string;
   name: string;
   scores: number[];
   type: AssessmentType;
+}
+
+export interface AssessmentTypeAggregation {
+  projects: AssessmentAggregation[];
+  quizzes: AssessmentAggregation[];
+  softSkills: AssessmentAggregation[];
 }
 
 export interface Aggregation {
@@ -82,9 +91,9 @@ export class Associate implements Person {
   metrics: Metric[];
   name: string;
   modules: Module[];
-  projects: Metric[];
-  quizzes: Metric[];
-  softSkills: Metric[];
+  projects: Assessment[];
+  quizzes: Assessment[];
+  softSkills: Assessment[];
   startDate: Date;
 
   constructor() {

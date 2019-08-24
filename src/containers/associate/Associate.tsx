@@ -22,7 +22,6 @@ import {
 import RollUps from '../../components/roll-ups/RollUps';
 
 interface AssociateProps {
-  allCycleAggregations: any;
   cycleAggregations: any[];
   cycles: Cycle[];
   lookup: any;
@@ -55,12 +54,7 @@ class AssociateView extends Component<AssociateProps> {
 
         <AssociateInfo associate={associate} cycleName={lookup[cycleName]} />
 
-        <RollUps
-          cycleAggregation={cycleAggregation}
-          associateAggregation={associateAggregation}
-          cycle={cycle}
-          associate={associate}
-        />
+        <RollUps aggregation={associateAggregation} />
 
         <RadarGraph
           title='Assessments'
@@ -130,7 +124,6 @@ class AssociateView extends Component<AssociateProps> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  allCycleAggregations: state.metrics.allCycleAggregations,
   cycleAggregations: state.metrics.cycleAggregations,
   cycles: state.metrics.cycles,
   lookup: state.metadata.cycleNameLookup
