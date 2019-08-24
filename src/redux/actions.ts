@@ -7,24 +7,29 @@ import {
   SIGN_OUT,
   ActionTypes
 } from './actionTypes';
-import { CycleAggregation, Cycle } from '../models/types';
+import {
+  Assessment,
+  CycleAggregation,
+  Cycle,
+  AssessmentTypeAggregation
+} from '../models/types';
 
 export const fetchAllCyclesMetrics = (): ActionTypes => ({
   type: FETCH_ALL_CYCLES_METRICS
 });
 
 export const fetchAllCyclesMetricsSuccess = (
-  allCycleAggregations: any,
+  assessments: AssessmentTypeAggregation,
+  assessmentAggregations: AssessmentTypeAggregation,
+  cycles: Cycle[],
   cycleAggregations: CycleAggregation[],
-  formattedCycles: Cycle[],
-  assessmentAggregations: any,
   cycleMetadata: any
 ): ActionTypes => ({
   type: FETCH_ALL_CYCLES_METRICS_SUCCESS,
-  allCycleAggregations,
   cycleAggregations,
-  formattedCycles,
+  cycles,
   assessmentAggregations,
+  assessments,
   cycleMetadata
 });
 

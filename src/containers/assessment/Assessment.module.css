@@ -1,9 +1,19 @@
-.Container {
-  margin: 8px 16px 16px 50px;
+.Body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 8px;
 }
 
-.Divider {
-  margin-top: 16px;
+.Card {
+  margin: 16px auto;
+  padding: 16px;
+  text-align: center;
+  width: 800px;
+}
+
+.Container {
+  margin: 8px 16px 16px 50px;
 }
 
 .Graph {
@@ -11,14 +21,14 @@
   width: 800px;
 }
 
-.Header {
-  padding-top: 8px;
-  text-align: center;
+.GraphPaper {
+  margin: auto;
+  height: 500px;
+  width: 800px;
 }
 
 .Paper {
   margin: 16px auto;
-  height: 590px;
   width: 800px;
 }
 

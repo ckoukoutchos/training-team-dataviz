@@ -1,18 +1,30 @@
 import { ActionTypes, FETCH_ALL_CYCLES_METRICS_SUCCESS } from '../actionTypes';
-import { Cycle, CycleAggregation } from '../../models/types';
+import {
+  Cycle,
+  CycleAggregation,
+  AssessmentTypeAggregation
+} from '../../models/types';
 
 interface MetricsState {
-  allCycleAggregations: any;
+  assessments: AssessmentTypeAggregation;
+  assessmentAggregations: AssessmentTypeAggregation;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
-  assessmentAggregations: any;
 }
 
 const initalState = {
-  allCycleAggregations: [],
   cycleAggregations: [],
   cycles: [],
-  assessmentAggregations: []
+  assessments: {
+    projects: [],
+    quizzes: [],
+    softSkills: []
+  },
+  assessmentAggregations: {
+    projects: [],
+    quizzes: [],
+    softSkills: []
+  }
 };
 
 const metricsReducer = (
@@ -22,10 +34,18 @@ const metricsReducer = (
   switch (action.type) {
     case FETCH_ALL_CYCLES_METRICS_SUCCESS:
       return {
-        allCycleAggregations: action.allCycleAggregations,
+        assessments: {
+          projects: action.assessments.projects,
+          quizzes: action.assessments.quizzes,
+          softSkills: action.assessments.softSkills
+        },
+        assessmentAggregations: {
+          projects: action.assessmentAggregations.projects,
+          quizzes: action.assessmentAggregations.quizzes,
+          softSkills: action.assessmentAggregations.softSkills
+        },
         cycleAggregations: action.cycleAggregations,
-        cycles: action.formattedCycles,
-        assessmentAggregations: action.assessmentAggregations
+        cycles: action.cycles
       };
     default:
       return state;

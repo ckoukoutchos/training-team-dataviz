@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { History } from 'history';
-import { Divider, Paper, Typography } from '@material-ui/core';
+import {
+  Divider,
+  Paper,
+  Typography,
+  Tabs,
+  Tab,
+  Button
+} from '@material-ui/core';
 import MaterialTable from 'material-table';
 import { ResponsiveLine } from '@nivo/line';
 
@@ -11,32 +18,50 @@ import styles from './Assessment.module.css';
 
 import {
   getUrlParams,
-  getItemInArrayByName,
-  calcPercentiles,
-  formatPercentile,
-  calcPercent
+  calcScoreAvg,
+  combineScores
 } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
-import Metadata from '../../shared/metadata';
 import CONSTS from '../../shared/constants';
-import { Metric, AssessmentType } from '../../models/types';
+import Metadata from '../../shared/metadata';
+import {
+  Assessment,
+  AssessmentType,
+  AssessmentTypeAggregation,
+  AssessmentAggregation
+} from '../../models/types';
+import { Autorenew, Replay, RotateLeft } from '@material-ui/icons';
 
 interface AssessmentProps {
-  allCycleAggregations: any;
-  assessmentAggregations: any;
+  assessments: AssessmentTypeAggregation;
+  assessmentAggregations: AssessmentTypeAggregation;
   history: History;
 }
 
 interface AssessmentState {
+  activeTab: number;
   showCycles: boolean;
 }
 
-class Assessment extends Component<AssessmentProps, AssessmentState> {
+class AssessmentView extends Component<AssessmentProps, AssessmentState> {
   state = {
+    activeTab: 0,
     showCycles: false
   };
 
-  getGraphData(assessment: any, maxScore: number, isSoftSkill: boolean) {
+  filterAssessments(assessments: any, url: string[], activeTab: number) {
+    return assessments.filter((assessment: any) => {
+      if (activeTab === 1) {
+        return assessment.name === url[3] && assessment.cycle[0] === 'm';
+      } else if (activeTab === 2) {
+        return assessment.name === url[3] && assessment.cycle[0] !== 'm';
+      } else {
+        return assessment.name === url[3];
+      }
+    });
+  }
+
+  getGraphData(scores: number[], type: string, cycle: string | null) {
     let scoreDistribution: any = {
       '0': 0,
       '10': 0,
@@ -51,7 +76,7 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
       '100': 0
     };
 
-    if (isSoftSkill) {
+    if (type === AssessmentType.SOFT_SKILLS) {
       scoreDistribution = {
         '0': 0,
         '1': 0,
@@ -61,27 +86,23 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
         '5': 0
       };
     }
-    for (const score of assessment.scores) {
-      // convert to percent
-      const percent = calcPercent(score, maxScore);
+    for (const score of scores) {
       let bracketString = '';
 
-      if (isSoftSkill) {
+      if (type === AssessmentType.SOFT_SKILLS) {
         // get leading digit
-        const bracket = Math.floor(percent / 10) / 2;
-        console.log(Math.floor(percent / 10));
+        const bracket = Math.floor(score / 10) / 2;
         // convert to bracket string
         bracketString = bracket === 0 ? '0' : String(bracket);
       } else {
         // get leading digit
-        const bracket = Math.floor(percent / 10);
+        const bracket = Math.floor(score / 10);
         // convert to bracket string
         bracketString = bracket === 0 ? '0' : String(bracket) + '0';
       }
       scoreDistribution[bracketString]++;
     }
-
-    const id = assessment.cycle ? CONSTS[assessment.cycle] : 'combined';
+    const id = cycle ? CONSTS[cycle] : 'Combined';
     return {
       id,
       data: Object.entries(scoreDistribution).map(
@@ -94,43 +115,48 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
     };
   }
 
-  getCycleGraphData(assessment: any, maxScore: number, isSoftSkill: boolean) {
-    const sortedCycles = this.sortCycleData(assessment.metrics);
-    return sortedCycles.map((cycle: any) =>
-      this.getGraphData(cycle, maxScore, isSoftSkill)
+  getCycleGraphData(assessments: AssessmentAggregation[]) {
+    return assessments.map((aggregation: AssessmentAggregation) =>
+      this.getGraphData(aggregation.scores, aggregation.type, aggregation.cycle)
     );
   }
 
-  sortCycleData(assessments: Metric[]): any[] {
-    const sortedByCycle = {};
-    assessments.forEach((assessment: Metric) => {
-      if (sortedByCycle[assessment.cycle]) {
-        sortedByCycle[assessment.cycle].metrics.push(assessment);
-        sortedByCycle[assessment.cycle].scores.push(Number(assessment.Score));
-      } else {
-        sortedByCycle[assessment.cycle] = {
-          cycle: assessment.cycle,
-          metrics: [assessment],
-          scores: [Number(assessment.Score)]
-        };
-      }
-    });
-    return Object.values(sortedByCycle);
+  getDataObject(
+    assessments: AssessmentAggregation[],
+    showCycles: boolean,
+    type: string
+  ) {
+    const scores = combineScores(assessments, 'scores');
+    const avg =
+      type === AssessmentType.SOFT_SKILLS
+        ? Math.round(calcScoreAvg(scores) / 10 / 2)
+        : calcScoreAvg(scores);
+    if (!showCycles) {
+      return {
+        avg,
+        data: [this.getGraphData(scores, type, null)]
+      };
+    } else {
+      return {
+        avg,
+        data: this.getCycleGraphData(assessments)
+      };
+    }
   }
 
-  getTableData(metrics: Metric[], scores: number[], maxScore: number): any[] {
-    const sortedScores = scores.sort((a: number, b: number) => a - b);
-
-    return metrics.map((metric: Metric) => ({
-      name: metric.Person,
-      date: metric.Date,
-      score: Number(metric.Score),
-      percent: `${calcPercent(Number(metric.Score), maxScore)}%`,
-      percentile: `${formatPercentile(
-        calcPercentiles(sortedScores, Number(metric.Score))
-      )}`
+  getTableData(assessments: Assessment[]) {
+    return assessments.map((assessment: Assessment) => ({
+      name: assessment.associate,
+      cycle: CONSTS[assessment.cycle],
+      date: assessment.date.toDateString(),
+      score: `${assessment.score}%`,
+      rawScore: assessment.rawScore
     }));
   }
+
+  onTabChange = (event: any, value: number) => {
+    this.setState({ activeTab: value });
+  };
 
   toggleHandler = () => {
     this.setState((prevState: AssessmentState) => ({
@@ -139,64 +165,93 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
   };
 
   render() {
-    const { assessmentAggregations, history } = this.props;
-    const { showCycles } = this.state;
+    const { assessments, assessmentAggregations, history } = this.props;
+    const { activeTab, showCycles } = this.state;
     const { url } = getUrlParams(history);
-    const assessment = getItemInArrayByName(
-      assessmentAggregations[url[2]],
-      url[3]
-    );
-    // assessment type
     const type = Metadata['Interaction Type'][url[2]];
-    const isSoftSkill = type === AssessmentType.SOFT_SKILLS;
-    const maxScore = Metadata[type][assessment.name]['Max Score'];
+
+    const currentAssessmentAggr = this.filterAssessments(
+      assessmentAggregations[url[2]],
+      url,
+      activeTab
+    );
+    const currentAssessment = this.filterAssessments(
+      assessments[url[2]],
+      url,
+      activeTab
+    );
+    const { data, avg } = this.getDataObject(
+      currentAssessmentAggr,
+      showCycles,
+      type
+    );
 
     return (
       <>
         <Breadcrumbs path={url} root='assessment' />
 
+        <Paper className={styles.Card}>
+          <Typography variant='h3'>{url[3].split('_').join(' ')}</Typography>
+          <Typography variant='h6' color='textSecondary'>
+            {type !== AssessmentType.SOFT_SKILLS
+              ? Metadata[type].Module
+              : 'Soft Skills'}
+          </Typography>
+
+          <Divider style={{ margin: '12px 0' }} />
+
+          <div className={styles.Body}>
+            <Typography variant='subtitle1'>
+              <strong>Assessment Average: </strong>
+              {calcScoreAvg(combineScores(currentAssessmentAggr, 'scores'))}%
+            </Typography>
+
+            <Typography variant='subtitle1'>
+              <strong>Total Submitted: </strong>
+              {combineScores(currentAssessmentAggr, 'scores').length}
+            </Typography>
+          </div>
+        </Paper>
+
+        <Paper style={{ margin: '16px auto', width: '800px' }}>
+          <Tabs
+            value={activeTab}
+            indicatorColor='primary'
+            textColor='primary'
+            onChange={this.onTabChange}
+            variant='fullWidth'
+          >
+            <Tab label='All Cycles' icon={<Autorenew />} />
+            <Tab label='Mastery Learning' icon={<RotateLeft />} />
+            <Tab label='Traditional' icon={<Replay />} />
+          </Tabs>
+        </Paper>
+
         <Paper className={styles.Paper}>
-          <div className={styles.Header}>
-            <Typography variant='h4'>
-              {assessment.name.split('_').join(' ')}
-            </Typography>
-            <Typography variant='subtitle1' color='textSecondary'>
-              {assessment.module ? assessment.module : 'Soft Skills'}
-            </Typography>
+          <div style={{ margin: '4px 0 0 16px' }}>
+            <Toggle
+              checked={showCycles}
+              onChange={this.toggleHandler}
+              leftLabel='Combined'
+              rightLabel='Per Cycle'
+            />
           </div>
 
-          <div className={styles.Divider}>
-            <Divider />
-          </div>
-
-          <Toggle
-            checked={showCycles}
-            onChange={this.toggleHandler}
-            leftLabel='Combined'
-            rightLabel='Per Cycle'
-          />
-
-          <div className={styles.Graph}>
+          <div className={styles.GraphPaper}>
             <ResponsiveLine
-              data={
-                showCycles
-                  ? this.getCycleGraphData(assessment, maxScore, isSoftSkill)
-                  : [this.getGraphData(assessment, maxScore, isSoftSkill)]
-              }
+              data={data}
               margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
               markers={[
                 {
                   axis: 'x',
-                  value: isSoftSkill
-                    ? Math.round(assessment.average / 10 / 2)
-                    : assessment.average,
+                  value: avg,
                   lineStyle: { stroke: 'black', strokeWidth: 3 }
                 }
               ]}
               xScale={{
-                type: isSoftSkill ? 'point' : 'linear',
+                type: type === AssessmentType.SOFT_SKILLS ? 'point' : 'linear',
                 min: 0,
-                max: isSoftSkill ? 5 : 100
+                max: type === AssessmentType.SOFT_SKILLS ? 5 : 100
               }}
               yScale={{
                 type: 'linear',
@@ -262,23 +317,36 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
 
         <div className={styles.Paper}>
           <MaterialTable
-            title='Associate Scores & Percentiles'
             columns={[
-              { title: 'Person', field: 'name' },
+              {
+                title: 'Associate',
+                field: 'name',
+                render: (rowData: any) => (
+                  <Button
+                    color='primary'
+                    onClick={() =>
+                      history.push(
+                        `/cycle/${CONSTS[rowData.cycle]}/associate/${
+                          rowData.name
+                        }`
+                      )
+                    }
+                  >
+                    {rowData.name}
+                  </Button>
+                )
+              },
+              { title: 'Cycle', field: 'cycle' },
               { title: 'Date', field: 'date' },
-              { title: 'Raw Score', field: 'score' },
-              { title: 'Percent', field: 'percent' },
-              { title: 'Percentile', field: 'percentile' }
+              { title: 'Score', field: 'score' },
+              { title: 'Raw Score', field: 'rawScore' }
             ]}
-            data={this.getTableData(
-              assessment.metrics,
-              assessment.scores,
-              maxScore
-            )}
+            data={this.getTableData(currentAssessment)}
             options={{
               sorting: true,
               pageSize: 10,
-              pageSizeOptions: [10, 20, 50]
+              pageSizeOptions: [10, 20, 50],
+              showTitle: false
             }}
           />
         </div>
@@ -288,8 +356,8 @@ class Assessment extends Component<AssessmentProps, AssessmentState> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  allCycleAggregations: state.metrics.allCycleAggregations,
+  assessments: state.metrics.assessments,
   assessmentAggregations: state.metrics.assessmentAggregations
 });
 
-export default connect(mapStateToProps)(Assessment);
+export default connect(mapStateToProps)(AssessmentView);

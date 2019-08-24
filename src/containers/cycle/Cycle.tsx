@@ -10,7 +10,9 @@ import {
   getUrlParams,
   getItemInArrayByName,
   formatPercentile,
-  calcPercentiles
+  calcPercentiles,
+  calcScoreAvg,
+  combineScores
 } from '../../shared/dataService';
 import styles from './Cycle.module.css';
 import {
@@ -24,7 +26,7 @@ import MLCycleProgress from '../../components/progression/ml-cycle-progress/MLCy
 import AssociatesTable from '../../components/associates-table/AssociatesTable';
 
 interface CycleProps {
-  cycleAggregations: Aggregation[];
+  cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
   lookup: any;
   history: History;
@@ -38,6 +40,28 @@ interface CycleState {
 class CycleView extends Component<CycleProps, CycleState> {
   state = {
     showInactive: false
+  };
+
+  calcAvgForCycleType = (
+    cycleAggregations: CycleAggregation[],
+    cycleName: string
+  ) => {
+    let filteredCycles = [];
+    if (cycleName[0] === 'm') {
+      filteredCycles = cycleAggregations.filter(
+        (aggregation: CycleAggregation) => aggregation.name[0] === 'm'
+      );
+    } else {
+      filteredCycles = cycleAggregations.filter(
+        (aggregation: CycleAggregation) => aggregation.name[0] !== 'm'
+      );
+    }
+    return {
+      projects: calcScoreAvg(combineScores(filteredCycles, 'projects')),
+      quizzes: calcScoreAvg(combineScores(filteredCycles, 'quizzes')),
+      softSkills: calcScoreAvg(combineScores(filteredCycles, 'softSkills')),
+      exercises: calcScoreAvg(combineScores(filteredCycles, 'exercises'))
+    };
   };
 
   createTableData = (
@@ -101,6 +125,7 @@ class CycleView extends Component<CycleProps, CycleState> {
       cycleAggregations,
       cycleName
     );
+    const typeAvg = this.calcAvgForCycleType(cycleAggregations, cycleName);
 
     return (
       <div className={styles.Wrapper}>
@@ -115,22 +140,26 @@ class CycleView extends Component<CycleProps, CycleState> {
           data={[
             {
               avg: 'Projects',
-              'Cycle Average': aggregation.projects
+              'Cycle Average': aggregation.projects,
+              [cycle.type]: typeAvg.projects
             },
             {
               avg: 'Quizzes',
-              'Cycle Average': aggregation.quizzes
+              'Cycle Average': aggregation.quizzes,
+              [cycle.type]: typeAvg.quizzes
             },
             {
               avg: 'Soft Skills',
-              'Cycle Average': aggregation.softSkills
+              'Cycle Average': aggregation.softSkills,
+              [cycle.type]: typeAvg.softSkills
             },
             {
               avg: 'Exercises',
-              'Cycle Average': aggregation.exercises
+              'Cycle Average': aggregation.exercises,
+              [cycle.type]: typeAvg.exercises
             }
           ]}
-          keys={['Cycle Average']}
+          keys={['Cycle Average', cycle.type]}
         />
 
         {cycleName[0] === 'm' ? (
