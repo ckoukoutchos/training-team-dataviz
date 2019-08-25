@@ -28,6 +28,15 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
     'Final Project': 0
   };
 
+  const associateCurrentModule = {
+    'Development Basics and Front End': [],
+    Databases: [],
+    'Logic Layer (Java)': [],
+    'Front End Frameworks (React)': [],
+    'Group Project': [],
+    'Final Project': []
+  };
+
   for (const associate of cycle.associates) {
     associate.modules.forEach((module: Module) => {
       // if active and module not completed
@@ -35,9 +44,11 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
         // and module isn't currently paused
         if (!module.modulePause) {
           moduleCount[module.type]++;
+          associateCurrentModule[module.type].push(associate.name);
           // or module was paused but no longer is
         } else if (module.modulePause && module.moduleResume) {
           moduleCount[module.type]++;
+          associateCurrentModule[module.type].push(associate.name);
         }
       }
     });
@@ -58,7 +69,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
         <Divider />
       </div>
 
-      <div className={styles.Graph}>
+      <div className={styles.MLGraph}>
         <ResponsiveBar
           data={[
             {
@@ -79,6 +90,22 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
           labelSkipWidth={12}
           labelSkipHeight={12}
           labelTextColor='black'
+          tooltip={(data: any) => {
+            return (
+              <div>
+                <strong style={{ color: data.color }}>
+                  {data.id}: {data.value}
+                </strong>
+                <ul>
+                  {associateCurrentModule[data.id].map(
+                    (name: string, index: number) => (
+                      <li key={index}>{name}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            );
+          }}
         />
       </div>
 

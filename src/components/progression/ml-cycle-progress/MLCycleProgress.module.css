@@ -2,7 +2,7 @@
   margin-top: 16px;
 }
 
-.Graph {
+.MLGraph {
   height: 117px;
   width: 800px;
 }
@@ -17,6 +17,9 @@
   width: 800px;
 }
 
-text {
-  font-weight: 600;
+.MLGraph text {
+  fill: white !important;
+  font-size: 20px !important;
+  text-shadow: -1px -1px 0 rgb(125, 125, 125), 1px -1px 0 rgb(125, 125, 125),
+    -1px 1px 0 rgb(125, 125, 125), 1px 1px 0 rgb(125, 125, 125);
 }
