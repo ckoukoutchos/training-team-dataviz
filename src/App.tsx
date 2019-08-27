@@ -14,6 +14,7 @@ import Associate from './containers/associate/Associate';
 import Associates from './containers/associates/Associates';
 import Cycle from './containers/cycle/Cycle';
 import Cycles from './containers/cycles/Cycles';
+import DataFizz from './containers/data-fizz/DataFizz';
 import Overview from './containers/overview/Overview';
 import Modal from './components/modal/Modal';
 import NavBar from './components/nav-bar/NavBar';
@@ -65,6 +66,7 @@ class App extends Component<AppProps> {
                 component={Assessment}
               />
               <ProtectedRoute path='/staff' exact component={Staff} />
+              <ProtectedRoute path='/data-fizz' exact component={DataFizz} />
               <ProtectedRoute path='/' component={Overview} />
             </Switch>
           </main>
