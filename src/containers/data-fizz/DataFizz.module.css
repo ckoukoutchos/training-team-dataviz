@@ -1,0 +1,21 @@
+.Header {
+  padding-top: 8px;
+  text-align: center;
+}
+
+.Divider {
+  margin: 16px;
+}
+
+.GraphPaper {
+  margin: auto;
+  height: 500px;
+  width: 800px;
+}
+
+.Paper {
+  margin: 16px auto;
+  margin-top: 80px;
+  padding: 16px 24px;
+  width: 800px;
+}
