@@ -176,8 +176,20 @@ class Cycles extends Component<CyclesProps, CyclesState> {
                   )
                 },
                 { title: 'Type', field: 'type' },
-                { title: 'Start Date', field: 'startDate' },
-                { title: 'End Date', field: 'endDate' }
+                {
+                  title: 'Start Date',
+                  field: 'startDate',
+                  customSort: (a: any, b: any) =>
+                    new Date(a.startDate).valueOf() -
+                    new Date(b.startDate).valueOf()
+                },
+                {
+                  title: 'End Date',
+                  field: 'endDate',
+                  customSort: (a: any, b: any) =>
+                    new Date(a.endDate).valueOf() -
+                    new Date(b.endDate).valueOf()
+                }
               ]}
               data={this.createTableData(cycles, showInactive)}
               options={{
@@ -242,9 +254,24 @@ class Cycles extends Component<CyclesProps, CyclesState> {
                   )
                 },
                 { title: 'Combined', field: 'combined' },
-                { title: 'Assessments', field: 'assessments' },
-                { title: 'Attendance', field: 'attendance' },
-                { title: 'Module Time', field: 'moduleTime' }
+                {
+                  title: 'Assessments',
+                  field: 'assessments',
+                  customSort: (a: any, b: any) =>
+                    a.assessments.split('%')[0] - b.assessments.split('%')[0]
+                },
+                {
+                  title: 'Attendance',
+                  field: 'attendance',
+                  customSort: (a: any, b: any) =>
+                    a.attendance.split('%')[0] - b.attendance.split('%')[0]
+                },
+                {
+                  title: 'Module Time',
+                  field: 'moduleTime',
+                  customSort: (a: any, b: any) =>
+                    a.moduleTime.split('%')[0] - b.moduleTime.split('%')[0]
+                }
               ]}
               data={this.createAggrTableData(
                 cycleAggregations,
@@ -294,10 +321,31 @@ class Cycles extends Component<CyclesProps, CyclesState> {
                     </Button>
                   )
                 },
-                { title: 'Projects', field: 'projectAvg' },
-                { title: 'Quizzes', field: 'quizAvg' },
-                { title: 'Soft Skills', field: 'softSkillsAvg' },
-                { title: 'Exercises', field: 'exerciseAvg' }
+                {
+                  title: 'Projects',
+                  field: 'projectAvg',
+                  customSort: (a: any, b: any) =>
+                    a.projectAvg.split('%')[0] - b.projectAvg.split('%')[0]
+                },
+                {
+                  title: 'Quizzes',
+                  field: 'quizAvg',
+                  customSort: (a: any, b: any) =>
+                    a.quizAvg.split('%')[0] - b.quizAvg.split('%')[0]
+                },
+                {
+                  title: 'Soft Skills',
+                  field: 'softSkillsAvg',
+                  customSort: (a: any, b: any) =>
+                    a.softSkillsAvg.split('%')[0] -
+                    b.softSkillsAvg.split('%')[0]
+                },
+                {
+                  title: 'Exercises',
+                  field: 'exerciseAvg',
+                  customSort: (a: any, b: any) =>
+                    a.exerciseAvg.split('%')[0] - b.exerciseAvg.split('%')[0]
+                }
               ]}
               data={this.createAssessmentTableData(
                 cycleAggregations,

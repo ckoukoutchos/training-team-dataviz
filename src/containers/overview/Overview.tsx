@@ -145,9 +145,24 @@ class Overview extends Component<OverviewProps, OverviewState> {
                   )
                 },
                 { title: 'Cycle', field: 'cycle' },
-                { title: 'Assessments', field: 'assessments' },
-                { title: 'Attendance', field: 'attendance' },
-                { title: 'Module Time', field: 'moduleTime' }
+                {
+                  title: 'Assessments',
+                  field: 'assessments',
+                  customSort: (a: any, b: any) =>
+                    a.assessments.split('%')[0] - b.assessments.split('%')[0]
+                },
+                {
+                  title: 'Attendance',
+                  field: 'attendance',
+                  customSort: (a: any, b: any) =>
+                    a.attendance.split('%')[0] - b.attendance.split('%')[0]
+                },
+                {
+                  title: 'Module Time',
+                  field: 'moduleTime',
+                  customSort: (a: any, b: any) =>
+                    a.moduleTime.split('%')[0] - b.moduleTime.split('%')[0]
+                }
               ]}
               data={watchedAssociates.map((aggregation: CycleAggregation) => ({
                 name: aggregation.name,
