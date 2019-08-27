@@ -108,7 +108,21 @@ class AssociateView extends Component<AssociateProps> {
               { title: 'Interaction', field: 'Interaction' },
               { title: 'Interaction Type', field: 'Interaction Type' },
               { title: 'Score', field: 'Score' },
-              { title: 'Date', field: 'Date', type: 'date' }
+              {
+                title: 'Date',
+                field: 'Date',
+                customSort: (a: any, b: any) => {
+                  const dateA = a.Date.split('/');
+                  const dateB = b.Date.split('/');
+                  if (Number(dateA[0]) < Number(dateB[0])) {
+                    return -1;
+                  } else if (Number(dateA[0]) > Number(dateB[0])) {
+                    return 1;
+                  } else {
+                    return Number(dateA[1]) < Number(dateB[1]) ? -1 : 1;
+                  }
+                }
+              }
             ]}
             data={associate.metrics}
             options={{

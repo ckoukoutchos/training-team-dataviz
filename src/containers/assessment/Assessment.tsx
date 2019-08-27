@@ -337,8 +337,18 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
                 )
               },
               { title: 'Cycle', field: 'cycle' },
-              { title: 'Date', field: 'date' },
-              { title: 'Score', field: 'score' },
+              {
+                title: 'Date',
+                field: 'date',
+                customSort: (a: any, b: any) =>
+                  new Date(a.date).valueOf() - new Date(b.date).valueOf()
+              },
+              {
+                title: 'Score',
+                field: 'score',
+                customSort: (a: any, b: any) =>
+                  a.score.split('%')[0] - b.score.split('%')[0]
+              },
               { title: 'Raw Score', field: 'rawScore' }
             ]}
             data={this.getTableData(currentAssessment)}
