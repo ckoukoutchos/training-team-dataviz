@@ -20,6 +20,7 @@ import {
   Aggregation
 } from '../../models/types';
 import RollUps from '../../components/roll-ups/RollUps';
+import MLModuleProgress from '../../components/progression/ml-module-progress/MLModuleProgress';
 
 interface AssociateProps {
   cycleAggregations: any[];
@@ -94,6 +95,8 @@ class AssociateView extends Component<AssociateProps> {
         ) : (
           <TraditionalCycleProgress item={associate} title='Cycle Progress' />
         )}
+
+        {cycleName[0] === 'm' && <MLModuleProgress associate={associate} />}
 
         <Calendar
           attendance={associate.attendance}
