@@ -7,14 +7,17 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  ListSubheader
+  ListSubheader,
+  Typography,
+  Divider
 } from '@material-ui/core';
 import { CheckCircle, ErrorOutline, HighlightOff } from '@material-ui/icons';
 import Metadata from '../../../shared/metadata';
+import styles from './MLModuleProgress.module.css';
 
 const MLModuleProgress = (props: any) => {
   const { modules, projects, quizzes, exercises } = props.associate;
-  let currModule = modules.find(
+  const currModule = modules.find(
     (module: Module) => module.startDate && !module.endDate
   );
   const required = Metadata.required[currModule.type];
@@ -63,6 +66,17 @@ const MLModuleProgress = (props: any) => {
   };
   return (
     <Paper style={{ margin: '16px auto', width: '800px' }}>
+      <div className={styles.Header}>
+        <Typography variant='h3'>Module Progress</Typography>
+        <Typography variant='h6' color='textSecondary'>
+          {currModule.type}
+        </Typography>
+      </div>
+
+      <div className={styles.Divider}>
+        <Divider />
+      </div>
+
       <Grid container spacing={2} justify='center'>
         <div>
           <Grid item xs={12} md={6}>

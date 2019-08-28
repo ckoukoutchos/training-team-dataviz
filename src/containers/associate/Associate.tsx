@@ -96,7 +96,9 @@ class AssociateView extends Component<AssociateProps> {
           <TraditionalCycleProgress item={associate} title='Cycle Progress' />
         )}
 
-        {cycleName[0] === 'm' && <MLModuleProgress associate={associate} />}
+        {cycleName[0] === 'm' && !associate.endDate && (
+          <MLModuleProgress associate={associate} />
+        )}
 
         <Calendar
           attendance={associate.attendance}

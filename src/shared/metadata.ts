@@ -174,7 +174,7 @@ export default {
         'MongoDB_Database_Project_v3',
         'PostgreSQL_Database_Project_v3'
       ],
-      quizzes: ['Quiz_Relational_Databases_v1', 'Quiz_Document_Databases_v1'],
+      quizzes: ['Quiz_Relational_Databases_v2', 'Quiz_Document_Databases_v1'],
       exercises: []
     },
     'Logic Layer (Java)': {
@@ -209,6 +209,16 @@ export default {
         'Garden_Center_Frontend_Testing_Exercise_v1',
         'Garden_Center_Frontend_Authentication_Exercise_v1'
       ]
+    },
+    'Group Project': {
+      projects: [],
+      quizzes: [],
+      exercises: []
+    },
+    'Final Project': {
+      projects: [],
+      quizzes: [],
+      exercises: []
     }
   },
   'Soft Skill Assessment': {
