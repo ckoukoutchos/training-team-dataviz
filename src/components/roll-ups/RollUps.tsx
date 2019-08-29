@@ -6,10 +6,11 @@ import { Aggregation } from '../../models/types';
 
 interface RollUpsProps {
   aggregation: Aggregation;
+  showComposite: boolean;
 }
 
 const RollUps = (props: RollUpsProps) => {
-  const { aggregation } = props;
+  const { aggregation, showComposite } = props;
 
   const getCompositeBackground = (score: number) => {
     switch (score) {
@@ -80,45 +81,47 @@ const RollUps = (props: RollUpsProps) => {
           </Tooltip>
         </Typography>
 
-        <Tooltip
-          className={styles.Tooltip}
-          title={
-            <>
-              <Typography>
-                Composite score based on associate's combined score relative to
-                cycle average:
+        {showComposite && (
+          <Tooltip
+            className={styles.Tooltip}
+            title={
+              <>
+                <Typography>
+                  Composite score based on associate's combined score relative
+                  to cycle average:
+                </Typography>
+                <ul>
+                  <li>
+                    <Typography>
+                      3: within one standard deviation of mean
+                    </Typography>
+                  </li>
+                  <li>
+                    <Typography>
+                      4 & 2: +/- one standard deviation from mean
+                    </Typography>
+                  </li>
+                  <li>
+                    <Typography>
+                      5 & 1: +/- two standard deviations from mean
+                    </Typography>
+                  </li>
+                </ul>
+              </>
+            }
+          >
+            <div style={{ position: 'relative' }}>
+              <div
+                className={[styles[background[0]], styles[background[1]]].join(
+                  ' '
+                )}
+              />
+              <Typography variant='h1' className={styles[background[2]]}>
+                {aggregation.composite}
               </Typography>
-              <ul>
-                <li>
-                  <Typography>
-                    3: within one standard deviation of mean
-                  </Typography>
-                </li>
-                <li>
-                  <Typography>
-                    4 & 2: +/- one standard deviation from mean
-                  </Typography>
-                </li>
-                <li>
-                  <Typography>
-                    5 & 1: +/- two standard deviations from mean
-                  </Typography>
-                </li>
-              </ul>
-            </>
-          }
-        >
-          <div style={{ position: 'relative' }}>
-            <div
-              className={[styles[background[0]], styles[background[1]]].join(
-                ' '
-              )}
-            />
-            <Typography variant='h1' className={styles[background[2]]}>
-              {aggregation.composite}
-            </Typography>
-          </div>
-        </Tooltip>
+            </div>
+          </Tooltip>
+        )}
 
         <div>
           <Typography variant='subtitle1'>
