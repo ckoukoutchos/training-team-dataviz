@@ -21,6 +21,7 @@ import {
 } from '../../models/types';
 import RollUps from '../../components/roll-ups/RollUps';
 import MLModuleProgress from '../../components/progression/ml-module-progress/MLModuleProgress';
+import { Button } from '@material-ui/core';
 
 interface AssociateProps {
   cycleAggregations: any[];
@@ -29,9 +30,24 @@ interface AssociateProps {
   history: History;
 }
 
-class AssociateView extends Component<AssociateProps> {
+interface AssociateState {
+  showComparisons: boolean;
+}
+
+class AssociateView extends Component<AssociateProps, AssociateState> {
+  state = {
+    showComparisons: true
+  };
+
+  showComparisonHandler = () => {
+    this.setState((prevState: AssociateState) => ({
+      showComparisons: !prevState.showComparisons
+    }));
+  };
+
   render() {
     const { cycleAggregations, cycles, lookup, history } = this.props;
+    const { showComparisons } = this.state;
     const { url, cycle: cycleName, associate: associateName } = getUrlParams(
       history
     );
@@ -51,7 +67,17 @@ class AssociateView extends Component<AssociateProps> {
 
     return (
       <>
-        <Breadcrumbs path={url} root='cycle' />
+        <div style={{ margin: 'auto' }}>
+          <Breadcrumbs path={url} root='cycle' />
+          <Button
+            variant='contained'
+            color='primary'
+            style={{ margin: '0 0 3px 16px' }}
+            onClick={this.showComparisonHandler}
+          >
+            {showComparisons ? 'Hide Comparisons' : 'Show Comparisons'}
+          </Button>
+        </div>
 
         <div className={styles.Wrapper}>
           <div
@@ -64,37 +90,42 @@ class AssociateView extends Component<AssociateProps> {
               cycleName={lookup[cycleName]}
             />
 
-            <RollUps aggregation={associateAggregation} />
+            <RollUps
+              aggregation={associateAggregation}
+              showComposite={showComparisons}
+            />
           </div>
 
-          <RadarGraph
-            title='Assessments'
-            subtitle='Project, Quiz, and Soft Skill Averages'
-            keys={[associateName, 'Cycle Average']}
-            index='avg'
-            data={[
-              {
-                avg: 'Projects',
-                [associateName]: associateAggregation.projects,
-                'Cycle Average': cycleAggregation.projects
-              },
-              {
-                avg: 'Quizzes',
-                [associateName]: associateAggregation.quizzes,
-                'Cycle Average': cycleAggregation.quizzes
-              },
-              {
-                avg: 'Soft Skills',
-                [associateName]: associateAggregation.softSkills,
-                'Cycle Average': cycleAggregation.softSkills
-              },
-              {
-                avg: 'Exercises',
-                [associateName]: associateAggregation.exercises,
-                'Cycle Average': cycleAggregation.exercises
-              }
-            ]}
-          />
+          {showComparisons && (
+            <RadarGraph
+              title='Assessments'
+              subtitle='Project, Quiz, and Soft Skill Averages'
+              keys={[associateName, 'Cycle Average']}
+              index='avg'
+              data={[
+                {
+                  avg: 'Projects',
+                  [associateName]: associateAggregation.projects,
+                  'Cycle Average': cycleAggregation.projects
+                },
+                {
+                  avg: 'Quizzes',
+                  [associateName]: associateAggregation.quizzes,
+                  'Cycle Average': cycleAggregation.quizzes
+                },
+                {
+                  avg: 'Soft Skills',
+                  [associateName]: associateAggregation.softSkills,
+                  'Cycle Average': cycleAggregation.softSkills
+                },
+                {
+                  avg: 'Exercises',
+                  [associateName]: associateAggregation.exercises,
+                  'Cycle Average': cycleAggregation.exercises
+                }
+              ]}
+            />
+          )}
 
           {cycleName[0] === 'm' ? (
             <MLAssociateProgress
