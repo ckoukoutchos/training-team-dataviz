@@ -1,6 +1,7 @@
 .BreadcrumbsLong {
   display: inline-block;
   justify-content: center;
+  height: 40px;
   margin: 16px auto;
   margin-top: 80px;
   padding: 8px 16px;
@@ -9,6 +10,7 @@
 .BreadcrumbsShort {
   display: inline-block;
   justify-content: center;
+  height: 40px;
   margin: 16px auto;
   margin-top: 80px;
   padding: 8px 16px;

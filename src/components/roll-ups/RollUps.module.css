@@ -1,5 +1,7 @@
 .Paper {
+  height: 240px;
   margin: 16px auto;
+  margin-top: 32px;
   padding: 8px;
   width: 800px;
 }

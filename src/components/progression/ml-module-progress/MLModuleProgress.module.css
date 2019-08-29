@@ -6,3 +6,9 @@
 .Divider {
   margin: 16px;
 }
+
+.Paper {
+  height: 400px;
+  margin: 16px auto;
+  width: 800px;
+}
