@@ -65,7 +65,7 @@ const MLModuleProgress = (props: any) => {
     }
   };
   return (
-    <Paper style={{ margin: '16px auto', width: '800px' }}>
+    <Paper className={styles.Paper}>
       <div className={styles.Header}>
         <Typography variant='h3'>Module Progress</Typography>
         <Typography variant='h6' color='textSecondary'>

@@ -50,94 +50,105 @@ class AssociateView extends Component<AssociateProps> {
     );
 
     return (
-      <div className={styles.Wrapper}>
+      <>
         <Breadcrumbs path={url} root='cycle' />
 
-        <AssociateInfo associate={associate} cycleName={lookup[cycleName]} />
+        <div className={styles.Wrapper}>
+          <div
+            style={{
+              margin: '0 auto'
+            }}
+          >
+            <AssociateInfo
+              associate={associate}
+              cycleName={lookup[cycleName]}
+            />
 
-        <RollUps aggregation={associateAggregation} />
+            <RollUps aggregation={associateAggregation} />
+          </div>
 
-        <RadarGraph
-          title='Assessments'
-          subtitle='Project, Quiz, and Soft Skill Averages'
-          keys={[associateName, 'Cycle Average']}
-          index='avg'
-          data={[
-            {
-              avg: 'Projects',
-              [associateName]: associateAggregation.projects,
-              'Cycle Average': cycleAggregation.projects
-            },
-            {
-              avg: 'Quizzes',
-              [associateName]: associateAggregation.quizzes,
-              'Cycle Average': cycleAggregation.quizzes
-            },
-            {
-              avg: 'Soft Skills',
-              [associateName]: associateAggregation.softSkills,
-              'Cycle Average': cycleAggregation.softSkills
-            },
-            {
-              avg: 'Exercises',
-              [associateName]: associateAggregation.exercises,
-              'Cycle Average': cycleAggregation.exercises
-            }
-          ]}
-        />
-
-        {cycleName[0] === 'm' ? (
-          <MLAssociateProgress
-            associate={associate}
-            title='Cycle Progress'
-            subtitle='Overall & Per Module'
-          />
-        ) : (
-          <TraditionalCycleProgress item={associate} title='Cycle Progress' />
-        )}
-
-        {cycleName[0] === 'm' && !associate.endDate && (
-          <MLModuleProgress associate={associate} />
-        )}
-
-        <Calendar
-          attendance={associate.attendance}
-          endDate={associate.endDate}
-          startDate={associate.startDate}
-        />
-
-        <div className={styles.Paper}>
-          <MaterialTable
-            title='Associate Metrics'
-            columns={[
-              { title: 'Interaction', field: 'Interaction' },
-              { title: 'Interaction Type', field: 'Interaction Type' },
-              { title: 'Score', field: 'Score' },
+          <RadarGraph
+            title='Assessments'
+            subtitle='Project, Quiz, and Soft Skill Averages'
+            keys={[associateName, 'Cycle Average']}
+            index='avg'
+            data={[
               {
-                title: 'Date',
-                field: 'Date',
-                customSort: (a: any, b: any) => {
-                  const dateA = a.Date.split('/');
-                  const dateB = b.Date.split('/');
-                  if (Number(dateA[0]) < Number(dateB[0])) {
-                    return -1;
-                  } else if (Number(dateA[0]) > Number(dateB[0])) {
-                    return 1;
-                  } else {
-                    return Number(dateA[1]) < Number(dateB[1]) ? -1 : 1;
-                  }
-                }
+                avg: 'Projects',
+                [associateName]: associateAggregation.projects,
+                'Cycle Average': cycleAggregation.projects
+              },
+              {
+                avg: 'Quizzes',
+                [associateName]: associateAggregation.quizzes,
+                'Cycle Average': cycleAggregation.quizzes
+              },
+              {
+                avg: 'Soft Skills',
+                [associateName]: associateAggregation.softSkills,
+                'Cycle Average': cycleAggregation.softSkills
+              },
+              {
+                avg: 'Exercises',
+                [associateName]: associateAggregation.exercises,
+                'Cycle Average': cycleAggregation.exercises
               }
             ]}
-            data={associate.metrics}
-            options={{
-              sorting: true,
-              pageSize: 10,
-              pageSizeOptions: [10, 20, 50]
-            }}
           />
+
+          {cycleName[0] === 'm' ? (
+            <MLAssociateProgress
+              associate={associate}
+              title='Cycle Progress'
+              subtitle='Overall & Per Module'
+            />
+          ) : (
+            <TraditionalCycleProgress item={associate} title='Cycle Progress' />
+          )}
+
+          {cycleName[0] === 'm' && !associate.endDate && (
+            <MLModuleProgress associate={associate} />
+          )}
+
+          <Calendar
+            attendance={associate.attendance}
+            endDate={associate.endDate}
+            startDate={associate.startDate}
+          />
+
+          <div className={styles.Paper}>
+            <MaterialTable
+              title='Associate Metrics'
+              columns={[
+                { title: 'Interaction', field: 'Interaction' },
+                { title: 'Interaction Type', field: 'Interaction Type' },
+                { title: 'Score', field: 'Score' },
+                {
+                  title: 'Date',
+                  field: 'Date',
+                  customSort: (a: any, b: any) => {
+                    const dateA = a.Date.split('/');
+                    const dateB = b.Date.split('/');
+                    if (Number(dateA[0]) < Number(dateB[0])) {
+                      return -1;
+                    } else if (Number(dateA[0]) > Number(dateB[0])) {
+                      return 1;
+                    } else {
+                      return Number(dateA[1]) < Number(dateB[1]) ? -1 : 1;
+                    }
+                  }
+                }
+              ]}
+              data={associate.metrics}
+              options={{
+                sorting: true,
+                pageSize: 10,
+                pageSizeOptions: [10, 20, 50]
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
