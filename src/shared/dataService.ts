@@ -79,6 +79,8 @@ export const calcAssessmentsScore = (
     return Math.round(projects * 0.7 + quizzes * 0.3);
   } else if (projects) {
     return projects;
+  } else if (quizzes) {
+    return quizzes;
   } else {
     return 0;
   }

@@ -79,6 +79,7 @@ class Overview extends Component<OverviewProps, OverviewState> {
             item={cycle}
             key={index}
             subtitle={cycle.type}
+            tall
             title={CONSTS[cycle.name]}
           >
             <ExpansionPanel>

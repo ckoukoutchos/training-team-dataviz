@@ -1,14 +1,19 @@
+.Divider {
+  margin-top: 16px;
+}
+
+.Graph {
+  height: 380px;
+  width: 800px;
+}
+
 .Header {
   padding-top: 8px;
   text-align: center;
 }
 
-.Divider {
-  margin: 16px 0 0 0;
-}
-
 .Paper {
-  height: 400px;
+  height: 500px;
   margin: 16px 32px;
   width: 800px;
 }

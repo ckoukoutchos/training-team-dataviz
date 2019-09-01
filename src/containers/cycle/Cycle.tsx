@@ -128,57 +128,65 @@ class CycleView extends Component<CycleProps, CycleState> {
     const typeAvg = this.calcAvgForCycleType(cycleAggregations, cycleName);
 
     return (
-      <div className={styles.Wrapper}>
-        <Breadcrumbs path={url} root='cycle' />
+      <>
+        <div style={{ margin: 'auto' }}>
+          <Breadcrumbs path={url} root='cycle' />
+        </div>
 
-        <CycleInfo cycleName={lookup[cycleName]} cycle={cycle} />
+        <div className={styles.Wrapper}>
+          <div className={styles.Container}>
+            <CycleInfo cycleName={lookup[cycleName]} cycle={cycle} />
 
-        <RadarGraph
-          title='Assessments'
-          subtitle='Project, Quiz, and Soft Skill Averages'
-          index='avg'
-          data={[
-            {
-              avg: 'Projects',
-              'Cycle Average': aggregation.projects,
-              [cycle.type]: typeAvg.projects
-            },
-            {
-              avg: 'Quizzes',
-              'Cycle Average': aggregation.quizzes,
-              [cycle.type]: typeAvg.quizzes
-            },
-            {
-              avg: 'Soft Skills',
-              'Cycle Average': aggregation.softSkills,
-              [cycle.type]: typeAvg.softSkills
-            },
-            {
-              avg: 'Exercises',
-              'Cycle Average': aggregation.exercises,
-              [cycle.type]: typeAvg.exercises
-            }
-          ]}
-          keys={['Cycle Average', cycle.type]}
-        />
+            <RadarGraph
+              title='Assessments'
+              subtitle='Project, Quiz, and Soft Skill Averages'
+              index='avg'
+              data={[
+                {
+                  avg: 'Projects',
+                  'Cycle Average': aggregation.projects,
+                  [cycle.type]: typeAvg.projects
+                },
+                {
+                  avg: 'Quizzes',
+                  'Cycle Average': aggregation.quizzes,
+                  [cycle.type]: typeAvg.quizzes
+                },
+                {
+                  avg: 'Soft Skills',
+                  'Cycle Average': aggregation.softSkills,
+                  [cycle.type]: typeAvg.softSkills
+                },
+                {
+                  avg: 'Exercises',
+                  'Cycle Average': aggregation.exercises,
+                  [cycle.type]: typeAvg.exercises
+                }
+              ]}
+              keys={['Cycle Average', cycle.type]}
+            />
 
-        {cycleName[0] === 'm' ? (
-          <MLCycleProgress
-            cycle={cycle}
-            title='Cycle Progress'
-            subtitle='Count per Module'
-          />
-        ) : (
-          <TraditionalCycleProgress item={cycle} title='Cycle Progress' />
-        )}
+            {cycleName[0] === 'm' ? (
+              <MLCycleProgress
+                cycle={cycle}
+                title='Cycle Progress'
+                subtitle='Count per Module'
+              />
+            ) : (
+              <TraditionalCycleProgress item={cycle} title='Cycle Progress' />
+            )}
+          </div>
 
-        <AssociatesTable
-          associates={cycle.associates}
-          cycleAggregations={[aggregation]}
-          lookup={lookup}
-          history={history}
-        />
-      </div>
+          <div className={styles.Container}>
+            <AssociatesTable
+              associates={cycle.associates}
+              cycleAggregations={[aggregation]}
+              lookup={lookup}
+              history={history}
+            />
+          </div>
+        </div>
+      </>
     );
   }
 }

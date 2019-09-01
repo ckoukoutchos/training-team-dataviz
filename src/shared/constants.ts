@@ -37,5 +37,12 @@ export default {
   'Boston 2019': 'traditionalBoston2019',
   'Denver 2019': 'traditionalDenver2019',
   'Chicago 2019': 'traditionalChicago2019',
-  'Portland 2019': 'mlPortland2019'
+  'Portland 2019': 'mlPortland2019',
+  'Assessments': 'assessmentScore',
+  'Attendance': 'attendanceScore',
+  'Combined': 'combinedScore',
+  'Module Time': 'moduleTimeScore',
+  'Projects': 'projectAvg',
+  'Quizzes': 'quizAvg',
+  'Soft Skills': 'softSkillsAvg'
 }
