@@ -15,7 +15,7 @@ interface ExpansionPanelsProps {
 const ExpansionPanels = (props: ExpansionPanelsProps) => {
   const { children, panelTitle = 'Show Details' } = props;
   return (
-    <ExpansionPanel>
+    <ExpansionPanel style={{ zIndex: 500 }}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls='panel1a-content'

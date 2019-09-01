@@ -3,7 +3,23 @@
   width: 800px;
 }
 
+.Container {
+  display: flex;
+  flex-direction: column;
+}
+
 .Wrapper {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 1800px) {
+  .Wrapper {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    margin-left: 80px;
+  }
 }

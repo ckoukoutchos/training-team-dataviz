@@ -13,6 +13,7 @@ import { Cycle } from '../../../models/types';
 interface TraditionalCycleProgressProps {
   children?: any;
   item: Associate | Cycle;
+  tall?: boolean;
   title: string;
   subtitle?: string;
 }
@@ -54,10 +55,10 @@ class TraditionalCycleProgress extends Component<
   }
 
   render() {
-    const { children, item, title, subtitle } = this.props;
+    const { children, item, title, subtitle, tall } = this.props;
 
     return (
-      <Paper className={styles.Paper}>
+      <Paper className={tall ? styles.TallPaper : styles.Paper}>
         <div className={styles.Header}>
           <Typography variant='h3'>{title}</Typography>
           {subtitle && (
