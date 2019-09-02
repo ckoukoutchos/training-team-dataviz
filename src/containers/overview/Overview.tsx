@@ -19,9 +19,16 @@ import ExpansionPanel from '../../components/expansion-panel/ExpansionPanel';
 import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
 import TrainingInfo from '../../components/training-info/TrainingInfo';
 import MLCycleProgress from '../../components/progression/ml-cycle-progress/MLCycleProgress';
-import { Paper, Tabs, Tab, Button } from '@material-ui/core';
-import { Autorenew, Person } from '@material-ui/icons';
-import MaterialTable from 'material-table';
+import {
+  Paper,
+  Tabs,
+  Tab,
+  Button,
+  Typography,
+  Tooltip
+} from '@material-ui/core';
+import { Autorenew, Person, HelpOutline } from '@material-ui/icons';
+import MaterialTable, { MTableToolbar } from 'material-table';
 import styles from './Overview.module.css';
 
 interface OverviewProps {
@@ -68,7 +75,23 @@ class Overview extends Component<OverviewProps, OverviewState> {
         const associate = associates.find(
           (associate: Associate) => associate.name === aggregation.name
         );
-        return aggregation.composite < 3 && associate.active;
+        const ml = associate.cycle[0] === 'm';
+        const assessmentThreshold = ml ? 75 : 70;
+        if (ml) {
+          return (
+            associate.active &&
+            (aggregation.assessments < assessmentThreshold ||
+              aggregation.attendance < 85 ||
+              // @ts-ignore
+              aggregation.moduleTime < 70)
+          );
+        } else {
+          return (
+            associate.active &&
+            (aggregation.assessments < assessmentThreshold ||
+              aggregation.attendance < 85)
+          );
+        }
       }
     );
 
@@ -125,7 +148,6 @@ class Overview extends Component<OverviewProps, OverviewState> {
         {activeTab === 1 && (
           <div className={styles.Paper}>
             <MaterialTable
-              title='Associates on Watch'
               columns={[
                 {
                   title: 'Associate',
@@ -178,17 +200,75 @@ class Overview extends Component<OverviewProps, OverviewState> {
                 sorting: true,
                 pageSize: 10,
                 pageSizeOptions: [10, 20, 50],
+                showTitle: false,
                 rowStyle: (rowData: any) => {
                   const current = watchedAssociates.find(
                     (associate: Associate) => rowData.name === associate.name
                   );
+                  let color = 'rgba(255, 217, 0, 0.2)';
+                  if (current.composite === 1) {
+                    color = 'rgba(255, 0, 0, 0.2)';
+                  } else if (current.composite === 2) {
+                    color = 'rgba(255, 136, 0, 0.2)';
+                  }
                   return {
-                    backgroundColor:
-                      current.composite === 1
-                        ? 'rgba(255, 0, 0, 0.05)'
-                        : 'rgba(255, 136, 0, 0.05)'
+                    backgroundColor: color
                   };
                 }
+              }}
+              components={{
+                Toolbar: props => (
+                  <div className={styles.Rows}>
+                    <div
+                      style={{
+                        margin: '16px',
+                        display: 'flex',
+                        flexDirection: 'row'
+                      }}
+                    >
+                      <Typography variant='h5'>Associates on Watch</Typography>
+                      <Tooltip
+                        className={styles.Tooltip}
+                        title={
+                          <>
+                            <Typography>Thresholds:</Typography>
+                            <ul>
+                              <li>
+                                <Typography>
+                                  Assessments: 70% Traditional, 75% Mastery
+                                  Learning
+                                </Typography>
+                              </li>
+                              <li>
+                                <Typography>Attendance: 85%</Typography>
+                              </li>
+                              <li>
+                                <Typography>
+                                  Module Time (Mastery Learning): 70%
+                                </Typography>
+                              </li>
+                            </ul>
+                            <Typography>Colors:</Typography>
+                            <ul>
+                              <li>
+                                <Typography>Yellow: composite of 3</Typography>
+                              </li>
+                              <li>
+                                <Typography>Orange: composite of 2</Typography>
+                              </li>
+                              <li>
+                                <Typography>Red: composite of 1</Typography>
+                              </li>
+                            </ul>
+                          </>
+                        }
+                      >
+                        <HelpOutline />
+                      </Tooltip>
+                    </div>
+                    <MTableToolbar {...props} />
+                  </div>
+                )
               }}
             />
           </div>
