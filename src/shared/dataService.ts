@@ -111,7 +111,7 @@ const calcCombinedScore = (
 ): number => {
   return moduleTime
     ? Math.round(assessments * 0.5 + attendance * 0.25 + moduleTime * 0.25)
-    : Math.round(assessments * 0.6 + attendance * 0.4);
+    : Math.round(assessments * 0.7 + attendance * 0.3);
 };
 
 const calcCompositeScore = (
