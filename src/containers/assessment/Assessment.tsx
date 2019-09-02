@@ -40,12 +40,15 @@ interface AssessmentProps {
 
 interface AssessmentState {
   activeTab: number;
+  firstAttempts: boolean;
   showCycles: boolean;
+  [key: string]: any;
 }
 
 class AssessmentView extends Component<AssessmentProps, AssessmentState> {
   state = {
     activeTab: 0,
+    firstAttempts: false,
     showCycles: false
   };
 
@@ -121,11 +124,7 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
     );
   }
 
-  getDataObject(
-    assessments: AssessmentAggregation[],
-    showCycles: boolean,
-    type: string
-  ) {
+  getDataObject(assessments: any[], showCycles: boolean, type: string) {
     const scores = combineScores(assessments, 'scores');
     const avg =
       type === AssessmentType.SOFT_SKILLS
@@ -144,6 +143,24 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
     }
   }
 
+  getFirstAttempts = (assessments: Assessment[], url: string[]) => {
+    const filteredAssessments = assessments.filter(
+      (assessment: Assessment) =>
+        assessment.cycle[0] === 'm' && assessment.name === url[3]
+    );
+    const associateMap = {};
+    for (const assessment of filteredAssessments) {
+      if (associateMap[assessment.associate]) {
+        if (associateMap[assessment.associate].date > assessment.date) {
+          associateMap[assessment.associate] = assessment;
+        }
+      } else {
+        associateMap[assessment.associate] = assessment;
+      }
+    }
+    return Object.values(associateMap);
+  };
+
   getTableData(assessments: Assessment[]) {
     return assessments.map((assessment: Assessment) => ({
       name: assessment.associate,
@@ -158,15 +175,15 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
     this.setState({ activeTab: value });
   };
 
-  toggleHandler = () => {
+  toggleHandler = (section: string) => () => {
     this.setState((prevState: AssessmentState) => ({
-      showCycles: !prevState.showCycles
+      [section]: !prevState[section]
     }));
   };
 
   render() {
     const { assessments, assessmentAggregations, history } = this.props;
-    const { activeTab, showCycles } = this.state;
+    const { activeTab, firstAttempts, showCycles } = this.state;
     const { url } = getUrlParams(history);
     const type = Metadata['Interaction Type'][url[2]];
 
@@ -180,11 +197,20 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
       url,
       activeTab
     );
-    const { data, avg } = this.getDataObject(
-      currentAssessmentAggr,
-      showCycles,
-      type
-    );
+
+    let data;
+    let firstOnly = [];
+
+    if (firstAttempts && activeTab === 1) {
+      firstOnly = this.getFirstAttempts(assessments[url[2]], url);
+      const scores = combineScores(firstOnly, 'score');
+      data = {
+        avg: calcScoreAvg(scores),
+        data: [this.getGraphData(scores, type, null)]
+      };
+    } else {
+      data = this.getDataObject(currentAssessmentAggr, showCycles, type);
+    }
 
     return (
       <>
@@ -203,12 +229,14 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
           <div className={styles.Body}>
             <Typography variant='subtitle1'>
               <strong>Assessment Average: </strong>
-              {calcScoreAvg(combineScores(currentAssessmentAggr, 'scores'))}%
+              {data.avg}%
             </Typography>
 
             <Typography variant='subtitle1'>
               <strong>Total Submitted: </strong>
-              {combineScores(currentAssessmentAggr, 'scores').length}
+              {firstAttempts
+                ? firstOnly.length
+                : combineScores(currentAssessmentAggr, 'scores').length}
             </Typography>
           </div>
         </Paper>
@@ -228,23 +256,39 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
         </Paper>
 
         <Paper className={styles.Paper}>
-          <div style={{ margin: '4px 0 0 16px' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+              margin: '4px 16px 0 16px'
+            }}
+          >
             <Toggle
               checked={showCycles}
-              onChange={this.toggleHandler}
+              onChange={this.toggleHandler('showCycles')}
               leftLabel='Combined'
               rightLabel='Per Cycle'
             />
+
+            {activeTab === 1 && type === AssessmentType.PROJECT && (
+              <Toggle
+                checked={firstAttempts}
+                onChange={this.toggleHandler('firstAttempts')}
+                leftLabel='All Attempts'
+                rightLabel='1st Attempts'
+              />
+            )}
           </div>
 
           <div className={styles.GraphPaper}>
             <ResponsiveLine
-              data={data}
+              data={data.data}
               margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
               markers={[
                 {
                   axis: 'x',
-                  value: avg,
+                  value: data.avg,
                   lineStyle: { stroke: 'black', strokeWidth: 3 }
                 }
               ]}
