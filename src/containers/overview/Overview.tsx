@@ -96,7 +96,7 @@ class Overview extends Component<OverviewProps, OverviewState> {
     );
 
     const cycleProgressions = cycles.map((cycle: Cycle, index: number) => {
-      if (cycle.type !== 'Mastery Learning') {
+      if (cycle.type !== 'Mastery Learning' && cycle.active) {
         return (
           <TraditionalCycleProgress
             item={cycle}
@@ -110,7 +110,7 @@ class Overview extends Component<OverviewProps, OverviewState> {
             </ExpansionPanel>
           </TraditionalCycleProgress>
         );
-      } else {
+      } else if (cycle.active) {
         return (
           <MLCycleProgress
             cycle={cycle}

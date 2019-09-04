@@ -91,7 +91,7 @@ class Timeline extends Component<TimelineProps, TimelineState> {
     let dateHolder = startDate.valueOf();
     const weeklyScores: WeeklyScore[] = [];
 
-    for (let i = 0; i < numOfWeeks; i++) {
+    for (let i = 0; i <= numOfWeeks; i++) {
       weeklyScores.push({
         assessmentScore: 0,
         attendanceCount: {
@@ -116,7 +116,6 @@ class Timeline extends Component<TimelineProps, TimelineState> {
       // inc to new weeks date
       dateHolder += 604800000;
     }
-
     return weeklyScores;
   }
 
