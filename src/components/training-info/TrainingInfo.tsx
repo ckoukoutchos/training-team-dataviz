@@ -10,14 +10,16 @@ interface TrainingInfoProps {
 const TrainingInfo = (props: TrainingInfoProps) => {
   const { cycles } = props;
 
-  let staffCount = 12;
+  let staffCount = 0;
   let associateCount = 0;
   let activeCycles = 0;
 
   for (const cycle of cycles) {
-    // staffCount += cycle.TAs.length + cycle.trainers.length;
-    associateCount += cycle.currentNumberOfAssociates;
-    if (cycle.active) activeCycles++;
+    if (cycle.active) {
+      activeCycles++;
+      associateCount += cycle.currentNumberOfAssociates;
+      staffCount += cycle.staff.length;
+    }
   }
 
   return (

@@ -41,16 +41,13 @@ class Cycles extends Component<CyclesProps, CyclesState> {
     showInactiveAggr: false
   };
 
-  createTableData = (cycles: Cycle[], showInactive: boolean) => {
-    const filteredCycles = this.filterCycles(cycles, showInactive);
-
-    return filteredCycles.map((cycle: Cycle) => ({
+  createTableData = (cycles: Cycle[]) =>
+    cycles.map((cycle: Cycle) => ({
       name: CONSTS[cycle.name],
       type: cycle.type,
       startDate: cycle.startDate.toDateString(),
       endDate: cycle.endDate ? cycle.endDate.toDateString() : 'Active'
     }));
-  };
 
   createAggrTableData = (
     cycleAggregations: CycleAggregation[],
@@ -123,6 +120,8 @@ class Cycles extends Component<CyclesProps, CyclesState> {
     const { cycleAggregations, cycles, history } = this.props;
     const { activeTab, showInactive, showInactiveAggr } = this.state;
 
+    const filteredCycles = this.filterCycles(cycles, showInactive);
+
     return (
       <>
         <Paper className={styles.Card}>
@@ -138,7 +137,7 @@ class Cycles extends Component<CyclesProps, CyclesState> {
 
             <Typography variant='subtitle1'>
               <strong>Active Cycles: </strong>
-              {cycles.length}
+              {filteredCycles.length}
             </Typography>
           </div>
         </Paper>
@@ -191,7 +190,7 @@ class Cycles extends Component<CyclesProps, CyclesState> {
                     new Date(b.endDate).valueOf()
                 }
               ]}
-              data={this.createTableData(cycles, showInactive)}
+              data={this.createTableData(filteredCycles)}
               options={{
                 sorting: true,
                 pageSize: 10,

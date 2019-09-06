@@ -140,7 +140,8 @@ class DataFizz extends Component<any> {
                 min: 0,
                 max: 'auto'
               }}
-              curve='natural'
+              // @ts-ignore
+              curve='catmullRom'
               axisTop={null}
               axisRight={null}
               axisBottom={{
@@ -162,16 +163,17 @@ class DataFizz extends Component<any> {
                 legendPosition: 'middle'
               }}
               colors={{ scheme: 'red_yellow_blue' }}
-              pointSize={10}
-              pointColor={{ theme: 'background' }}
-              pointBorderWidth={2}
+              pointSize={12}
+              pointColor='white'
+              pointBorderWidth={3}
               pointBorderColor={{ from: 'serieColor' }}
               pointLabel='y'
               pointLabelYOffset={-12}
+              lineWidth={3}
               enableArea={true}
               enableSlices='x'
-              areaBlendMode='darken'
-              areaOpacity={0.1}
+              areaBlendMode='natural'
+              areaOpacity={0.05}
               isInteractive={true}
               enableCrosshair={true}
               animate={false}

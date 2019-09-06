@@ -206,7 +206,11 @@ export default {
         'Garden_Center_Frontend_Prototype_Exercise_v1',
         'Frontend_Frameworks_Memory_Game_Exercise_v1',
         'Garden_Center_Frontend_Nav_Bar_Exercise_v1',
+        'Garden_Center_Frontend_Customers_Exercise_v1',
         'Garden_Center_Frontend_Testing_Exercise_v1',
+        'Garden_Center_Frontend_Fetching_Exercise_v1',
+        'Garden_Center_Frontend_Error_Handling_Exercise_v1',
+        'Garden_Center_Frontend_Routing_Exercise_v1',
         'Garden_Center_Frontend_Authentication_Exercise_v1'
       ]
     },

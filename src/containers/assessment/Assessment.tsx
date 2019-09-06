@@ -343,9 +343,9 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
                 }
               ]}
               colors={{ scheme: 'red_yellow_blue' }}
-              pointSize={10}
-              pointColor={{ theme: 'background' }}
-              pointBorderWidth={2}
+              pointSize={12}
+              pointColor='white'
+              pointBorderWidth={3}
               pointBorderColor={{ from: 'serieColor' }}
               pointLabel='y'
               pointLabelYOffset={-12}

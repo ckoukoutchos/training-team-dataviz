@@ -101,7 +101,7 @@ class Timeline extends Component<TimelineProps, TimelineState> {
           [AttendanceType.UNEXCUSED_LATE]: 0,
           [AttendanceType.OPTIONAL]: 0
         },
-        attendanceScore: 0,
+        attendanceScore: 100,
         combinedScore: 0,
         date: dateHolder,
         moduleTimes: [],
@@ -387,9 +387,9 @@ class Timeline extends Component<TimelineProps, TimelineState> {
               legendPosition: 'middle'
             }}
             colors={{ scheme: 'red_yellow_blue' }}
-            pointSize={10}
-            pointColor={{ theme: 'background' }}
-            pointBorderWidth={2}
+            pointSize={12}
+            pointColor='white'
+            pointBorderWidth={3}
             pointBorderColor={{ from: 'serieColor' }}
             pointLabel='y'
             pointLabelYOffset={-12}

@@ -22,17 +22,14 @@ class StaffView extends Component<StaffProps, StaffState> {
     showInactive: false
   };
 
-  createTableData = (staff: Staff[], showInactive: boolean) => {
-    const filtededStaff = this.filterStaff(staff, showInactive);
-
-    return filtededStaff.map((person: Staff) => ({
+  createTableData = (staff: Staff[]) =>
+    staff.map((person: Staff) => ({
       name: person.name,
       cycle: CONSTS[person.cycle],
       role: person.role,
       startDate: person.startDate.toDateString(),
       endDate: person.endDate ? person.endDate.toDateString() : 'Active'
     }));
-  };
 
   filterStaff = (staff: Staff[], showInactive: boolean) =>
     staff.filter((member: Staff) => !member.active === showInactive);
@@ -51,6 +48,7 @@ class StaffView extends Component<StaffProps, StaffState> {
       (acc: any, curr: any) => acc.concat(curr.staff),
       []
     );
+    const filtededStaff = this.filterStaff(staff, showInactive);
 
     return (
       <>
@@ -67,7 +65,7 @@ class StaffView extends Component<StaffProps, StaffState> {
 
             <Typography variant='subtitle1'>
               <strong>Active Staff: </strong>
-              12
+              {filtededStaff.length}
             </Typography>
           </div>
         </Paper>
@@ -81,7 +79,7 @@ class StaffView extends Component<StaffProps, StaffState> {
               { title: 'Start Date', field: 'startDate' },
               { title: 'End Date', field: 'endDate' }
             ]}
-            data={this.createTableData(staff, showInactive)}
+            data={this.createTableData(filtededStaff)}
             options={{
               sorting: true,
               pageSize: 10,
