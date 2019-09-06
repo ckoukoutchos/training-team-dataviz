@@ -70,7 +70,7 @@ class Overview extends Component<OverviewProps, OverviewState> {
       (acc: any, curr: CycleAggregation) => acc.concat(curr.aggregations),
       []
     );
-    const watchedAssociates = associateAggregations.filter(
+    let watchedAssociates = associateAggregations.filter(
       (aggregation: Aggregation) => {
         const associate = associates.find(
           (associate: Associate) => associate.name === aggregation.name
@@ -93,6 +93,10 @@ class Overview extends Component<OverviewProps, OverviewState> {
           );
         }
       }
+    );
+
+    watchedAssociates = watchedAssociates.sort(
+      (a: Aggregation, b: Aggregation) => a.composite - b.composite
     );
 
     const cycleProgressions = cycles.map((cycle: Cycle, index: number) => {
@@ -152,6 +156,7 @@ class Overview extends Component<OverviewProps, OverviewState> {
                 {
                   title: 'Associate',
                   field: 'name',
+                  filtering: false,
                   render: rowData => (
                     <Button
                       color='primary'
@@ -171,18 +176,21 @@ class Overview extends Component<OverviewProps, OverviewState> {
                 {
                   title: 'Assessments',
                   field: 'assessments',
+                  filtering: false,
                   customSort: (a: any, b: any) =>
                     a.assessments.split('%')[0] - b.assessments.split('%')[0]
                 },
                 {
                   title: 'Attendance',
                   field: 'attendance',
+                  filtering: false,
                   customSort: (a: any, b: any) =>
                     a.attendance.split('%')[0] - b.attendance.split('%')[0]
                 },
                 {
                   title: 'Module Time',
                   field: 'moduleTime',
+                  filtering: false,
                   customSort: (a: any, b: any) =>
                     a.moduleTime.split('%')[0] - b.moduleTime.split('%')[0]
                 }
@@ -198,6 +206,7 @@ class Overview extends Component<OverviewProps, OverviewState> {
               }))}
               options={{
                 sorting: true,
+                filtering: true,
                 pageSize: 10,
                 pageSizeOptions: [10, 20, 50],
                 showTitle: false,

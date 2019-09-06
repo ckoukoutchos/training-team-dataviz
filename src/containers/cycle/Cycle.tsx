@@ -137,6 +137,16 @@ class CycleView extends Component<CycleProps, CycleState> {
           <div className={styles.Container}>
             <CycleInfo cycleName={lookup[cycleName]} cycle={cycle} />
 
+            {cycleName[0] === 'm' ? (
+              <MLCycleProgress
+                cycle={cycle}
+                title='Cycle Progress'
+                subtitle='Count per Module'
+              />
+            ) : (
+              <TraditionalCycleProgress item={cycle} title='Cycle Progress' />
+            )}
+
             <RadarGraph
               title='Assessments'
               subtitle='Project, Quiz, and Soft Skill Averages'
@@ -165,16 +175,6 @@ class CycleView extends Component<CycleProps, CycleState> {
               ]}
               keys={['Cycle Average', cycle.type]}
             />
-
-            {cycleName[0] === 'm' ? (
-              <MLCycleProgress
-                cycle={cycle}
-                title='Cycle Progress'
-                subtitle='Count per Module'
-              />
-            ) : (
-              <TraditionalCycleProgress item={cycle} title='Cycle Progress' />
-            )}
           </div>
 
           <div className={styles.Container}>

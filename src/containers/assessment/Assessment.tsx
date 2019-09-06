@@ -299,11 +299,12 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
               }}
               yScale={{
                 type: 'linear',
-                stacked: true,
+                stacked: false,
                 min: 0,
                 max: 'auto'
               }}
-              curve='natural'
+              //@ts-ignore
+              curve='catmullRom'
               axisTop={null}
               axisRight={null}
               axisBottom={{
@@ -348,10 +349,11 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
               pointBorderColor={{ from: 'serieColor' }}
               pointLabel='y'
               pointLabelYOffset={-12}
+              lineWidth={3}
               enableArea={true}
               enableSlices='x'
-              areaBlendMode='darken'
-              areaOpacity={0.1}
+              areaBlendMode='normal'
+              areaOpacity={0.05}
               isInteractive={true}
               enableCrosshair={true}
               animate={false}

@@ -82,7 +82,7 @@ export const calcAssessmentsScore = (
   } else if (quizzes) {
     return quizzes;
   } else {
-    return 0;
+    return 100;
   }
 };
 
@@ -403,9 +403,9 @@ export const getAssessmentAggregations = (
     assessments.forEach((assessment: Assessment) => {
       // if already added, just push score
       if (aggregations[assessment.type][assessment.name]) {
-        aggregations[assessment.type][
-          assessment.name
-        ].scores.push(assessment.score);
+        aggregations[assessment.type][assessment.name].scores.push(
+          assessment.score
+        );
         // otherwise, create assessment aggr
       } else {
         aggregations[assessment.type][assessment.name] = {
@@ -419,9 +419,15 @@ export const getAssessmentAggregations = (
       }
     });
   });
-  const projects: AssessmentAggregation[] = Object.values(aggregations[AssessmentType.PROJECT]);
-  const quizzes: AssessmentAggregation[] = Object.values(aggregations[AssessmentType.QUIZ]);
-  const softSkills: AssessmentAggregation[] = Object.values(aggregations[AssessmentType.SOFT_SKILLS]);
+  const projects: AssessmentAggregation[] = Object.values(
+    aggregations[AssessmentType.PROJECT]
+  );
+  const quizzes: AssessmentAggregation[] = Object.values(
+    aggregations[AssessmentType.QUIZ]
+  );
+  const softSkills: AssessmentAggregation[] = Object.values(
+    aggregations[AssessmentType.SOFT_SKILLS]
+  );
   projects.forEach((project: any) => {
     project.average = calcScoreAvg(project.scores);
   });

@@ -364,7 +364,8 @@ class Timeline extends Component<TimelineProps, TimelineState> {
               min: 0,
               max: selectedScore === 'Module Time' ? 'auto' : 100
             }}
-            curve='linear'
+            //@ts-ignore
+            curve='catmullRom'
             axisTop={null}
             axisRight={null}
             axisBottom={{
@@ -394,8 +395,8 @@ class Timeline extends Component<TimelineProps, TimelineState> {
             pointLabelYOffset={-12}
             enableArea={true}
             enableSlices='x'
-            areaBlendMode='darken'
-            areaOpacity={0.1}
+            areaBlendMode='normal'
+            areaOpacity={0.05}
             isInteractive={true}
             enableCrosshair={true}
             animate={false}
