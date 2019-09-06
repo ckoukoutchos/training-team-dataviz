@@ -43,9 +43,11 @@ export interface Assessment {
 export interface AssessmentAggregation {
   average: number;
   cycle: string;
+  median: number;
   module: string;
   name: string;
   scores: number[];
+  sd: number;
   type: AssessmentType;
 }
 

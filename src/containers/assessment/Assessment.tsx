@@ -227,17 +227,50 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
           <Divider style={{ margin: '12px 0' }} />
 
           <div className={styles.Body}>
-            <Typography variant='subtitle1'>
-              <strong>Assessment Average: </strong>
-              {data.avg}%
-            </Typography>
+            <div>
+              <Typography variant='subtitle1'>
+                <strong>Average: </strong>
+                {type === AssessmentType.SOFT_SKILLS
+                  ? calcScoreAvg(
+                      combineScores(currentAssessmentAggr, 'average')
+                    ) /
+                    10 /
+                    2
+                  : calcScoreAvg(
+                      combineScores(currentAssessmentAggr, 'average')
+                    ) + '%'}
+              </Typography>
 
-            <Typography variant='subtitle1'>
-              <strong>Total Submitted: </strong>
-              {firstAttempts
-                ? firstOnly.length
-                : combineScores(currentAssessmentAggr, 'scores').length}
-            </Typography>
+              <Typography variant='subtitle1'>
+                <strong>Median: </strong>
+                {type === AssessmentType.SOFT_SKILLS
+                  ? calcScoreAvg(
+                      combineScores(currentAssessmentAggr, 'median')
+                    ) /
+                    10 /
+                    2
+                  : calcScoreAvg(
+                      combineScores(currentAssessmentAggr, 'median')
+                    ) + '%'}
+              </Typography>
+            </div>
+            <div>
+              <Typography variant='subtitle1'>
+                <strong>Total Submitted: </strong>
+                {firstAttempts
+                  ? firstOnly.length
+                  : combineScores(currentAssessmentAggr, 'scores').length}
+              </Typography>
+
+              <Typography variant='subtitle1'>
+                <strong>Standard Deviation: </strong>
+                {type === AssessmentType.SOFT_SKILLS
+                  ? calcScoreAvg(combineScores(currentAssessmentAggr, 'sd')) /
+                    10 /
+                    2
+                  : calcScoreAvg(combineScores(currentAssessmentAggr, 'sd'))}
+              </Typography>
+            </div>
           </div>
         </Paper>
 

@@ -430,12 +430,22 @@ export const getAssessmentAggregations = (
   );
   projects.forEach((project: any) => {
     project.average = calcScoreAvg(project.scores);
+    project.scores.sort((a: number, b: number) => a - b);
+    project.median = project.scores[Math.floor(project.scores.length / 2)];
+    project.sd = calcStandardDeviation(project.scores);
   });
   quizzes.forEach((quiz: any) => {
     quiz.average = calcScoreAvg(quiz.scores);
+    quiz.scores.sort((a: number, b: number) => a - b);
+    quiz.median = quiz.scores[Math.floor(quiz.scores.length / 2)];
+    quiz.sd = calcStandardDeviation(quiz.scores);
   });
   softSkills.forEach((softSkill: any) => {
     softSkill.average = calcScoreAvg(softSkill.scores);
+    softSkill.scores.sort((a: number, b: number) => a - b);
+    softSkill.median =
+      softSkill.scores[Math.floor(softSkill.scores.length / 2)];
+    softSkill.sd = calcStandardDeviation(softSkill.scores);
   });
   return {
     projects,
