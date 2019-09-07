@@ -27,6 +27,16 @@ export default {
     'Associate Start'
   ],
   maxTimePerModule: [42, 28, 70, 56, 28, 14],
+  mlModules: [
+    'Development Basics and Front End',
+    'Databases',
+    'Logic Layer (Java)',
+    'Front End Frameworks (React)',
+    'Frontend Post-group',
+    'Group Project',
+    'Group Post-Frontend',
+    'Final Project'
+  ],
   modules: [
     'Development Basics and Front End',
     'Databases',
