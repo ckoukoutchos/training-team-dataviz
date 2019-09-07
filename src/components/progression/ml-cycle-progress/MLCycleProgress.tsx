@@ -1,5 +1,5 @@
 import React from 'react';
-import { Divider, Paper, Typography } from '@material-ui/core';
+import { Divider, Paper, Typography, Tooltip } from '@material-ui/core';
 import { ResponsiveBar } from '@nivo/bar';
 
 import Legend from '../../legend/Legend';
@@ -12,28 +12,33 @@ import CONSTS from '../../../shared/constants';
 interface MLCycleProgressProps {
   children?: any;
   cycle: Cycle;
+  tall?: boolean;
   title: string;
   subtitle?: string;
 }
 
 const MLCycleProgress = (props: MLCycleProgressProps) => {
-  const { children, cycle, title, subtitle } = props;
+  const { children, cycle, tall, title, subtitle } = props;
 
   const moduleCount = {
     'Development Basics and Front End': 0,
     Databases: 0,
     'Logic Layer (Java)': 0,
     'Front End Frameworks (React)': 0,
+    'Frontend Post-group': 0,
     'Group Project': 0,
+    'Group Post-Frontend': 0,
     'Final Project': 0
   };
 
-  const associateCurrentModule = {
+  const associateCurrentModule: any = {
     'Development Basics and Front End': [],
     Databases: [],
     'Logic Layer (Java)': [],
     'Front End Frameworks (React)': [],
+    'Frontend Post-group': [],
     'Group Project': [],
+    'Group Post-Frontend': [],
     'Final Project': []
   };
 
@@ -41,12 +46,21 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
     associate.modules.forEach((module: Module) => {
       // if active and module not completed
       if (associate.active && module.startDate && !module.endDate) {
-        // and module isn't currently paused
-        if (!module.modulePause) {
-          moduleCount[module.type]++;
-          associateCurrentModule[module.type].push(associate.name);
-          // or module was paused but no longer is
-        } else if (module.modulePause && module.moduleResume) {
+        if (module.modulePause) {
+          if (
+            module.type === 'Front End Frameworks (React)' &&
+            associate.modules[4].startDate
+          ) {
+            moduleCount['Group Project']++;
+            associateCurrentModule['Group Project'].push(associate.name);
+          } else if (
+            module.type === 'Front End Frameworks (React)' &&
+            associate.modules[4].endDate
+          ) {
+            moduleCount['Group Post-Frontend']++;
+            associateCurrentModule['Group Post-Frontend'].push(associate.name);
+          }
+        } else if (module.type !== 'Group Project') {
           moduleCount[module.type]++;
           associateCurrentModule[module.type].push(associate.name);
         }
@@ -54,8 +68,27 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
     });
   }
 
+  const moduleCountArray = Object.values(moduleCount);
+  const associateCurrentModuleArray: any[] = Object.values(
+    associateCurrentModule
+  );
+  const count = moduleCountArray.reduce(
+    (acc: number, curr: number) => acc + curr,
+    0
+  );
+
+  const sections = moduleCountArray.map((section: number) => {
+    if (section === 0) {
+      return '30px';
+    } else if (section === 1) {
+      return '40px';
+    } else {
+      return Math.round((section / count) * 480) + 'px';
+    }
+  });
+
   return (
-    <Paper className={styles.Paper}>
+    <Paper className={tall ? styles.TallPaper : styles.Paper}>
       <div className={styles.Header}>
         <Typography variant='h3'>{title}</Typography>
         {subtitle && (
@@ -69,47 +102,39 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
         <Divider />
       </div>
 
-      <div className={styles.MLGraph}>
-        <ResponsiveBar
-          data={[
-            {
-              ...moduleCount,
-              '': ''
-            }
-          ]}
-          keys={CONSTS.modules}
-          indexBy=''
-          margin={{ top: 0, right: 85, bottom: 10, left: 85 }}
-          padding={0.3}
-          colors={{ scheme: 'red_yellow_blue' }}
-          layout='horizontal'
-          axisTop={null}
-          axisRight={null}
-          axisBottom={null}
-          axisLeft={null}
-          labelSkipWidth={12}
-          labelSkipHeight={12}
-          labelTextColor='black'
-          tooltip={(data: any) => {
-            return (
-              <div>
-                <strong style={{ color: data.color }}>
-                  {data.id}: {data.value}
-                </strong>
+      <div className={styles.Container}>
+        {sections.map((section: string, index: number) => (
+          <Tooltip
+            className={styles.Tooltip}
+            title={
+              <>
+                <Typography>{Metadata.mlModules[index]}</Typography>
                 <ul>
-                  {associateCurrentModule[data.id].map(
-                    (name: string, index: number) => (
-                      <li key={index}>{name}</li>
+                  {associateCurrentModuleArray[index].map(
+                    (associate: string) => (
+                      <li>
+                        <Typography>{associate}</Typography>
+                      </li>
                     )
                   )}
                 </ul>
-              </div>
-            );
-          }}
-        />
+              </>
+            }
+          >
+            <div
+              className={styles.Section}
+              style={{
+                background: CONSTS.mlModuleColors[index],
+                width: section
+              }}
+            >
+              {moduleCountArray[index]}
+            </div>
+          </Tooltip>
+        ))}
       </div>
 
-      <Legend items={Metadata.modules} colors={'moduleColors'} />
+      <Legend items={Metadata.mlModules} colors={'mlModuleColors'} />
 
       {children}
     </Paper>

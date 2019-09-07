@@ -7,6 +7,16 @@ export default {
     'Optional Attendance'
   ],
   attendanceColors: ['gold', 'darkred', 'yellow', 'red', 'green'],
+  mlModuleColors: [
+    '#a50026',
+    '#d73027',
+    '#f46d43',
+    '#fdae61',
+    '#fee090',
+    '#e0f3f8',
+    '#abd9e9',
+    '#74add1'
+  ],
   moduleColors: [
     '#a50026',
     '#d73027',
