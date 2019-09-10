@@ -188,7 +188,7 @@ export default {
         'MongoDB_Database_Project_v3',
         'PostgreSQL_Database_Project_v3'
       ],
-      quizzes: ['Quiz_Relational_Databases_v2', 'Quiz_Document_Databases_v1'],
+      quizzes: ['Quiz_Relational_Databases_v2', 'Quiz_Document_Databases_v2'],
       exercises: []
     },
     'Logic Layer (Java)': {
