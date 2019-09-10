@@ -171,7 +171,11 @@ export default {
         'HTML_CSS_Page_Match_Project_v2',
         'JavaScript_Form_Validation_Project_v2'
       ],
-      quizzes: ['Quiz_HTML_and_CSS_v1', 'Quiz_JavaScript_v2'],
+      quizzes: [
+        'Quiz_Introductory_v2',
+        'Quiz_HTML_and_CSS_v1',
+        'Quiz_JavaScript_v2'
+      ],
       exercises: [
         'Git_Workflow_Exercise_v1',
         'JavaScript_Calculator_Exercise_v1',
