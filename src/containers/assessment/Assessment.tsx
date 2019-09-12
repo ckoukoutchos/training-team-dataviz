@@ -19,7 +19,8 @@ import styles from './Assessment.module.css';
 import {
   getUrlParams,
   calcScoreAvg,
-  combineScores
+  combineScores,
+  calcStandardDeviation
 } from '../../shared/dataService';
 import { AppState } from '../../redux/reducers/rootReducer';
 import CONSTS from '../../shared/constants';
@@ -181,6 +182,29 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
     }));
   };
 
+  calcScore(
+    scores: any,
+    type: string,
+    isSoftSkills: boolean,
+    firstAttempts: boolean
+  ) {
+    if (isSoftSkills) {
+      return calcScoreAvg(combineScores(scores, type)) / 10 / 2;
+    } else if (firstAttempts) {
+      if (type === 'average') {
+        return calcScoreAvg(combineScores(scores, 'score')) + '%';
+      } else if (type === 'median') {
+        const combined = combineScores(scores, 'score');
+        combined.sort((a: number, b: number) => a - b);
+        return combined[Math.floor(combined.length / 2)] + '%';
+      } else {
+        return calcStandardDeviation(combineScores(scores, 'score')) + '%';
+      }
+    } else {
+      return calcScoreAvg(combineScores(scores, type)) + '%';
+    }
+  }
+
   render() {
     const { assessments, assessmentAggregations, history } = this.props;
     const { activeTab, firstAttempts, showCycles } = this.state;
@@ -199,7 +223,7 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
     );
 
     let data;
-    let firstOnly = [];
+    let firstOnly: any = [];
 
     if (firstAttempts && activeTab === 1) {
       firstOnly = this.getFirstAttempts(assessments[url[2]], url);
@@ -211,6 +235,25 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
     } else {
       data = this.getDataObject(currentAssessmentAggr, showCycles, type);
     }
+
+    const avg = this.calcScore(
+      firstAttempts && activeTab === 1 ? firstOnly : currentAssessmentAggr,
+      'average',
+      type === AssessmentType.SOFT_SKILLS,
+      firstAttempts && activeTab === 1
+    );
+    const median = this.calcScore(
+      firstAttempts && activeTab === 1 ? firstOnly : currentAssessmentAggr,
+      'median',
+      type === AssessmentType.SOFT_SKILLS,
+      firstAttempts && activeTab === 1
+    );
+    const sd = this.calcScore(
+      firstAttempts && activeTab === 1 ? firstOnly : currentAssessmentAggr,
+      'sd',
+      type === AssessmentType.SOFT_SKILLS,
+      firstAttempts && activeTab === 1
+    );
 
     return (
       <>
@@ -230,45 +273,25 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
             <div>
               <Typography variant='subtitle1'>
                 <strong>Average: </strong>
-                {type === AssessmentType.SOFT_SKILLS
-                  ? calcScoreAvg(
-                      combineScores(currentAssessmentAggr, 'average')
-                    ) /
-                    10 /
-                    2
-                  : calcScoreAvg(
-                      combineScores(currentAssessmentAggr, 'average')
-                    ) + '%'}
+                {avg}
               </Typography>
 
               <Typography variant='subtitle1'>
                 <strong>Median: </strong>
-                {type === AssessmentType.SOFT_SKILLS
-                  ? calcScoreAvg(
-                      combineScores(currentAssessmentAggr, 'median')
-                    ) /
-                    10 /
-                    2
-                  : calcScoreAvg(
-                      combineScores(currentAssessmentAggr, 'median')
-                    ) + '%'}
+                {median}
               </Typography>
             </div>
             <div>
               <Typography variant='subtitle1'>
                 <strong>Total Submitted: </strong>
-                {firstAttempts
+                {firstAttempts && activeTab === 1
                   ? firstOnly.length
                   : combineScores(currentAssessmentAggr, 'scores').length}
               </Typography>
 
               <Typography variant='subtitle1'>
                 <strong>Standard Deviation: </strong>
-                {type === AssessmentType.SOFT_SKILLS
-                  ? calcScoreAvg(combineScores(currentAssessmentAggr, 'sd')) /
-                    10 /
-                    2
-                  : calcScoreAvg(combineScores(currentAssessmentAggr, 'sd'))}
+                {sd}
               </Typography>
             </div>
           </div>

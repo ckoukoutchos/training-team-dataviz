@@ -105,6 +105,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
       <div className={styles.Container}>
         {sections.map((section: string, index: number) => (
           <Tooltip
+            key={index}
             className={styles.Tooltip}
             title={
               <>
@@ -112,7 +113,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
                 <ul>
                   {associateCurrentModuleArray[index].map(
                     (associate: string) => (
-                      <li>
+                      <li key={index}>
                         <Typography>{associate}</Typography>
                       </li>
                     )
