@@ -32,9 +32,8 @@ export default {
     'Databases',
     'Logic Layer (Java)',
     'Front End Frameworks (React)',
-    'Frontend Post-group',
     'Group Project',
-    'Group Post-Frontend',
+    'Frontend Post-group',
     'Final Project'
   ],
   modules: [

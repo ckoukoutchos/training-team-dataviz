@@ -13,7 +13,6 @@ export default {
     '#f46d43',
     '#fdae61',
     '#fee090',
-    '#e0f3f8',
     '#abd9e9',
     '#74add1'
   ],
@@ -48,11 +47,11 @@ export default {
   'Denver 2019': 'traditionalDenver2019',
   'Chicago 2019': 'traditionalChicago2019',
   'Portland 2019': 'mlPortland2019',
-  'Assessments': 'assessmentScore',
-  'Attendance': 'attendanceScore',
-  'Combined': 'combinedScore',
+  Assessments: 'assessmentScore',
+  Attendance: 'attendanceScore',
+  Combined: 'combinedScore',
   'Module Time': 'moduleTimeScore',
-  'Projects': 'projectAvg',
-  'Quizzes': 'quizAvg',
+  Projects: 'projectAvg',
+  Quizzes: 'quizAvg',
   'Soft Skills': 'softSkillsAvg'
-}
+};

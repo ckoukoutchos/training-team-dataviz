@@ -22,11 +22,11 @@ class TraditionalCycleProgress extends Component<
   TraditionalCycleProgressProps
 > {
   createTradCycleGraph(item: Associate | Cycle) {
-    let daysSinceStart = 0;
+    let weeksSinceStart = 0;
     if (item.endDate) {
-      daysSinceStart = Math.round(calcDaysSince(item.startDate, item.endDate));
+      weeksSinceStart = calcDaysSince(item.startDate, item.endDate) / 7;
     } else {
-      daysSinceStart = Math.round(calcDaysSince(item.startDate));
+      weeksSinceStart = calcDaysSince(item.startDate) / 7;
     }
 
     return (
@@ -35,8 +35,8 @@ class TraditionalCycleProgress extends Component<
           data={[
             {
               id: '',
-              ranges: [21, 28, 70, 105, 126, 140],
-              measures: [daysSinceStart],
+              ranges: [3, 4, 10, 15, 18, 20],
+              measures: [weeksSinceStart.toFixed(1)],
               markers: []
             }
           ]}

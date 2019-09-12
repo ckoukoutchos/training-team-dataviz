@@ -25,9 +25,8 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
     Databases: 0,
     'Logic Layer (Java)': 0,
     'Front End Frameworks (React)': 0,
-    'Frontend Post-group': 0,
     'Group Project': 0,
-    'Group Post-Frontend': 0,
+    'Frontend Post-group': 0,
     'Final Project': 0
   };
 
@@ -36,9 +35,8 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
     Databases: [],
     'Logic Layer (Java)': [],
     'Front End Frameworks (React)': [],
-    'Frontend Post-group': [],
     'Group Project': [],
-    'Group Post-Frontend': [],
+    'Frontend Post-group': [],
     'Final Project': []
   };
 
@@ -53,14 +51,16 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
           ) {
             moduleCount['Group Project']++;
             associateCurrentModule['Group Project'].push(associate.name);
-          } else if (
-            module.type === 'Front End Frameworks (React)' &&
-            associate.modules[4].endDate
-          ) {
-            moduleCount['Group Post-Frontend']++;
-            associateCurrentModule['Group Post-Frontend'].push(associate.name);
           }
-        } else if (module.type !== 'Group Project') {
+        } else if (
+          module.type === 'Front End Frameworks (React)' &&
+          associate.modules[4].endDate
+        ) {
+          moduleCount['Frontend Post-group']++;
+          associateCurrentModule['Frontend Post-group'].push(associate.name);
+        } else if (
+          !associateCurrentModule[module.type].includes(associate.name)
+        ) {
           moduleCount[module.type]++;
           associateCurrentModule[module.type].push(associate.name);
         }
@@ -83,7 +83,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
     } else if (section === 1) {
       return '40px';
     } else {
-      return Math.round((section / count) * 480) + 'px';
+      return Math.round((section / count) * 560) + 'px';
     }
   });
 
@@ -113,7 +113,7 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
                 <ul>
                   {associateCurrentModuleArray[index].map(
                     (associate: string) => (
-                      <li key={index}>
+                      <li key={associate}>
                         <Typography>{associate}</Typography>
                       </li>
                     )
