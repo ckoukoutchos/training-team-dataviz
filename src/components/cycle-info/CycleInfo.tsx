@@ -15,16 +15,20 @@ const CycleInfo = (props: CycleInfoProps) => {
     .split(' ')
     .slice(2)
     .join(' ');
-  const activeTrainers: string[] = [];
+  const trainers: string[] = [];
   cycle.staff.forEach((staff: Staff) => {
     if (staff.active && staff.role === StaffRole.TRAINER) {
-      activeTrainers.push(staff.name);
+      trainers.push(staff.name);
+    } else if (!cycle.active && staff.role === StaffRole.TRAINER) {
+      trainers.push(staff.name);
     }
   });
-  const activeTAs: string[] = [];
+  const TAs: string[] = [];
   cycle.staff.forEach((staff: Staff) => {
     if (staff.active && staff.role === StaffRole.TA) {
-      activeTAs.push(staff.name);
+      TAs.push(staff.name);
+    } else if (!cycle.active && staff.role === StaffRole.TA) {
+      TAs.push(staff.name);
     }
   });
 
@@ -33,12 +37,12 @@ const CycleInfo = (props: CycleInfoProps) => {
       <div>
         <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>Trainer(s): </strong>
-          {activeTrainers.join(' | ')}
+          {trainers.join(' | ')}
         </Typography>
 
         <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
           <strong>TA(s): </strong>
-          {activeTAs.join(' | ')}
+          {TAs.join(' | ')}
         </Typography>
 
         <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>

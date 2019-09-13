@@ -65,6 +65,7 @@ class AssociateView extends Component<AssociateProps, AssociateState> {
       cycleAggregation.aggregations,
       associateName
     );
+    console.log(associate.modules);
 
     return (
       <>
@@ -76,7 +77,7 @@ class AssociateView extends Component<AssociateProps, AssociateState> {
             style={{ margin: '0 0 3px 16px' }}
             onClick={this.showComparisonHandler}
           >
-            {showComparisons ? 'Associate view' : 'Trainer View'}
+            {showComparisons ? 'Associate View' : 'Trainer View'}
           </Button>
         </div>
 
@@ -146,9 +147,11 @@ class AssociateView extends Component<AssociateProps, AssociateState> {
               />
             )}
 
-            {cycleName[0] === 'm' && !associate.endDate && (
-              <MLModuleProgress associate={associate} />
-            )}
+            {cycleName[0] === 'm' &&
+              !associate.endDate &&
+              !associate.modules[5].startDate && (
+                <MLModuleProgress associate={associate} />
+              )}
 
             <div className={styles.Paper}>
               <MaterialTable
