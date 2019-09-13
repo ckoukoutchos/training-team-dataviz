@@ -47,17 +47,18 @@ const MLCycleProgress = (props: MLCycleProgressProps) => {
         if (module.modulePause) {
           if (
             module.type === 'Front End Frameworks (React)' &&
-            associate.modules[4].startDate
+            associate.modules[4].startDate &&
+            !associate.modules[4].endDate
           ) {
             moduleCount['Group Project']++;
             associateCurrentModule['Group Project'].push(associate.name);
+          } else if (
+            module.type === 'Front End Frameworks (React)' &&
+            associate.modules[4].startDate
+          ) {
+            moduleCount['Frontend Post-group']++;
+            associateCurrentModule['Frontend Post-group'].push(associate.name);
           }
-        } else if (
-          module.type === 'Front End Frameworks (React)' &&
-          associate.modules[4].endDate
-        ) {
-          moduleCount['Frontend Post-group']++;
-          associateCurrentModule['Frontend Post-group'].push(associate.name);
         } else if (
           !associateCurrentModule[module.type].includes(associate.name)
         ) {
