@@ -1,5 +1,5 @@
 import React from 'react';
-import { Module } from '../../../models/types';
+import { Module, Associate } from '../../../models/types';
 import {
   Grid,
   List,
@@ -15,12 +15,55 @@ import { CheckCircle, ErrorOutline, HighlightOff } from '@material-ui/icons';
 import Metadata from '../../../shared/metadata';
 import styles from './MLModuleProgress.module.css';
 
-const MLModuleProgress = (props: any) => {
+interface MLModuleProgressProps {
+  associate: Associate;
+}
+
+const MLModuleProgress = (props: MLModuleProgressProps) => {
   const { modules, projects, quizzes, exercises } = props.associate;
   const currModule = modules.find(
     (module: Module) => module.startDate && !module.endDate
   );
-  const required = Metadata.required[currModule.type];
+
+  let required;
+  if (currModule) {
+    required = Metadata.required[currModule.type];
+  }
+
+  const getDueDate = (assessment: string, type: string) => {
+    if (type === 'projects') {
+      if (Metadata['Project (Score)'][assessment].timeline) {
+        if (currModule && currModule.startDate) {
+          let dueDate =
+            currModule.startDate.valueOf() +
+            Metadata['Project (Score)'][assessment].timeline * 86400000;
+          if (
+            currModule.type === 'Front End Frameworks (React)' &&
+            modules[4].startDate
+          ) {
+            dueDate += 28 * 86400000;
+          }
+          return `Due: ${new Date(dueDate).toDateString()}`;
+        }
+      }
+    } else {
+      if (Metadata['Exercise'][assessment]) {
+        if (currModule && currModule.startDate) {
+          let dueDate =
+            currModule.startDate.valueOf() +
+            Metadata['Exercise'][assessment].timeline * 86400000;
+          if (
+            currModule.type === 'Front End Frameworks (React)' &&
+            modules[4].startDate
+          ) {
+            dueDate += 28 * 86400000;
+          }
+          return `Due: ${new Date(dueDate).toDateString()}`;
+        }
+      }
+    }
+    return null;
+  };
 
   const getIcon = (assessments: any[], curr: string, type: string) => {
     if (type === 'projects') {
@@ -69,7 +112,7 @@ const MLModuleProgress = (props: any) => {
       <div className={styles.Header}>
         <Typography variant='h3'>Module Progress</Typography>
         <Typography variant='h6' color='textSecondary'>
-          {currModule.type}
+          {currModule ? currModule.type : ''}
         </Typography>
       </div>
 
@@ -77,9 +120,9 @@ const MLModuleProgress = (props: any) => {
         <Divider />
       </div>
 
-      <Grid container spacing={2} justify='center'>
-        <div>
-          <Grid item xs={12} md={6}>
+      <div style={{ display: 'flex' }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}>
             <List
               dense={true}
               subheader={
@@ -91,13 +134,16 @@ const MLModuleProgress = (props: any) => {
                   <ListItemIcon>
                     {getIcon(projects, project, 'projects')}
                   </ListItemIcon>
-                  <ListItemText primary={project} />
+                  <ListItemText
+                    primary={project}
+                    secondary={getDueDate(project, 'projects')}
+                  />
                 </ListItem>
               ))}
             </List>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={12}>
             <List
               dense={true}
               subheader={<ListSubheader component='div'>Quizzes</ListSubheader>}
@@ -112,24 +158,31 @@ const MLModuleProgress = (props: any) => {
               ))}
             </List>
           </Grid>
-        </div>
-
-        <Grid item xs={12} md={6}>
-          <List
-            dense={true}
-            subheader={<ListSubheader component='div'>Exercises</ListSubheader>}
-          >
-            {required.exercises.map((exercise: string, index: number) => (
-              <ListItem key={index}>
-                <ListItemIcon>
-                  {getIcon(exercises, exercise, 'exercises')}
-                </ListItemIcon>
-                <ListItemText primary={exercise} />
-              </ListItem>
-            ))}
-          </List>
         </Grid>
-      </Grid>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12}>
+            <List
+              dense={true}
+              subheader={
+                <ListSubheader component='div'>Exercises</ListSubheader>
+              }
+            >
+              {required.exercises.map((exercise: string, index: number) => (
+                <ListItem key={index}>
+                  <ListItemIcon>
+                    {getIcon(exercises, exercise, 'exercises')}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={exercise}
+                    secondary={getDueDate(exercise, 'exercises')}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Grid>
+        </Grid>
+      </div>
     </Paper>
   );
 };

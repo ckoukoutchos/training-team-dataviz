@@ -26,6 +26,17 @@ export default {
     'Cycle Start Date',
     'Associate Start'
   ],
+  Exercise: {
+    JavaScript_Calculator_Exercise_v1: {
+      timeline: 28
+    },
+    API_Data_Access_Exercise_v2: {
+      timeline: 28
+    },
+    Garden_Center_Frontend_Authentication_Exercise_v1: {
+      timeline: 28
+    }
+  },
   maxTimePerModule: [42, 28, 70, 56, 28, 14],
   mlModules: [
     'Development Basics and Front End',
@@ -51,15 +62,18 @@ export default {
     },
     JavaScript_Form_Validation_Project_v2: {
       'Max Score': 30,
-      Module: 'Development Basics and Front End'
+      Module: 'Development Basics and Front End',
+      timeline: 42
     },
     MongoDB_Database_Project_v3: {
       'Max Score': 30,
-      Module: 'Databases'
+      Module: 'Databases',
+      timeline: 14
     },
     PostgreSQL_Database_Project_v3: {
       'Max Score': 30,
-      Module: 'Databases'
+      Module: 'Databases',
+      timeline: 28
     },
     Garden_Center_API_Project_v4: {
       'Max Score': 30,
@@ -67,7 +81,8 @@ export default {
     },
     Catalyte_Pet_Emporium_API_Project_v2: {
       'Max Score': 30,
-      Module: 'Logic Layer (Java)'
+      Module: 'Logic Layer (Java)',
+      timeline: 70
     },
     Garden_Center_Front_End_Project_v2: {
       'Max Score': 30,
@@ -75,7 +90,8 @@ export default {
     },
     Redux_Garden_Center_Front_End_Project_v2: {
       'Max Score': 30,
-      Module: 'Frontend Frameworks (React)'
+      Module: 'Frontend Frameworks (React)',
+      timeline: 56
     },
     E_Commerce_Group_Project_v1: {
       'Max Score': 81,
@@ -206,7 +222,8 @@ export default {
         'Unit_Testing_Part_1_Exercise_v1',
         'API_Data_Access_Exercise_v2',
         'Unit_Testing_Part_2_Exercise_v2',
-        'Java_Integration_Testing_Exercise_v1'
+        'Java_Integration_Testing_Exercise_v1',
+        'Authentication_And_Authorization_Exercise_v1'
       ]
     },
     'Front End Frameworks (React)': {
