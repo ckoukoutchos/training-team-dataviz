@@ -14,6 +14,7 @@ import {
 import { CheckCircle, ErrorOutline, HighlightOff } from '@material-ui/icons';
 import Metadata from '../../../shared/metadata';
 import styles from './MLModuleProgress.module.css';
+import { convertStringToDateObject } from '../../../shared/dataService';
 
 interface MLModuleProgressProps {
   associate: Associate;
@@ -30,13 +31,18 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
     required = Metadata.required[currModule.type];
   }
 
-  const getDueDate = (assessment: string, type: string) => {
+  const getDueDate = (assessments: any[], curr: string, type: string) => {
     if (type === 'projects') {
-      if (Metadata['Project (Score)'][assessment].timeline) {
+      const projects = assessments.filter(
+        (assessment: any) => assessment.name === curr
+      );
+      const project = projects.length ? projects[projects.length - 1] : null;
+
+      if (!project && Metadata['Project (Score)'][curr].timeline) {
         if (currModule && currModule.startDate) {
           let dueDate =
             currModule.startDate.valueOf() +
-            Metadata['Project (Score)'][assessment].timeline * 86400000;
+            Metadata['Project (Score)'][curr].timeline * 86400000;
           if (
             currModule.type === 'Front End Frameworks (React)' &&
             modules[4].startDate
@@ -45,24 +51,45 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
           }
           return `Due: ${new Date(dueDate).toDateString()}`;
         }
+      } else if (project) {
+        return `Completed: ${project.date.toDateString()}`;
+      } else {
+        return null;
+      }
+    } else if (type === 'exercises') {
+      const exercises = assessments.filter(
+        (assessment: any) => assessment.Interaction === curr
+      );
+      const exercise = exercises.length
+        ? exercises[exercises.length - 1]
+        : null;
+
+      if (!exercise && Metadata['Exercise'][curr]) {
+        if (currModule && currModule.startDate) {
+          let dueDate =
+            currModule.startDate.valueOf() +
+            Metadata['Exercise'][curr].timeline * 86400000;
+          if (
+            currModule.type === 'Front End Frameworks (React)' &&
+            modules[4].startDate
+          ) {
+            dueDate += 28 * 86400000;
+          }
+          return `Due: ${new Date(dueDate).toDateString()}`;
+        }
+      } else if (exercise) {
+        return `Completed: ${convertStringToDateObject(
+          exercise.Date
+        ).toDateString()}`;
+      } else {
+        return null;
       }
     } else {
-      if (Metadata['Exercise'][assessment]) {
-        if (currModule && currModule.startDate) {
-          let dueDate =
-            currModule.startDate.valueOf() +
-            Metadata['Exercise'][assessment].timeline * 86400000;
-          if (
-            currModule.type === 'Front End Frameworks (React)' &&
-            modules[4].startDate
-          ) {
-            dueDate += 28 * 86400000;
-          }
-          return `Due: ${new Date(dueDate).toDateString()}`;
-        }
-      }
+      const quiz = assessments.find(
+        (assessment: any) => assessment.name === curr
+      );
+      return quiz ? `Completed: ${quiz.date.toDateString()}` : null;
     }
-    return null;
   };
 
   const getIcon = (assessments: any[], curr: string, type: string) => {
@@ -136,7 +163,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
                   </ListItemIcon>
                   <ListItemText
                     primary={project}
-                    secondary={getDueDate(project, 'projects')}
+                    secondary={getDueDate(projects, project, 'projects')}
                   />
                 </ListItem>
               ))}
@@ -153,7 +180,10 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
                   <ListItemIcon>
                     {getIcon(quizzes, quiz, 'quizzes')}
                   </ListItemIcon>
-                  <ListItemText primary={quiz} />
+                  <ListItemText
+                    primary={quiz}
+                    secondary={getDueDate(quizzes, quiz, 'quiz')}
+                  />
                 </ListItem>
               ))}
             </List>
@@ -175,7 +205,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
                   </ListItemIcon>
                   <ListItemText
                     primary={exercise}
-                    secondary={getDueDate(exercise, 'exercises')}
+                    secondary={getDueDate(exercises, exercise, 'exercises')}
                   />
                 </ListItem>
               ))}
