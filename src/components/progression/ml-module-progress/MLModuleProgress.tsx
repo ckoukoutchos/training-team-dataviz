@@ -52,7 +52,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
           if (Metadata['Project (Score)'][curr].hardTimeline) {
             return <strong>Due: {new Date(dueDate).toDateString()}</strong>;
           } else {
-            return `Estimated: ${new Date(dueDate).toDateString()}`;
+            return `Expected: ${new Date(dueDate).toDateString()}`;
           }
         }
       } else if (project) {
@@ -115,7 +115,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
           if (Metadata['Exercise'][curr].hardTimeline) {
             return <strong>Due: {new Date(dueDate).toDateString()}</strong>;
           } else {
-            return `Estimated: ${new Date(dueDate).toDateString()}`;
+            return `Expected: ${new Date(dueDate).toDateString()}`;
           }
         }
       } else if (exercise) {
