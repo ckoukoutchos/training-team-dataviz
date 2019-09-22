@@ -281,7 +281,7 @@ class Timeline extends Component<TimelineProps, TimelineState> {
         );
       } else {
         score.combinedScore = Math.round(
-          score.assessmentScore * 0.6 + score.attendanceScore * 0.4
+          score.assessmentScore * 0.7 + score.attendanceScore * 0.3
         );
       }
     }

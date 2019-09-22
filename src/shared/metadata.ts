@@ -27,13 +27,84 @@ export default {
     'Associate Start'
   ],
   Exercise: {
-    JavaScript_Calculator_Exercise_v1: {
+    Git_Workflow_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 7
+    },
+    Javascript_Memory_Game_Exercise_v1: {
+      hardTimeline: false,
       timeline: 28
     },
+    JavaScript_Calculator_Exercise_v1: {
+      hardTimeline: true,
+      timeline: 21
+    },
+    JavaScript_Debugging_Hangman_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 28
+    },
+    Java_Logic_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 7
+    },
+    Logic_Layer_War_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 14
+    },
+    Unit_Testing_Part_1_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 14
+    },
     API_Data_Access_Exercise_v2: {
+      hardTimeline: true,
+      timeline: 28
+    },
+    Unit_Testing_Part_2_Exercise_v2: {
+      hardTimeline: false,
+      timeline: 35
+    },
+    Java_Integration_Testing_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 49
+    },
+    Authentication_And_Authorization_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 56
+    },
+    Garden_Center_Frontend_Prototype_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 7
+    },
+    Garden_Center_Frontend_Nav_Bar_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 7
+    },
+    Garden_Center_Frontend_Customers_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 14
+    },
+    Frontend_Frameworks_Memory_Game_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 21
+    },
+    Garden_Center_Frontend_Testing_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 21
+    },
+    Garden_Center_Frontend_Fetching_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 21
+    },
+    Garden_Center_Frontend_Error_Handling_Exercise_v1: {
+      hardTimeline: false,
+      timeline: 28
+    },
+    Garden_Center_Frontend_Routing_Exercise_v1: {
+      hardTimeline: false,
       timeline: 28
     },
     Garden_Center_Frontend_Authentication_Exercise_v1: {
+      hardTimeline: true,
       timeline: 28
     }
   },
@@ -58,39 +129,50 @@ export default {
   'Project (Score)': {
     HTML_CSS_Page_Match_Project_v2: {
       'Max Score': 30,
-      Module: 'Development Basics and Front End'
+      Module: 'Development Basics and Front End',
+      hardTimeline: false,
+      timeline: 14
     },
     JavaScript_Form_Validation_Project_v2: {
       'Max Score': 30,
       Module: 'Development Basics and Front End',
+      hardTimeline: true,
       timeline: 42
     },
     MongoDB_Database_Project_v3: {
       'Max Score': 30,
       Module: 'Databases',
+      hardTimeline: true,
       timeline: 14
     },
     PostgreSQL_Database_Project_v3: {
       'Max Score': 30,
       Module: 'Databases',
+      hardTimeline: true,
       timeline: 28
     },
     Garden_Center_API_Project_v4: {
       'Max Score': 30,
-      Module: 'Logic Layer (Java)'
+      Module: 'Logic Layer (Java)',
+      hardTimeline: false,
+      timeline: 42
     },
     Catalyte_Pet_Emporium_API_Project_v2: {
       'Max Score': 30,
       Module: 'Logic Layer (Java)',
+      hardTimeline: true,
       timeline: 70
     },
     Garden_Center_Front_End_Project_v2: {
       'Max Score': 30,
-      Module: 'Frontend Frameworks (React)'
+      Module: 'Frontend Frameworks (React)',
+      hardTimeline: false,
+      timeline: 35
     },
     Redux_Garden_Center_Front_End_Project_v2: {
       'Max Score': 30,
       Module: 'Frontend Frameworks (React)',
+      hardTimeline: true,
       timeline: 56
     },
     E_Commerce_Group_Project_v1: {
@@ -103,7 +185,9 @@ export default {
     },
     Garden_Center_API_Project_v5: {
       'Max Score': 30,
-      Module: 'Logic Layer (Java)'
+      Module: 'Logic Layer (Java)',
+      hardTimeline: false,
+      timeline: 42
     }
   },
   Quiz: {
@@ -234,9 +318,9 @@ export default {
       quizzes: ['Quiz_React_js_v2', 'Quiz_Redux_v2'],
       exercises: [
         'Garden_Center_Frontend_Prototype_Exercise_v1',
-        'Frontend_Frameworks_Memory_Game_Exercise_v1',
         'Garden_Center_Frontend_Nav_Bar_Exercise_v1',
         'Garden_Center_Frontend_Customers_Exercise_v1',
+        'Frontend_Frameworks_Memory_Game_Exercise_v1',
         'Garden_Center_Frontend_Testing_Exercise_v1',
         'Garden_Center_Frontend_Fetching_Exercise_v1',
         'Garden_Center_Frontend_Error_Handling_Exercise_v1',

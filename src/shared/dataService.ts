@@ -74,7 +74,7 @@ export const calcAssessmentsScore = (
   softSkills: number
 ): number => {
   if (softSkills && quizzes && projects) {
-    return Math.round(projects * 0.50 + softSkills * 0.35 + quizzes * 0.15);
+    return Math.round(projects * 0.5 + softSkills * 0.35 + quizzes * 0.15);
   } else if (projects && quizzes) {
     return Math.round(projects * 0.7 + quizzes * 0.3);
   } else if (projects) {

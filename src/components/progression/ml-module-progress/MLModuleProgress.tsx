@@ -49,10 +49,47 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
           ) {
             dueDate += 28 * 86400000;
           }
-          return `Due: ${new Date(dueDate).toDateString()}`;
+          if (Metadata['Project (Score)'][curr].hardTimeline) {
+            return <strong>Due: {new Date(dueDate).toDateString()}</strong>;
+          } else {
+            return `Estimated: ${new Date(dueDate).toDateString()}`;
+          }
         }
       } else if (project) {
-        return `Completed: ${project.date.toDateString()}`;
+        if (
+          project.date.valueOf() >
+          // @ts-ignore
+          currModule.startDate.valueOf() +
+            Metadata['Project (Score)'][curr].timeline * 86400000
+        ) {
+          if (Metadata['Project (Score)'][curr].hardTimeline) {
+            return (
+              <strong style={{ color: 'red' }}>
+                Completed: {project.date.toDateString()}
+              </strong>
+            );
+          } else {
+            return (
+              <span style={{ color: 'red' }}>
+                Completed: {project.date.toDateString()}
+              </span>
+            );
+          }
+        } else {
+          if (Metadata['Project (Score)'][curr].hardTimeline) {
+            return (
+              <strong style={{ color: 'green' }}>
+                Completed: {project.date.toDateString()}
+              </strong>
+            );
+          } else {
+            return (
+              <span style={{ color: 'green' }}>
+                Completed: {project.date.toDateString()}
+              </span>
+            );
+          }
+        }
       } else {
         return null;
       }
@@ -75,12 +112,48 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
           ) {
             dueDate += 28 * 86400000;
           }
-          return `Due: ${new Date(dueDate).toDateString()}`;
+          if (Metadata['Exercise'][curr].hardTimeline) {
+            return <strong>Due: {new Date(dueDate).toDateString()}</strong>;
+          } else {
+            return `Estimated: ${new Date(dueDate).toDateString()}`;
+          }
         }
       } else if (exercise) {
-        return `Completed: ${convertStringToDateObject(
-          exercise.Date
-        ).toDateString()}`;
+        const exerciseDate = convertStringToDateObject(exercise.Date);
+        if (
+          exerciseDate.valueOf() >
+          // @ts-ignore
+          currModule.startDate.valueOf() +
+            Metadata['Exercise'][curr].timeline * 86400000
+        ) {
+          if (Metadata['Exercise'][curr].hardTimeline) {
+            return (
+              <strong style={{ color: 'red' }}>
+                Completed: {exerciseDate.toDateString()}
+              </strong>
+            );
+          } else {
+            return (
+              <span style={{ color: 'red' }}>
+                Completed: {exerciseDate.toDateString()}
+              </span>
+            );
+          }
+        } else {
+          if (Metadata['Exercise'][curr].hardTimeline) {
+            return (
+              <strong style={{ color: 'green' }}>
+                Completed: {exerciseDate.toDateString()}
+              </strong>
+            );
+          } else {
+            return (
+              <span style={{ color: 'green' }}>
+                Completed: {exerciseDate.toDateString()}
+              </span>
+            );
+          }
+        }
       } else {
         return null;
       }
