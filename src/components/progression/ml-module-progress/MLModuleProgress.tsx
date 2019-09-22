@@ -70,7 +70,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
             );
           } else {
             return (
-              <span style={{ color: 'red' }}>
+              <span style={{ color: 'tomato' }}>
                 Completed: {project.date.toDateString()}
               </span>
             );
@@ -78,7 +78,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
         } else {
           if (Metadata['Project (Score)'][curr].hardTimeline) {
             return (
-              <strong style={{ color: 'green' }}>
+              <strong style={{ color: 'darkgreen' }}>
                 Completed: {project.date.toDateString()}
               </strong>
             );
@@ -134,7 +134,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
             );
           } else {
             return (
-              <span style={{ color: 'red' }}>
+              <span style={{ color: 'tomato' }}>
                 Completed: {exerciseDate.toDateString()}
               </span>
             );
@@ -142,7 +142,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
         } else {
           if (Metadata['Exercise'][curr].hardTimeline) {
             return (
-              <strong style={{ color: 'green' }}>
+              <strong style={{ color: 'darkgreen' }}>
                 Completed: {exerciseDate.toDateString()}
               </strong>
             );
@@ -235,7 +235,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
                     {getIcon(projects, project, 'projects')}
                   </ListItemIcon>
                   <ListItemText
-                    primary={project}
+                    primary={project.split('_').join(' ')}
                     secondary={getDueDate(projects, project, 'projects')}
                   />
                 </ListItem>
@@ -254,7 +254,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
                     {getIcon(quizzes, quiz, 'quizzes')}
                   </ListItemIcon>
                   <ListItemText
-                    primary={quiz}
+                    primary={quiz.split('_').join(' ')}
                     secondary={getDueDate(quizzes, quiz, 'quiz')}
                   />
                 </ListItem>
@@ -277,7 +277,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
                     {getIcon(exercises, exercise, 'exercises')}
                   </ListItemIcon>
                   <ListItemText
-                    primary={exercise}
+                    primary={exercise.split('_').join(' ')}
                     secondary={getDueDate(exercises, exercise, 'exercises')}
                   />
                 </ListItem>
