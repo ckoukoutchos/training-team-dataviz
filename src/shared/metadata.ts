@@ -167,7 +167,7 @@ export default {
       'Max Score': 30,
       Module: 'Frontend Frameworks (React)',
       hardTimeline: false,
-      timeline: 35
+      timeline: 42
     },
     Redux_Garden_Center_Front_End_Project_v2: {
       'Max Score': 30,
