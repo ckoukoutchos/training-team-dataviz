@@ -35,8 +35,8 @@ class TraditionalCycleProgress extends Component<
           data={[
             {
               id: '',
-              ranges: [3, 4, 10, 15, 18, 20],
-              measures: [weeksSinceStart.toFixed(1)],
+              ranges: [4, 5, 11, 16, 19, 21],
+              measures: [Math.floor(weeksSinceStart + 1)],
               markers: []
             }
           ]}

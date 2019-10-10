@@ -31,6 +31,9 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
     required = Metadata.required[currModule.type];
   }
 
+  /*
+    to whomever must touch or test this code, I'm sorry, it's hot trash garbage
+  */
   const getDueDate = (assessments: any[], curr: string, type: string) => {
     if (type === 'projects') {
       const projects = assessments.filter(

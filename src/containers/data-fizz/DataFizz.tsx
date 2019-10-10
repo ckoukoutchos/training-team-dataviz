@@ -41,7 +41,7 @@ class DataFizz extends Component<any> {
         modules.type === this.state.selectedModule &&
         (modules.startDate && modules.endDate)
     );
-    const avg =
+    const moduleAvg =
       calcScoreAvg(combineScores(filteredModules, 'daysInModule')) / 7;
     const weekCounts = new Map();
     filteredModules.forEach((modules: Module) => {
@@ -52,11 +52,31 @@ class DataFizz extends Component<any> {
         weekCounts.set(weeks, 1);
       }
     });
-    const data: any = [];
+    const moduleData: any = [];
     weekCounts.forEach((value: number, key: number) =>
-      data.push({ x: key, y: value })
+      moduleData.push({ x: key, y: value })
     );
-    data.sort((a: any, b: any) => a.x - b.x);
+    moduleData.sort((a: any, b: any) => a.x - b.x);
+
+    const mlGrads = mlAssociates.filter(
+      (associate: Associate) =>
+        associate.exitReason && associate.exitReason.includes('rad')
+    );
+    const gradAvg = calcScoreAvg(combineScores(mlGrads, 'daysInCycle')) / 7;
+    const weekCountsGrad = new Map();
+    mlGrads.forEach((associate: Associate) => {
+      const weeks = Math.round(associate.daysInCycle / 7);
+      if (weekCountsGrad.has(weeks)) {
+        weekCountsGrad.set(weeks, weekCountsGrad.get(weeks) + 1);
+      } else {
+        weekCountsGrad.set(weeks, 1);
+      }
+    });
+    const cycleLengthData: any = [];
+    weekCountsGrad.forEach((value: number, key: number) =>
+      cycleLengthData.push({ x: key, y: value })
+    );
+    cycleLengthData.sort((a: any, b: any) => a.x - b.x);
 
     return (
       <>
@@ -109,7 +129,7 @@ class DataFizz extends Component<any> {
             </FormControl>
             <Typography style={{ margin: '8px 32px 0 0' }}>
               <strong>Average: </strong>
-              {avg.toFixed(1)} weeks
+              {moduleAvg.toFixed(1)} weeks
             </Typography>
           </div>
 
@@ -118,20 +138,100 @@ class DataFizz extends Component<any> {
               data={[
                 {
                   id: this.state.selectedModule,
-                  data: [{ x: 0, y: 0 }, ...data]
+                  data: [{ x: 0, y: 0 }, ...moduleData]
                 }
               ]}
               margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
               markers={[
                 {
                   axis: 'x',
-                  value: avg,
+                  value: moduleAvg,
                   lineStyle: { stroke: 'black', strokeWidth: 3 }
                 }
               ]}
               xScale={{
                 type: 'linear',
                 min: 0,
+                max: 'auto'
+              }}
+              yScale={{
+                type: 'linear',
+                stacked: true,
+                min: 0,
+                max: 'auto'
+              }}
+              // @ts-ignore
+              curve='catmullRom'
+              axisTop={null}
+              axisRight={null}
+              axisBottom={{
+                orient: 'bottom',
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'Weeks',
+                legendOffset: 36,
+                legendPosition: 'middle'
+              }}
+              axisLeft={{
+                orient: 'left',
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: 'Count',
+                legendOffset: -40,
+                legendPosition: 'middle'
+              }}
+              colors={{ scheme: 'red_yellow_blue' }}
+              pointSize={12}
+              pointColor='white'
+              pointBorderWidth={3}
+              pointBorderColor={{ from: 'serieColor' }}
+              pointLabel='y'
+              pointLabelYOffset={-12}
+              lineWidth={3}
+              enableArea={true}
+              enableSlices='x'
+              areaBlendMode='natural'
+              areaOpacity={0.05}
+              isInteractive={true}
+              enableCrosshair={true}
+              animate={false}
+            />
+          </div>
+        </Paper>
+
+        <Paper style={{ margin: '16px auto', width: '800px' }}>
+          <div className={styles.Header}>
+            <Typography variant='h3'>Graduation Time</Typography>
+            <Typography variant='h6' color='textSecondary'>
+              Weeks Til Graduation for Mastery Learning
+            </Typography>
+          </div>
+
+          <div className={styles.Divider}>
+            <Divider />
+          </div>
+
+          <div className={styles.GraphPaper}>
+            <ResponsiveLine
+              data={[
+                {
+                  id: 'Graduated',
+                  data: cycleLengthData
+                }
+              ]}
+              margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
+              markers={[
+                {
+                  axis: 'x',
+                  value: gradAvg,
+                  lineStyle: { stroke: 'black', strokeWidth: 3 }
+                }
+              ]}
+              xScale={{
+                type: 'linear',
+                min: 'auto',
                 max: 'auto'
               }}
               yScale={{

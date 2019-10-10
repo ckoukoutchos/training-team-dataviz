@@ -276,8 +276,8 @@ class Timeline extends Component<TimelineProps, TimelineState> {
       if (cycle[0] === 'm') {
         score.combinedScore = Math.round(
           score.assessmentScore * 0.5 +
-            score.attendanceScore * 0.2 +
-            score.moduleTimeScore * 0.3
+            score.attendanceScore * 0.15 +
+            score.moduleTimeScore * 0.35
         );
       } else {
         score.combinedScore = Math.round(
