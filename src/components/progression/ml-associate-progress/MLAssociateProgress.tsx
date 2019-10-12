@@ -67,11 +67,11 @@ class MLAssociateProgress extends Component<
             id: 'Associate',
             ranges: moduleTimes,
             measures: [],
-            markers: [238]
+            markers: [234]
           },
           {
             id: 'Max Time',
-            ranges: [42, 70, 140, 196, 224, 238],
+            ranges: [42, 70, 140, 196, 224, 234],
             measures: [],
             markers: []
           }

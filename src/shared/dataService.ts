@@ -140,6 +140,14 @@ const calcModuleTimeScore = (modules: Module[]): number => {
   const workedModules = modules.filter(
     (module: Module, index: number) => module.daysInModule > 0 && index < 4
   );
+  if (modules[3].endDate) {
+    const amount = workedModules.reduce(
+      (acc: any, curr: any) => acc + curr.daysInModule,
+      0
+    );
+    return Math.round((120 / amount) * 100);
+  }
+
   const workedModuleTimes = workedModules.map(
     (module: Module, index: number) => {
       // if module in-progress and less than half alloted time, just give 100%

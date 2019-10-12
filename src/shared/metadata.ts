@@ -108,7 +108,7 @@ export default {
       timeline: 28
     }
   },
-  maxTimePerModule: [42, 28, 70, 56, 28, 14],
+  maxTimePerModule: [42, 28, 70, 56, 28, 10],
   mlModules: [
     'Development Basics and Front End',
     'Databases',

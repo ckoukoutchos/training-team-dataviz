@@ -1,0 +1,20 @@
+.Body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+.Divider {
+  margin: 16px;
+}
+
+.Header {
+  text-align: center;
+}
+
+.Paper {
+  margin: 16px 32px;
+  padding: 16px 24px;
+  width: 800px;
+}
