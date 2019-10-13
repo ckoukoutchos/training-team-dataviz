@@ -56,11 +56,9 @@ const GradEstimate = (props: GradEstimateProps) => {
       actual =
         assignment.Score === 'Pass' || assignment.Score === 'Completed' ? 1 : 0;
       actual === 1 ? wins++ : losses++;
-      opponent = 1500;
     } else if (assignment.type === 'Quiz') {
       actual = assignment.score >= 80 ? 1 : 0;
       actual === 1 ? wins++ : losses++;
-      opponent = 1400;
     } else {
       actual = assignment.score >= 90 ? 1 : 0;
       actual === 1 ? wins++ : losses++;
@@ -72,6 +70,35 @@ const GradEstimate = (props: GradEstimateProps) => {
     }
     const expected = 1 / (1 + Math.pow(10, (opponent - associateELO) / 400));
     associateELO = associateELO + 20 * (actual - expected);
+  });
+
+  associate.modules.forEach((modules: Module, index: number) => {
+    let actual = 0;
+    let opponent = 1400;
+    if (modules.startDate && modules.endDate && index < 4) {
+      const modulePercent = Math.round(
+        (tradModuleDays[index] / modules.daysInModule) * 100
+      );
+      actual = modulePercent >= 60 ? 1 : 0;
+      actual === 1 ? wins++ : losses++;
+
+      if (modulePercent >= 40 && modulePercent < 50) {
+        opponent = 1200;
+      } else if (modulePercent >= 50 && modulePercent < 60) {
+        opponent = 1300;
+      } else if (modulePercent >= 70 && modulePercent < 80) {
+        opponent = 1500;
+      } else if (modulePercent >= 80 && modulePercent < 90) {
+        opponent = 1600;
+      } else if (modulePercent >= 90 && modulePercent < 100) {
+        opponent = 1700;
+      } else if (modulePercent > 100) {
+        opponent = 1800;
+      }
+
+      const expected = 1 / (1 + Math.pow(10, (opponent - associateELO) / 400));
+      associateELO = associateELO + 20 * (actual - expected);
+    }
   });
 
   return (
