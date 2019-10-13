@@ -1,8 +1,9 @@
 import React from 'react';
 import styles from './GradEstimates.module.css';
-import { Paper, Typography, Divider } from '@material-ui/core';
+import { Paper, Typography, Divider, Tooltip } from '@material-ui/core';
 import { Associate, Aggregation, Module } from '../../models/types';
 import Metadata from '../../shared/metadata';
+import { HelpOutline } from '@material-ui/icons';
 
 interface GradEstimateProps {
   associate: Associate;
@@ -48,11 +49,33 @@ const GradEstimate = (props: GradEstimateProps) => {
           {new Date(
             associate.startDate.valueOf() + 86400000 * (days - 5)
           ).toDateString()}
+          <Tooltip
+            className={styles.Tooltip}
+            title={
+              <Typography>
+                Starts assuming the max time per module, then adjusts based on
+                actual speed in prior modules.
+              </Typography>
+            }
+          >
+            <HelpOutline />
+          </Tooltip>
         </Typography>
 
         <Typography variant='subtitle1'>
           <strong>Graduation Likelihood: </strong>{' '}
           {gradChance >= 100 ? 99 : gradChance}%
+          <Tooltip
+            className={styles.Tooltip}
+            title={
+              <Typography>
+                Threshold model based on the combined score. Minimum score of
+                72% equates to a 50% chance of graduation.
+              </Typography>
+            }
+          >
+            <HelpOutline />
+          </Tooltip>
         </Typography>
       </div>
     </Paper>

@@ -178,12 +178,14 @@ class CycleView extends Component<CycleProps, CycleState> {
           </div>
 
           <div className={styles.Container}>
+            <div style={{margin: '0 32px'}}>
             <AssociatesTable
               associates={cycle.associates}
               cycleAggregations={[aggregation]}
               lookup={lookup}
               history={history}
             />
+            </div>
           </div>
         </div>
       </>

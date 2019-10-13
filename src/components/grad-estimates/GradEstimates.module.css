@@ -18,3 +18,9 @@
   padding: 16px 24px;
   width: 800px;
 }
+
+.Tooltip {
+  padding: 2px;
+  position: relative;
+  top: 6px;
+}

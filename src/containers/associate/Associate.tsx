@@ -99,36 +99,59 @@ class AssociateView extends Component<AssociateProps, AssociateState> {
               startDate={associate.startDate}
             />
 
-            {showComparisons && (
-              <RadarGraph
-                title='Assessments'
-                subtitle='Project, Quiz, and Soft Skill Averages'
-                keys={[associateName, 'Cycle Average']}
-                index='avg'
-                data={[
-                  {
-                    avg: 'Projects',
-                    [associateName]: associateAggregation.projects,
-                    'Cycle Average': cycleAggregation.projects
-                  },
-                  {
-                    avg: 'Quizzes',
-                    [associateName]: associateAggregation.quizzes,
-                    'Cycle Average': cycleAggregation.quizzes
-                  },
-                  {
-                    avg: 'Soft Skills',
-                    [associateName]: associateAggregation.softSkills,
-                    'Cycle Average': cycleAggregation.softSkills
-                  },
-                  {
-                    avg: 'Exercises',
-                    [associateName]: associateAggregation.exercises,
-                    'Cycle Average': cycleAggregation.exercises
-                  }
-                ]}
-              />
-            )}
+            <RadarGraph
+              title='Assessments'
+              subtitle='Project, Quiz, and Soft Skill Averages'
+              keys={
+                showComparisons
+                  ? [associateName, 'Cycle Average']
+                  : [associateName]
+              }
+              index='avg'
+              data={
+                showComparisons
+                  ? [
+                      {
+                        avg: 'Projects',
+                        [associateName]: associateAggregation.projects,
+                        'Cycle Average': cycleAggregation.projects
+                      },
+                      {
+                        avg: 'Quizzes',
+                        [associateName]: associateAggregation.quizzes,
+                        'Cycle Average': cycleAggregation.quizzes
+                      },
+                      {
+                        avg: 'Soft Skills',
+                        [associateName]: associateAggregation.softSkills,
+                        'Cycle Average': cycleAggregation.softSkills
+                      },
+                      {
+                        avg: 'Exercises',
+                        [associateName]: associateAggregation.exercises,
+                        'Cycle Average': cycleAggregation.exercises
+                      }
+                    ]
+                  : [
+                      {
+                        avg: 'Projects',
+                        [associateName]: associateAggregation.projects
+                      },
+                      {
+                        avg: 'Quizzes',
+                        [associateName]: associateAggregation.quizzes
+                      },
+                      {
+                        avg: 'Soft Skills',
+                        [associateName]: associateAggregation.softSkills
+                      },
+                      {
+                        avg: 'Exercises',
+                        [associateName]: associateAggregation.exercises
+                      }
+                    ]
+              }
+            />
 
             <Timeline associate={associate} />
 
