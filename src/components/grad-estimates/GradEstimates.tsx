@@ -28,6 +28,17 @@ const GradEstimate = (props: GradEstimateProps) => {
     }
   });
 
+  const toughOnes: any = [
+    'JavaScript_Form_Validation_Project_v2',
+    'Garden_Center_API_Project_v5',
+    'Garden_Center_Front_End_Project_v2'
+  ];
+  const easyOnes: any = [
+    'HTML_CSS_Page_Match_Project_v2',
+    'PostgreSQL_Database_Project_v3',
+    'Redux_Garden_Center_Front_End_Project_v2'
+  ];
+
   const gradChance = Math.round((aggregation.combined - 72) * 3.3 + 50);
 
   let associateELO = 1500;
@@ -45,14 +56,19 @@ const GradEstimate = (props: GradEstimateProps) => {
       actual =
         assignment.Score === 'Pass' || assignment.Score === 'Completed' ? 1 : 0;
       actual === 1 ? wins++ : losses++;
+      opponent = 1500;
     } else if (assignment.type === 'Quiz') {
       actual = assignment.score >= 80 ? 1 : 0;
       actual === 1 ? wins++ : losses++;
-      opponent = 1450;
+      opponent = 1400;
     } else {
       actual = assignment.score >= 90 ? 1 : 0;
       actual === 1 ? wins++ : losses++;
-      opponent = 1600;
+      if (toughOnes.includes(assignment.name)) {
+        opponent = 1550;
+      } else if (easyOnes.includes(assignment.name)) {
+        opponent = 1450;
+      }
     }
     const expected = 1 / (1 + Math.pow(10, (opponent - associateELO) / 400));
     associateELO = associateELO + 20 * (actual - expected);
@@ -127,7 +143,7 @@ const GradEstimate = (props: GradEstimateProps) => {
                     <Typography>Exercises: 1500</Typography>
                   </li>
                   <li>
-                    <Typography>Quizzes: 1450</Typography>
+                    <Typography>Quizzes: 1400</Typography>
                   </li>
                 </ul>
                 <Typography>
