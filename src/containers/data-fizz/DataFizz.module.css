@@ -19,3 +19,15 @@
   padding: 16px 24px;
   width: 800px;
 }
+
+.Rows {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Tooltip {
+  padding: 2px;
+  position: relative;
+  top: 6px;
+}

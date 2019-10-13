@@ -11,7 +11,6 @@ interface GradEstimateProps {
 }
 
 const GradEstimate = (props: GradEstimateProps) => {
-  console.log(props);
   const { aggregation, associate } = props;
 
   const tradModuleDays = [25.2, 16.8, 42, 33.6];
@@ -28,78 +27,7 @@ const GradEstimate = (props: GradEstimateProps) => {
     }
   });
 
-  const toughOnes: any = [
-    'JavaScript_Form_Validation_Project_v2',
-    'Garden_Center_API_Project_v5',
-    'Garden_Center_Front_End_Project_v2'
-  ];
-  const easyOnes: any = [
-    'HTML_CSS_Page_Match_Project_v2',
-    'PostgreSQL_Database_Project_v3',
-    'Redux_Garden_Center_Front_End_Project_v2'
-  ];
-
   const gradChance = Math.round((aggregation.combined - 72) * 3.3 + 50);
-
-  let associateELO = 1500;
-  let wins = 0;
-  let losses = 0;
-  const assignments = [
-    ...associate.projects,
-    ...associate.exercises,
-    ...associate.quizzes
-  ];
-  assignments.forEach((assignment: any) => {
-    let actual = 0;
-    let opponent = 1500;
-    if (assignment['Interaction Type']) {
-      actual =
-        assignment.Score === 'Pass' || assignment.Score === 'Completed' ? 1 : 0;
-      actual === 1 ? wins++ : losses++;
-    } else if (assignment.type === 'Quiz') {
-      actual = assignment.score >= 80 ? 1 : 0;
-      actual === 1 ? wins++ : losses++;
-    } else {
-      actual = assignment.score >= 90 ? 1 : 0;
-      actual === 1 ? wins++ : losses++;
-      if (toughOnes.includes(assignment.name)) {
-        opponent = 1550;
-      } else if (easyOnes.includes(assignment.name)) {
-        opponent = 1450;
-      }
-    }
-    const expected = 1 / (1 + Math.pow(10, (opponent - associateELO) / 400));
-    associateELO = associateELO + 20 * (actual - expected);
-  });
-
-  associate.modules.forEach((modules: Module, index: number) => {
-    let actual = 0;
-    let opponent = 1400;
-    if (modules.startDate && modules.endDate && index < 4) {
-      const modulePercent = Math.round(
-        (tradModuleDays[index] / modules.daysInModule) * 100
-      );
-      actual = modulePercent >= 60 ? 1 : 0;
-      actual === 1 ? wins++ : losses++;
-
-      if (modulePercent >= 40 && modulePercent < 50) {
-        opponent = 1200;
-      } else if (modulePercent >= 50 && modulePercent < 60) {
-        opponent = 1300;
-      } else if (modulePercent >= 70 && modulePercent < 80) {
-        opponent = 1500;
-      } else if (modulePercent >= 80 && modulePercent < 90) {
-        opponent = 1600;
-      } else if (modulePercent >= 90 && modulePercent < 100) {
-        opponent = 1700;
-      } else if (modulePercent > 100) {
-        opponent = 1800;
-      }
-
-      const expected = 1 / (1 + Math.pow(10, (opponent - associateELO) / 400));
-      associateELO = associateELO + 20 * (actual - expected);
-    }
-  });
 
   return (
     <Paper className={styles.Paper}>
@@ -143,46 +71,6 @@ const GradEstimate = (props: GradEstimateProps) => {
                 Threshold model based on the combined score. Minimum score of
                 72% equates to a 50% chance of graduation.
               </Typography>
-            }
-          >
-            <HelpOutline />
-          </Tooltip>
-        </Typography>
-
-        <Typography variant='subtitle1'>
-          <strong>ELO: </strong> {Math.round(associateELO)}
-          <Tooltip
-            className={styles.Tooltip}
-            title={
-              <>
-                <Typography>
-                  Ranking system assuming assignments are opponents of a certain
-                  strength and passing the assignment constitutes a "win" and
-                  failing a "loss". Associates ELO is adjusted up or down based
-                  on wins/losses and the adjustment size is relative to the
-                  opponents strength.
-                </Typography>
-                <ul>
-                  <li>
-                    <Typography>Projects: 1600</Typography>
-                  </li>
-                  <li>
-                    <Typography>Exercises: 1500</Typography>
-                  </li>
-                  <li>
-                    <Typography>Quizzes: 1400</Typography>
-                  </li>
-                </ul>
-                <Typography>
-                  The tougher the opponent, the bigger the gain. An associate
-                  with a score over 1600 would be expected to pass most
-                  projects; one with a score below 1600 would be expected to
-                  take multiple attempts.
-                </Typography>
-                <Typography>
-                  Wins: {wins}, Losses: {losses}
-                </Typography>
-              </>
             }
           >
             <HelpOutline />
