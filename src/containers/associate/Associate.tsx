@@ -23,7 +23,6 @@ import RollUps from '../../components/roll-ups/RollUps';
 import MLModuleProgress from '../../components/progression/ml-module-progress/MLModuleProgress';
 import { Button } from '@material-ui/core';
 import Timeline from '../../components/timeline/Timeline';
-import GradEstimate from '../../components/grad-estimates/GradEstimates';
 
 interface AssociateProps {
   cycleAggregations: any[];
@@ -85,6 +84,7 @@ class AssociateView extends Component<AssociateProps, AssociateState> {
           <div className={styles.Container}>
             <AssociateInfo
               associate={associate}
+              aggregation={associateAggregation}
               cycleName={lookup[cycleName]}
             />
 
@@ -154,13 +154,6 @@ class AssociateView extends Component<AssociateProps, AssociateState> {
             />
 
             <Timeline associate={associate} />
-
-            {cycleName[0] === 'm' && associate.active && showComparisons && (
-              <GradEstimate
-                associate={associate}
-                aggregation={associateAggregation}
-              />
-            )}
           </div>
 
           <div className={styles.Container}>

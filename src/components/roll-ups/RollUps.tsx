@@ -29,6 +29,7 @@ const RollUps = (props: RollUpsProps) => {
     }
   };
   const background = getCompositeBackground(aggregation.composite);
+  const gradChance = Math.round((aggregation.combined - 72) * 3.3 + 50);
 
   return (
     <Paper className={styles.Paper}>
@@ -44,42 +45,63 @@ const RollUps = (props: RollUpsProps) => {
       </div>
 
       <div className={styles.Body}>
-        <Typography variant='h6'>
-          <strong>Combined:</strong> {aggregation.combined}%
-          <Tooltip
-            className={styles.Tooltip}
-            title={
-              <>
-                <Typography>
-                  A weighted score of assessments, attendance, and module time:
-                </Typography>
-                <Typography>Traditional Cycles:</Typography>
-                <ul>
-                  <li>
-                    <Typography>Assessments: 60%</Typography>
-                  </li>
-                  <li>
-                    <Typography>Attendance: 40%</Typography>
-                  </li>
-                </ul>
-                <Typography>Mastery Learning Cycles:</Typography>
-                <ul>
-                  <li>
-                    <Typography>Assessments: 40%</Typography>
-                  </li>
-                  <li>
-                    <Typography>Attendance: 40%</Typography>
-                  </li>
-                  <li>
-                    <Typography>Module Time: 20%</Typography>
-                  </li>
-                </ul>
-              </>
-            }
-          >
-            <HelpOutline />
-          </Tooltip>
-        </Typography>
+        <div>
+          <Typography variant='h6'>
+            <strong>Combined:</strong> {aggregation.combined}%
+            <Tooltip
+              className={styles.Tooltip}
+              title={
+                <>
+                  <Typography>
+                    A weighted score of assessments, attendance, and module
+                    time:
+                  </Typography>
+                  <Typography>Traditional Cycles:</Typography>
+                  <ul>
+                    <li>
+                      <Typography>Assessments: 60%</Typography>
+                    </li>
+                    <li>
+                      <Typography>Attendance: 40%</Typography>
+                    </li>
+                  </ul>
+                  <Typography>Mastery Learning Cycles:</Typography>
+                  <ul>
+                    <li>
+                      <Typography>Assessments: 40%</Typography>
+                    </li>
+                    <li>
+                      <Typography>Attendance: 40%</Typography>
+                    </li>
+                    <li>
+                      <Typography>Module Time: 20%</Typography>
+                    </li>
+                  </ul>
+                </>
+              }
+            >
+              <HelpOutline />
+            </Tooltip>
+          </Typography>
+
+          {showComposite && aggregation.cycle[0] === 'm' && (
+            <Typography variant='subtitle1'>
+              <strong>Graduation Likelihood: </strong>{' '}
+              {gradChance >= 100 ? 99 : gradChance}%
+              <Tooltip
+                className={styles.Tooltip}
+                title={
+                  <Typography>
+                    Threshold model based on the combined score. Minimum score
+                    of 72% equates to a 50% chance of graduation.
+                  </Typography>
+                }
+              >
+                <HelpOutline />
+              </Tooltip>
+            </Typography>
+          )}
+        </div>
 
         {showComposite && (
           <Tooltip

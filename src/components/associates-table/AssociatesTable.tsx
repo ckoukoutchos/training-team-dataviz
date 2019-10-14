@@ -238,24 +238,24 @@ class AssociatesTable extends Component<
                   </div>
                 )
               }}
-              detailPanel={[
-                {
-                  tooltip: 'Show Details',
-                  render: (rowData: any) => {
-                    const associate = getItemInArrayByName(
-                      associates,
-                      rowData.name
-                    );
-                    return (
-                      <AssociateInfo
-                        bodyOnly
-                        cycleName={lookup[associate.cycle]}
-                        associate={associate}
-                      />
-                    );
-                  }
-                }
-              ]}
+              // detailPanel={[
+              //   {
+              //     tooltip: 'Show Details',
+              //     render: (rowData: any) => {
+              //       const associate = getItemInArrayByName(
+              //         associates,
+              //         rowData.name
+              //       );
+              //       return (
+              //         <AssociateInfo
+              //           bodyOnly
+              //           cycleName={lookup[associate.cycle]}
+              //           associate={associate}
+              //         />
+              //       );
+              //     }
+              //   }
+              // ]}
             />
           </div>
         )}

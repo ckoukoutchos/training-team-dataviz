@@ -50,7 +50,7 @@ class Graduation extends Component<GraduationProps> {
       }
     });
     activeTrad.forEach((cycle: Cycle) => {
-      const endDate = new Date(cycle.startDate.valueOf() + 140 * 86400000)
+      const endDate = new Date(cycle.startDate.valueOf() + 137 * 86400000)
         .toISOString()
         .split('T')[0];
       if (data[endDate]) {
