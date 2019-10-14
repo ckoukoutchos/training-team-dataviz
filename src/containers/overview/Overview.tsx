@@ -30,6 +30,7 @@ import {
 import { Autorenew, Person, HelpOutline } from '@material-ui/icons';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import styles from './Overview.module.css';
+import Graduation from '../../components/calendar/graduation/Graduation';
 
 interface OverviewProps {
   cycleAggregations: CycleAggregation[];
@@ -151,137 +152,157 @@ class Overview extends Component<OverviewProps, OverviewState> {
         {activeTab === 0 && cycleProgressions}
 
         {activeTab === 1 && (
-          <div className={styles.Paper}>
-            <MaterialTable
-              columns={[
-                {
-                  title: 'Associate',
-                  field: 'name',
-                  filtering: false,
-                  render: rowData => (
-                    <Button
-                      color='primary'
-                      onClick={() =>
-                        history.push(
-                          `/cycle/${
-                            CONSTS[rowData.cycle]
-                          }/associate/${rowData.name.split(' ').join('-')}`
-                        )
-                      }
-                    >
-                      {rowData.name}
-                    </Button>
-                  )
-                },
-                { title: 'Cycle', field: 'cycle' },
-                {
-                  title: 'Assessments',
-                  field: 'assessments',
-                  filtering: false,
-                  customSort: (a: any, b: any) =>
-                    a.assessments.split('%')[0] - b.assessments.split('%')[0]
-                },
-                {
-                  title: 'Attendance',
-                  field: 'attendance',
-                  filtering: false,
-                  customSort: (a: any, b: any) =>
-                    a.attendance.split('%')[0] - b.attendance.split('%')[0]
-                },
-                {
-                  title: 'Module Time',
-                  field: 'moduleTime',
-                  filtering: false,
-                  customSort: (a: any, b: any) =>
-                    a.moduleTime.split('%')[0] - b.moduleTime.split('%')[0]
-                }
-              ]}
-              data={watchedAssociates.map((aggregation: CycleAggregation) => ({
-                name: aggregation.name,
-                cycle: CONSTS[aggregation.cycle],
-                assessments: `${aggregation.assessments}%`,
-                attendance: `${aggregation.attendance}%`,
-                moduleTime: aggregation.moduleTime
-                  ? `${aggregation.moduleTime}%`
-                  : 'N/A'
-              }))}
-              options={{
-                sorting: true,
-                filtering: true,
-                pageSize: 10,
-                pageSizeOptions: [10, 20, 50],
-                showTitle: false,
-                rowStyle: (rowData: any) => {
-                  const current = watchedAssociates.find(
-                    (associate: Associate) => rowData.name === associate.name
-                  );
-                  let color = 'rgba(255, 217, 0, 0.2)';
-                  if (current.composite === 1) {
-                    color = 'rgba(255, 0, 0, 0.2)';
-                  } else if (current.composite === 2) {
-                    color = 'rgba(255, 136, 0, 0.2)';
-                  }
-                  return {
-                    backgroundColor: color
-                  };
-                }
-              }}
-              components={{
-                Toolbar: props => (
-                  <div className={styles.Rows}>
-                    <div
-                      style={{
-                        margin: '16px',
-                        display: 'flex',
-                        flexDirection: 'row'
-                      }}
-                    >
-                      <Typography variant='h5'>Associates on Watch</Typography>
-                      <Tooltip
-                        className={styles.Tooltip}
-                        title={
-                          <>
-                            <Typography>Thresholds:</Typography>
-                            <ul>
-                              <li>
-                                <Typography>
-                                  Assessments: 70% Traditional, 75% Mastery
-                                  Learning
-                                </Typography>
-                              </li>
-                              <li>
-                                <Typography>Attendance: 85%</Typography>
-                              </li>
-                              <li>
-                                <Typography>
-                                  Module Time (Mastery Learning): 70%
-                                </Typography>
-                              </li>
-                            </ul>
-                            <Typography>Colors:</Typography>
-                            <ul>
-                              <li>
-                                <Typography>Yellow: composite of 3</Typography>
-                              </li>
-                              <li>
-                                <Typography>Orange: composite of 2</Typography>
-                              </li>
-                              <li>
-                                <Typography>Red: composite of 1</Typography>
-                              </li>
-                            </ul>
-                          </>
+          <>
+            <Graduation
+              cycles={cycles}
+              startDate={new Date()}
+              // how gross is this
+              endDate={
+                new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+              }
+              aggregations={associateAggregations}
+            />
+
+            <div className={styles.Paper}>
+              <MaterialTable
+                columns={[
+                  {
+                    title: 'Associate',
+                    field: 'name',
+                    filtering: false,
+                    render: rowData => (
+                      <Button
+                        color='primary'
+                        onClick={() =>
+                          history.push(
+                            `/cycle/${
+                              CONSTS[rowData.cycle]
+                            }/associate/${rowData.name.split(' ').join('-')}`
+                          )
                         }
                       >
-                        <HelpOutline />
-                      </Tooltip>
+                        {rowData.name}
+                      </Button>
+                    )
+                  },
+                  { title: 'Cycle', field: 'cycle' },
+                  {
+                    title: 'Assessments',
+                    field: 'assessments',
+                    filtering: false,
+                    customSort: (a: any, b: any) =>
+                      a.assessments.split('%')[0] - b.assessments.split('%')[0]
+                  },
+                  {
+                    title: 'Attendance',
+                    field: 'attendance',
+                    filtering: false,
+                    customSort: (a: any, b: any) =>
+                      a.attendance.split('%')[0] - b.attendance.split('%')[0]
+                  },
+                  {
+                    title: 'Module Time',
+                    field: 'moduleTime',
+                    filtering: false,
+                    customSort: (a: any, b: any) =>
+                      a.moduleTime.split('%')[0] - b.moduleTime.split('%')[0]
+                  }
+                ]}
+                data={watchedAssociates.map(
+                  (aggregation: CycleAggregation) => ({
+                    name: aggregation.name,
+                    cycle: CONSTS[aggregation.cycle],
+                    assessments: `${aggregation.assessments}%`,
+                    attendance: `${aggregation.attendance}%`,
+                    moduleTime: aggregation.moduleTime
+                      ? `${aggregation.moduleTime}%`
+                      : 'N/A'
+                  })
+                )}
+                options={{
+                  sorting: true,
+                  filtering: true,
+                  pageSize: 10,
+                  pageSizeOptions: [10, 20, 50],
+                  showTitle: false,
+                  rowStyle: (rowData: any) => {
+                    const current = watchedAssociates.find(
+                      (associate: Associate) => rowData.name === associate.name
+                    );
+                    let color = 'rgba(255, 217, 0, 0.2)';
+                    if (current.composite === 1) {
+                      color = 'rgba(255, 0, 0, 0.2)';
+                    } else if (current.composite === 2) {
+                      color = 'rgba(255, 136, 0, 0.2)';
+                    }
+                    return {
+                      backgroundColor: color
+                    };
+                  }
+                }}
+                components={{
+                  Toolbar: props => (
+                    <div className={styles.Rows}>
+                      <div
+                        style={{
+                          margin: '16px',
+                          display: 'flex',
+                          flexDirection: 'row'
+                        }}
+                      >
+                        <Typography variant='h5'>
+                          Associates on Watch
+                        </Typography>
+                        <Tooltip
+                          className={styles.Tooltip}
+                          title={
+                            <>
+                              <Typography>Thresholds:</Typography>
+                              <ul>
+                                <li>
+                                  <Typography>
+                                    Assessments: 70% Traditional, 75% Mastery
+                                    Learning
+                                  </Typography>
+                                </li>
+                                <li>
+                                  <Typography>Attendance: 85%</Typography>
+                                </li>
+                                <li>
+                                  <Typography>
+                                    Module Time (Mastery Learning): 70%
+                                  </Typography>
+                                </li>
+                              </ul>
+                              <Typography>Colors:</Typography>
+                              <ul>
+                                <li>
+                                  <Typography>
+                                    Yellow: composite of 3
+                                  </Typography>
+                                </li>
+                                <li>
+                                  <Typography>
+                                    Orange: composite of 2
+                                  </Typography>
+                                </li>
+                                <li>
+                                  <Typography>Red: composite of 1</Typography>
+                                </li>
+                              </ul>
+                            </>
+                          }
+                        >
+                          <HelpOutline />
+                        </Tooltip>
+                      </div>
+                      <MTableToolbar {...props} />
                     </div>
-                    <MTableToolbar {...props} />
-                  </div>
-                )
-              }}
-            />
-          </div>
+                  )
+                }}
+              />
+            </div>
+          </>
         )}
       </>
     );
