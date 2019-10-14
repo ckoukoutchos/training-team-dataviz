@@ -9,7 +9,7 @@ import {
 
 interface BasicTable {
   headers: string[];
-  rows: number[];
+  rows: number[][];
 }
 
 const BasicTable = (props: BasicTable) => {
@@ -27,13 +27,15 @@ const BasicTable = (props: BasicTable) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        <TableRow>
-          {rows.map((row: number, index: number) => (
-            <TableCell key={index} align='left'>
-              {row}
-            </TableCell>
-          ))}
-        </TableRow>
+        {rows.map((row: number[], index: number) => (
+          <TableRow key={index}>
+            {row.map((item: number, index: number) => (
+              <TableCell key={index} align='left'>
+                {item}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );

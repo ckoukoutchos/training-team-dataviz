@@ -6,6 +6,8 @@ export default {
     'Unexcused Late Arrival',
     'Optional Attendance'
   ],
+  graduation: ['Fixed', 'Mix', 'Estimated'],
+  graduationColors: ['#d73027', '#fdae61', '#74add1'],
   attendanceColors: ['gold', 'darkred', 'yellow', 'red', 'green'],
   mlModuleColors: [
     '#a50026',

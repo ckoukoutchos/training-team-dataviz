@@ -64,7 +64,7 @@ const Calendar = (props: CalendarProps) => {
       <ExpansionPanel>
         <BasicTable
           headers={CONSTS.attendance}
-          rows={Object.values(attendance.count)}
+          rows={[Object.values(attendance.count)]}
         />
       </ExpansionPanel>
     </Paper>
