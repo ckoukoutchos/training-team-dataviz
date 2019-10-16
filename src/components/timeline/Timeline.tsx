@@ -54,6 +54,7 @@ class Timeline extends Component<TimelineProps, TimelineState> {
   constructor(props: TimelineProps) {
     super(props);
 
+    // cuz I only want this stuff run once onMount, not every render
     const weeklyScores = this.createWeeklyScores(
       props.associate.daysInCycle,
       props.associate.startDate

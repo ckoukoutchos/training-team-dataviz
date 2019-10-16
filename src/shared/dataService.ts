@@ -15,6 +15,10 @@ import {
   AssessmentTypeAggregation
 } from '../models/types';
 
+/*
+  oh god, I learned nothing from TravelClick
+*/
+
 export const calcDaysInModules = (
   modules: Module[],
   exitDate: Date | null

@@ -32,7 +32,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
   }
 
   /*
-    to whomever must touch or test this code, I'm sorry, it's hot trash garbage
+    To whomever must touch or test this code, I'm sorry, it's hot trash garbage.
   */
   const getDueDate = (assessments: any[], curr: string, type: string) => {
     if (type === 'projects') {
@@ -96,6 +96,10 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
       } else {
         return null;
       }
+      /*
+      I mean, seriously, it's still going!? Yo dog, I heard you like nested, unclear if/else blocks.
+      Got you fam.
+    */
     } else if (type === 'exercises') {
       const exercises = assessments.filter(
         (assessment: any) => assessment.Interaction === curr
@@ -168,6 +172,7 @@ const MLModuleProgress = (props: MLModuleProgressProps) => {
     }
   };
 
+  // this guy's pretty gross too
   const getIcon = (assessments: any[], curr: string, type: string) => {
     if (type === 'projects') {
       const projects = assessments.filter(

@@ -5,6 +5,7 @@
 From root project folder:
 
 - Run `npm install` for dependencies
+- Run `npm run build` for bundle
 - Run `npm run server` for application
 
 Served at `localhost:5000`

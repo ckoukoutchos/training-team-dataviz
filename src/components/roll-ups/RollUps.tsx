@@ -86,7 +86,7 @@ const RollUps = (props: RollUpsProps) => {
 
           {showComposite && aggregation.cycle[0] === 'm' && (
             <Typography variant='subtitle1'>
-              <strong>Graduation Likelihood: </strong>{' '}
+              <strong>Grad Chance: </strong>{' '}
               {gradChance >= 100 ? 99 : gradChance}%
               <Tooltip
                 className={styles.Tooltip}

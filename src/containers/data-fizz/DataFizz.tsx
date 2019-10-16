@@ -27,6 +27,7 @@ class DataFizz extends Component<any> {
     this.setState({ selectedModule: event.target.value });
   };
 
+  // I treat my render funcs like free form jazz
   render() {
     const mlCycles = this.props.cycles.filter(
       (cycle: Cycle) => cycle.name[0] === 'm'

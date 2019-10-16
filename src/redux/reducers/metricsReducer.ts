@@ -27,6 +27,10 @@ const initalState = {
   }
 };
 
+/*
+  Did this app really need Redux? No. Am I lazy and Redux makes it easier to be lazy? Yes.
+*/
+
 const metricsReducer = (
   state: MetricsState = initalState,
   action: ActionTypes

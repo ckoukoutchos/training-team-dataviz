@@ -16,10 +16,14 @@ import {
   formatStaffData,
   getAssessmentAggregations
 } from '../../shared/dataService';
-import Metadata from '../../shared/metadata';
 import { getToken } from './selectors';
-import { Metric, AssessmentAggregation, Associate } from '../../models/types';
+import { Metric, Associate } from '../../models/types';
 
+
+/*
+  Does this application need sagas, absolutely not, it's over/pre-optimization but I hold on to the dream that
+  this little guy will one day be something and maybe then it'll make sense
+*/
 export default function* watchCycle() {
   yield all([takeEvery(FETCH_ALL_CYCLES_METRICS, fetchAllCyclesMetrics)]);
 }
@@ -61,6 +65,9 @@ function* fetchAllCyclesMetrics(): IterableIterator<{}> {
   }
 }
 
+/*
+  one day, in neverneverland, we'll have a graphql server do all this for us, til then, we have the worlds fattest client
+*/
 const getCycleData = (data: Metric[], metadata: any) => {
   const cycleName = metadata.name;
   // sort metrics by associate/staff/cycle

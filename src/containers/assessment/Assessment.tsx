@@ -259,208 +259,217 @@ class AssessmentView extends Component<AssessmentProps, AssessmentState> {
       <>
         <Breadcrumbs path={url} root='assessment' />
 
-        <Paper className={styles.Card}>
-          <Typography variant='h3'>{url[3].split('_').join(' ')}</Typography>
-          <Typography variant='h6' color='textSecondary'>
-            {type !== AssessmentType.SOFT_SKILLS
-              ? Metadata[type].Module
-              : 'Soft Skills'}
-          </Typography>
-
-          <Divider style={{ margin: '12px 0' }} />
-
-          <div className={styles.Body}>
-            <div>
-              <Typography variant='subtitle1'>
-                <strong>Average: </strong>
-                {avg}
+        <div className={styles.Wrapper}>
+          <div className={styles.Container}>
+            <Paper className={styles.Card}>
+              <Typography variant='h3'>
+                {url[3].split('_').join(' ')}
+              </Typography>
+              <Typography variant='h6' color='textSecondary'>
+                {type !== AssessmentType.SOFT_SKILLS
+                  ? Metadata[type].Module
+                  : 'Soft Skills'}
               </Typography>
 
-              <Typography variant='subtitle1'>
-                <strong>Median: </strong>
-                {median}
-              </Typography>
-            </div>
-            <div>
-              <Typography variant='subtitle1'>
-                <strong>Total Submitted: </strong>
-                {firstAttempts && activeTab === 1
-                  ? firstOnly.length
-                  : combineScores(currentAssessmentAggr, 'scores').length}
-              </Typography>
+              <Divider style={{ margin: '12px 0' }} />
 
-              <Typography variant='subtitle1'>
-                <strong>Standard Deviation: </strong>
-                {sd}
-              </Typography>
-            </div>
-          </div>
-        </Paper>
+              <div className={styles.Body}>
+                <div>
+                  <Typography variant='subtitle1'>
+                    <strong>Average: </strong>
+                    {avg}
+                  </Typography>
 
-        <Paper style={{ margin: '16px auto', width: '800px' }}>
-          <Tabs
-            value={activeTab}
-            indicatorColor='primary'
-            textColor='primary'
-            onChange={this.onTabChange}
-            variant='fullWidth'
-          >
-            <Tab label='All Cycles' icon={<Autorenew />} />
-            <Tab label='Mastery Learning' icon={<RotateLeft />} />
-            <Tab label='Traditional' icon={<Replay />} />
-          </Tabs>
-        </Paper>
+                  <Typography variant='subtitle1'>
+                    <strong>Median: </strong>
+                    {median}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography variant='subtitle1'>
+                    <strong>Total Submitted: </strong>
+                    {firstAttempts && activeTab === 1
+                      ? firstOnly.length
+                      : combineScores(currentAssessmentAggr, 'scores').length}
+                  </Typography>
 
-        <Paper className={styles.Paper}>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              margin: '4px 16px 0 16px'
-            }}
-          >
-            <Toggle
-              checked={showCycles}
-              onChange={this.toggleHandler('showCycles')}
-              leftLabel='Combined'
-              rightLabel='Per Cycle'
-            />
+                  <Typography variant='subtitle1'>
+                    <strong>Standard Deviation: </strong>
+                    {sd}
+                  </Typography>
+                </div>
+              </div>
+            </Paper>
 
-            {activeTab === 1 && type === AssessmentType.PROJECT && (
-              <Toggle
-                checked={firstAttempts}
-                onChange={this.toggleHandler('firstAttempts')}
-                leftLabel='All Attempts'
-                rightLabel='1st Attempts'
-              />
-            )}
-          </div>
+            <Paper style={{ margin: '16px auto', width: '800px' }}>
+              <Tabs
+                value={activeTab}
+                indicatorColor='primary'
+                textColor='primary'
+                onChange={this.onTabChange}
+                variant='fullWidth'
+              >
+                <Tab label='All Cycles' icon={<Autorenew />} />
+                <Tab label='Mastery Learning' icon={<RotateLeft />} />
+                <Tab label='Traditional' icon={<Replay />} />
+              </Tabs>
+            </Paper>
 
-          <div className={styles.GraphPaper}>
-            <ResponsiveLine
-              data={data.data}
-              margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
-              markers={[
-                {
-                  axis: 'x',
-                  value: data.avg,
-                  lineStyle: { stroke: 'black', strokeWidth: 3 }
-                }
-              ]}
-              xScale={{
-                type: type === AssessmentType.SOFT_SKILLS ? 'point' : 'linear',
-                min: 0,
-                max: type === AssessmentType.SOFT_SKILLS ? 5 : 100
-              }}
-              yScale={{
-                type: 'linear',
-                stacked: false,
-                min: 0,
-                max: 'auto'
-              }}
-              //@ts-ignore
-              curve='catmullRom'
-              axisTop={null}
-              axisRight={null}
-              axisBottom={{
-                orient: 'bottom',
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'Score',
-                legendOffset: 36,
-                legendPosition: 'middle'
-              }}
-              axisLeft={{
-                orient: 'left',
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'Count',
-                legendOffset: -40,
-                legendPosition: 'middle'
-              }}
-              legends={[
-                {
-                  anchor: 'bottom',
-                  direction: 'row',
-                  justify: false,
-                  translateX: 0,
-                  translateY: 80,
-                  itemsSpacing: 60,
-                  itemDirection: 'left-to-right',
-                  itemWidth: 80,
-                  itemHeight: 20,
-                  itemOpacity: 0.75,
-                  symbolSize: 12,
-                  symbolShape: 'square',
-                  symbolBorderColor: 'rgba(0, 0, 0, .5)'
-                }
-              ]}
-              colors={{ scheme: 'red_yellow_blue' }}
-              pointSize={12}
-              pointColor='white'
-              pointBorderWidth={3}
-              pointBorderColor={{ from: 'serieColor' }}
-              pointLabel='y'
-              pointLabelYOffset={-12}
-              lineWidth={3}
-              enableArea={true}
-              enableSlices='x'
-              areaBlendMode='normal'
-              areaOpacity={0.05}
-              isInteractive={true}
-              enableCrosshair={true}
-              animate={false}
-            />
-          </div>
-        </Paper>
+            <Paper className={styles.Paper}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  margin: '4px 16px 0 16px'
+                }}
+              >
+                <Toggle
+                  checked={showCycles}
+                  onChange={this.toggleHandler('showCycles')}
+                  leftLabel='Combined'
+                  rightLabel='Per Cycle'
+                />
 
-        <div className={styles.Paper}>
-          <MaterialTable
-            columns={[
-              {
-                title: 'Associate',
-                field: 'name',
-                render: (rowData: any) => (
-                  <Button
-                    color='primary'
-                    onClick={() =>
-                      history.push(
-                        `/cycle/${CONSTS[rowData.cycle]}/associate/${
-                          rowData.name
-                        }`
-                      )
+                {activeTab === 1 && type === AssessmentType.PROJECT && (
+                  <Toggle
+                    checked={firstAttempts}
+                    onChange={this.toggleHandler('firstAttempts')}
+                    leftLabel='All Attempts'
+                    rightLabel='1st Attempts'
+                  />
+                )}
+              </div>
+
+              <div className={styles.GraphPaper}>
+                <ResponsiveLine
+                  data={data.data}
+                  margin={{ top: 30, right: 30, bottom: 100, left: 70 }}
+                  markers={[
+                    {
+                      axis: 'x',
+                      value: data.avg,
+                      lineStyle: { stroke: 'black', strokeWidth: 3 }
                     }
-                  >
-                    {rowData.name}
-                  </Button>
-                )
-              },
-              { title: 'Cycle', field: 'cycle' },
-              {
-                title: 'Date',
-                field: 'date',
-                customSort: (a: any, b: any) =>
-                  new Date(a.date).valueOf() - new Date(b.date).valueOf()
-              },
-              {
-                title: 'Score',
-                field: 'score',
-                customSort: (a: any, b: any) =>
-                  a.score.split('%')[0] - b.score.split('%')[0]
-              },
-              { title: 'Raw Score', field: 'rawScore' }
-            ]}
-            data={this.getTableData(currentAssessment)}
-            options={{
-              sorting: true,
-              pageSize: 10,
-              pageSizeOptions: [10, 20, 50],
-              showTitle: false
-            }}
-          />
+                  ]}
+                  xScale={{
+                    type:
+                      type === AssessmentType.SOFT_SKILLS ? 'point' : 'linear',
+                    min: 0,
+                    max: type === AssessmentType.SOFT_SKILLS ? 5 : 100
+                  }}
+                  yScale={{
+                    type: 'linear',
+                    stacked: false,
+                    min: 0,
+                    max: 'auto'
+                  }}
+                  //@ts-ignore
+                  curve='catmullRom'
+                  axisTop={null}
+                  axisRight={null}
+                  axisBottom={{
+                    orient: 'bottom',
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: 'Score',
+                    legendOffset: 36,
+                    legendPosition: 'middle'
+                  }}
+                  axisLeft={{
+                    orient: 'left',
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: 'Count',
+                    legendOffset: -40,
+                    legendPosition: 'middle'
+                  }}
+                  legends={[
+                    {
+                      anchor: 'bottom',
+                      direction: 'row',
+                      justify: false,
+                      translateX: 0,
+                      translateY: 80,
+                      itemsSpacing: 60,
+                      itemDirection: 'left-to-right',
+                      itemWidth: 80,
+                      itemHeight: 20,
+                      itemOpacity: 0.75,
+                      symbolSize: 12,
+                      symbolShape: 'square',
+                      symbolBorderColor: 'rgba(0, 0, 0, .5)'
+                    }
+                  ]}
+                  colors={{ scheme: 'red_yellow_blue' }}
+                  pointSize={12}
+                  pointColor='white'
+                  pointBorderWidth={3}
+                  pointBorderColor={{ from: 'serieColor' }}
+                  pointLabel='y'
+                  pointLabelYOffset={-12}
+                  lineWidth={3}
+                  enableArea={true}
+                  enableSlices='x'
+                  areaBlendMode='normal'
+                  areaOpacity={0.05}
+                  isInteractive={true}
+                  enableCrosshair={true}
+                  animate={false}
+                />
+              </div>
+            </Paper>
+          </div>
+
+          <div className={styles.Container}>
+            <div className={styles.Paper}>
+              <MaterialTable
+                columns={[
+                  {
+                    title: 'Associate',
+                    field: 'name',
+                    render: (rowData: any) => (
+                      <Button
+                        color='primary'
+                        onClick={() =>
+                          history.push(
+                            `/cycle/${CONSTS[rowData.cycle]}/associate/${
+                              rowData.name
+                            }`
+                          )
+                        }
+                      >
+                        {rowData.name}
+                      </Button>
+                    )
+                  },
+                  { title: 'Cycle', field: 'cycle' },
+                  {
+                    title: 'Date',
+                    field: 'date',
+                    customSort: (a: any, b: any) =>
+                      new Date(a.date).valueOf() - new Date(b.date).valueOf()
+                  },
+                  {
+                    title: 'Score',
+                    field: 'score',
+                    customSort: (a: any, b: any) =>
+                      a.score.split('%')[0] - b.score.split('%')[0]
+                  },
+                  { title: 'Raw Score', field: 'rawScore' }
+                ]}
+                data={this.getTableData(currentAssessment)}
+                options={{
+                  sorting: true,
+                  pageSize: 10,
+                  pageSizeOptions: [10, 20, 50],
+                  showTitle: false
+                }}
+              />
+            </div>
+          </div>
         </div>
       </>
     );

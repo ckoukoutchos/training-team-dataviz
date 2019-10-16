@@ -36,6 +36,7 @@ class Graduation extends Component<GraduationProps> {
     }
   };
 
+  // ...and he cut corners until there was no more corners to cut
   render() {
     const { aggregations, cycles, endDate, startDate } = this.props;
 
@@ -75,6 +76,7 @@ class Graduation extends Component<GraduationProps> {
       }
     });
 
+    // TODO (probably never): extract this common code with AssociateInfo out
     const mlAssociates: any = [];
     activeML.forEach((cycle: Cycle) => {
       mlAssociates.push(
