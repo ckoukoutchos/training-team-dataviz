@@ -1,8 +1,27 @@
+.Body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+.Card {
+  margin: 16px auto;
+  margin-top: 80px;
+  padding: 16px;
+  text-align: center;
+  width: 800px;
+}
+
 .Container {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 24px;
+}
+
+.Header {
+  text-align: center;
 }
 
 .Link {
@@ -13,4 +32,14 @@
 .Paper {
   margin: 16px auto;
   width: 800px;
+}
+
+.Rows {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Toggle {
+  padding-top: 16px;
 }

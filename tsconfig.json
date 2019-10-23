@@ -14,7 +14,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
+<<<<<<< HEAD
+    "suppressImplicitAnyIndexErrors": true,
+    "types": []
+=======
     "suppressImplicitAnyIndexErrors": true
+>>>>>>> 5f8a01cdadc0f9a8ee76e4d669773b8d39047cbc
   },
   "include": ["src"]
 }

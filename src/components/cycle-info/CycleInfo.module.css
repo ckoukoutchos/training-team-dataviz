@@ -1,15 +1,9 @@
 .Body {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  padding: 8px;
-}
-
-.BodyOnly {
-  display: flex;
-  flex-direction: row;
   justify-content: space-around;
   padding: 8px;
+  width: 100%;
 }
 
 .Divider {

@@ -1,0 +1,45 @@
+.Container {
+  display: flex;
+  justify-content: center;
+  height: 60px;
+  margin: 16px auto 32px auto;
+  width: 650px;
+}
+
+.Divider {
+  margin-top: 16px;
+}
+
+.Header {
+  padding-top: 8px;
+  text-align: center;
+}
+
+.Paper {
+  margin: 16px 32px;
+  width: 800px;
+}
+
+.TallPaper {
+  margin: 16px auto;
+  width: 800px;
+}
+
+.Tooltip {
+  padding: 2px;
+  position: relative;
+  top: 6px;
+}
+
+.Section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background: #abd9e9;
+  height: 100%;
+  width: 50px;
+  font-size: 28px;
+  text-shadow: -1px -1px 0 rgb(40, 40, 40), 1px -1px 0 rgb(40, 40, 40),
+    -1px 1px 0 rgb(40, 40, 40), 1px 1px 0 rgb(40, 40, 40);
+}

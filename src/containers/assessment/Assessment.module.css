@@ -1,0 +1,58 @@
+.Body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 8px;
+}
+
+.Card {
+  margin: 16px auto;
+  padding: 16px;
+  text-align: center;
+  width: 800px;
+}
+
+.Graph {
+  height: 450px;
+  width: 800px;
+}
+
+.GraphPaper {
+  margin: auto;
+  height: 500px;
+  width: 800px;
+}
+
+.Paper {
+  margin: 16px 32px;
+  width: 800px;
+}
+
+.Select {
+  width: 300px;
+}
+
+text {
+  font-weight: 600;
+}
+
+.Container {
+  display: flex;
+  flex-direction: column;
+}
+
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 1800px) {
+  .Wrapper {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    margin-left: 80px;
+  }
+}

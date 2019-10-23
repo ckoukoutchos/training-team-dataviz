@@ -3,7 +3,7 @@
 }
 
 .Graph {
-  height: 400px;
+  height: 380px;
   width: 800px;
 }
 
@@ -13,7 +13,8 @@
 }
 
 .Paper {
-  margin: 16px auto;
+  height: 500px;
+  margin: 16px 32px;
   width: 800px;
 }
 

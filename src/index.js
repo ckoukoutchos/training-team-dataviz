@@ -19,12 +19,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
-
-/* #######################################################################
-#  Disclaimer:                                                            #
-#  Most of this app was built as a fever dream, stream of consciousness   #
-#  venture in the wee hours of the morning while suffering from insomnia. #
-#  If you find something that doesn't makes sense or makes you think      #
-#  why in God's name would anyone do this, it's probably because it       #
-#  doesn't and no one in their right mind would.                          #
-#########################################################################*/
