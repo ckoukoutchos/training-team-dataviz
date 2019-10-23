@@ -1,19 +1,15 @@
-import {
-  Assessment,
-  Cycle,
-  CycleAggregation,
-  AssessmentTypeAggregation
-} from '../models/types';
+import { Cycle, CycleAggregation } from '../models/types';
+import { History } from 'history';
 
 export const FETCH_ALL_CYCLES_METRICS = 'FETCH_ALL_CYCLES_METRICS';
 export const FETCH_ALL_CYCLES_METRICS_SUCCESS =
   'FETCH_ALL_CYCLES_METRICS_SUCCESS';
 export const FETCH_ALL_CYCLES_METRICS_FAIL = 'FETCH_ALL_CYCLES_METRICS_FAIL';
 
-export const RESET_ERROR = 'RESET_ERROR;';
+export const POST_CYCLE_METRICS = 'POST_CYCLE_METRICS';
+export const POST_CYCLE_METRICS_FAIL = 'POST_CYCLE_METRICS_FAIL';
 
-export const SIGN_IN = 'SIGN_IN';
-export const SIGN_OUT = 'SIGN_OUT';
+export const RESET_ERROR = 'RESET_ERROR;';
 
 interface FetchAllCycleMetrics {
   type: typeof FETCH_ALL_CYCLES_METRICS;
@@ -26,30 +22,31 @@ interface FetchAllCycleMetricsFail {
 
 interface FetchAllCycleMetricsSuccess {
   type: typeof FETCH_ALL_CYCLES_METRICS_SUCCESS;
-  assessments: AssessmentTypeAggregation;
-  assessmentAggregations: AssessmentTypeAggregation;
-  cycles: Cycle[];
+  allCycleAggregations: any;
   cycleAggregations: CycleAggregation[];
-  cycleMetadata: any;
+  formattedCycles: Cycle[];
+}
+
+interface PostCycleMetrics {
+  type: typeof POST_CYCLE_METRICS;
+  formData: FormData;
+  cycleName: string;
+  history: History;
+}
+
+interface PostCycleMetricsFail {
+  type: typeof POST_CYCLE_METRICS_FAIL;
+  error: any;
 }
 
 interface ResetError {
   type: typeof RESET_ERROR;
 }
 
-interface SignIn {
-  type: typeof SIGN_IN;
-  user: any;
-}
-
-interface SignOut {
-  type: typeof SIGN_OUT;
-}
-
 export type ActionTypes =
   | FetchAllCycleMetrics
   | FetchAllCycleMetricsFail
   | FetchAllCycleMetricsSuccess
-  | ResetError
-  | SignIn
-  | SignOut;
+  | PostCycleMetrics
+  | PostCycleMetricsFail
+  | ResetError;

@@ -9,13 +9,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 interface ExpansionPanelsProps {
   children: ReactElement;
-  panelTitle?: string;
+  panelTitle: string;
 }
 
 const ExpansionPanels = (props: ExpansionPanelsProps) => {
-  const { children, panelTitle = 'Show Details' } = props;
+  const { children, panelTitle } = props;
   return (
-    <ExpansionPanel style={{ zIndex: 500 }}>
+    <ExpansionPanel>
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon />}
         aria-controls='panel1a-content'

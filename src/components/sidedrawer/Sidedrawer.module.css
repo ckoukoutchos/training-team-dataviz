@@ -1,25 +1,15 @@
-.Drawer {
-  flex-shrink: 0;
-  white-space: nowrap;
-  width: 230px;
+/* could you do all these without important tags, of course,
+but its far more fun to give the one css guy in the team a heart attack */
+.AppBar {
+  z-index: 1301 !important;
 }
 
-.DrawerClosed {
-  overflow-x: hidden;
-  width: 60px;
+.AppBarShift {
+  width: calc(100% - 230px) !important;
 }
 
-.DrawerOpen {
-  width: 230px;
-}
-
-.Link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.Hide {
-  display: none;
+.Icon {
+  margin-right: 8px !important;
 }
 
 .Space {
@@ -27,10 +17,6 @@
   padding-right: 1.5em;
 }
 
-.ToolBar {
-  align-items: center;
-  display: flex;
-  height: 64px;
-  justify-content: flex-end;
-  padding: 0 8px;
+.Hide {
+  display: none !important;
 }

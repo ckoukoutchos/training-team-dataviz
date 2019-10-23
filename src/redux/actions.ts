@@ -2,35 +2,27 @@ import {
   FETCH_ALL_CYCLES_METRICS,
   FETCH_ALL_CYCLES_METRICS_SUCCESS,
   FETCH_ALL_CYCLES_METRICS_FAIL,
+  POST_CYCLE_METRICS,
+  POST_CYCLE_METRICS_FAIL,
   RESET_ERROR,
-  SIGN_IN,
-  SIGN_OUT,
   ActionTypes
 } from './actionTypes';
-import {
-  Assessment,
-  CycleAggregation,
-  Cycle,
-  AssessmentTypeAggregation
-} from '../models/types';
+import { History } from 'history';
+import { CycleAggregation, Cycle } from '../models/types';
 
 export const fetchAllCyclesMetrics = (): ActionTypes => ({
   type: FETCH_ALL_CYCLES_METRICS
 });
 
 export const fetchAllCyclesMetricsSuccess = (
-  assessments: AssessmentTypeAggregation,
-  assessmentAggregations: AssessmentTypeAggregation,
-  cycles: Cycle[],
+  allCycleAggregations: any,
   cycleAggregations: CycleAggregation[],
-  cycleMetadata: any
+  formattedCycles: Cycle[]
 ): ActionTypes => ({
   type: FETCH_ALL_CYCLES_METRICS_SUCCESS,
+  allCycleAggregations,
   cycleAggregations,
-  cycles,
-  assessmentAggregations,
-  assessments,
-  cycleMetadata
+  formattedCycles
 });
 
 export const fetchAllCyclesMetricsFail = (error: any): ActionTypes => ({
@@ -38,15 +30,22 @@ export const fetchAllCyclesMetricsFail = (error: any): ActionTypes => ({
   error
 });
 
+export const postCycleMetrics = (
+  formData: FormData,
+  cycleName: string,
+  history: History
+): ActionTypes => ({
+  type: POST_CYCLE_METRICS,
+  formData,
+  cycleName,
+  history
+});
+
+export const postCycleMetricsFail = (error: any): ActionTypes => ({
+  type: POST_CYCLE_METRICS_FAIL,
+  error
+});
+
 export const resetError = (): ActionTypes => ({
   type: RESET_ERROR
-});
-
-export const signIn = (user: any): ActionTypes => ({
-  type: SIGN_IN,
-  user
-});
-
-export const signOut = (): ActionTypes => ({
-  type: SIGN_OUT
 });

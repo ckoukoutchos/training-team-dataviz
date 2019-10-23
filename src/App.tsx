@@ -8,30 +8,15 @@ import { ActionTypes } from './redux/actionTypes';
 import { resetError } from './redux/actions';
 
 import styles from './App.module.css';
-import Assessment from './containers/assessment/Assessment';
-import Assessments from './containers/assessments/Assessments';
 import Associate from './containers/associate/Associate';
 import Associates from './containers/associates/Associates';
 import Cycle from './containers/cycle/Cycle';
 import Cycles from './containers/cycles/Cycles';
-import DataFizz from './containers/data-fizz/DataFizz';
 import Overview from './containers/overview/Overview';
 import Modal from './components/modal/Modal';
 import NavBar from './components/nav-bar/NavBar';
+import Upload from './components/upload/Upload';
 import Spinner from './components/spinner/Spinner';
-import ProtectedRoute from './HOC/ProtectedRoute';
-import GoogleApi from './components/auth/GoogleApi';
-import SignInPage from './components/auth/SignInPage';
-import Staff from './containers/staff/Staff';
-
-/* #######################################################################
-#  Disclaimer:                                                            #
-#  Most of this app was built in a fever dream, stream of consciousness   #
-#  venture in the wee hours of the morning while suffering from insomnia. #
-#  If you find something that doesn't makes sense or makes you think,     #
-#  "why in God's name would anyone do this!?"", it's probably because it  #
-#  doesn't and no one in their right mind would.                          #
-#########################################################################*/
 
 interface AppProps {
   error: any | null;
@@ -55,32 +40,19 @@ class App extends Component<AppProps> {
         ) : (
           <main className={styles.Main}>
             <Switch>
-              <Route path='/signin' exact component={SignInPage} />
-              <ProtectedRoute path='/cycle' exact component={Cycles} />
-              <ProtectedRoute path='/cycle/:cycle' exact component={Cycle} />
-              <ProtectedRoute path='/associate' exact component={Associates} />
-              <ProtectedRoute
+              <Route path='/cycle' exact component={Cycles} />
+              <Route path='/cycle/:cycle' exact component={Cycle} />
+              <Route path='/associate' exact component={Associates} />
+              <Route
                 path='/cycle/:cycle/associate/:associateName'
                 exact
                 component={Associate}
               />
-              <ProtectedRoute
-                path='/assessment'
-                exact
-                component={Assessments}
-              />
-              <ProtectedRoute
-                path='/assessment/:type/:assessment'
-                exact
-                component={Assessment}
-              />
-              <ProtectedRoute path='/staff' exact component={Staff} />
-              <ProtectedRoute path='/data-fizz' exact component={DataFizz} />
-              <ProtectedRoute path='/' component={Overview} />
+              <Route path='/upload' exact component={Upload} />
+              <Route path='/' component={Overview} />
             </Switch>
           </main>
         )}
-        <GoogleApi />
 
         {error ? <Modal error={error} toggleModal={this.toggleModal} /> : null}
       </>

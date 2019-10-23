@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, Paper, Typography } from '@material-ui/core';
 import styles from './CycleInfo.module.css';
-import { Cycle, Staff, StaffRole } from '../../models/types';
+import { Cycle } from '../../models/types';
 
 interface CycleInfoProps {
   bodyOnly?: boolean;
@@ -15,54 +15,38 @@ const CycleInfo = (props: CycleInfoProps) => {
     .split(' ')
     .slice(2)
     .join(' ');
-  const trainers: string[] = [];
-  cycle.staff.forEach((staff: Staff) => {
-    if (staff.active && staff.role === StaffRole.TRAINER) {
-      trainers.push(staff.name);
-    } else if (!cycle.active && staff.role === StaffRole.TRAINER) {
-      trainers.push(staff.name);
-    }
-  });
-  const TAs: string[] = [];
-  cycle.staff.forEach((staff: Staff) => {
-    if (staff.active && staff.role === StaffRole.TA) {
-      TAs.push(staff.name);
-    } else if (!cycle.active && staff.role === StaffRole.TA) {
-      TAs.push(staff.name);
-    }
-  });
 
   const infoBody = (
-    <div className={styles.Body}>
+    <div className={styles.BodyOnly}>
       <div>
-        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+        <Typography variant='body2'>
           <strong>Trainer(s): </strong>
-          {trainers.join(' | ')}
+          {cycle.trainers.join(' | ')}
         </Typography>
 
-        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+        <Typography variant='body2'>
           <strong>TA(s): </strong>
-          {TAs.join(' | ')}
+          {cycle.TAs.join(' | ')}
         </Typography>
 
-        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+        <Typography variant='body2'>
           <strong>Total # Associates: </strong>
           {cycle.totalNumberOfAssociates}
         </Typography>
       </div>
 
       <div>
-        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+        <Typography variant='body2'>
           <strong>Start Date(s): </strong>
-          {cycle.startDate.toDateString()}
+          {cycle.startDate}
         </Typography>
 
-        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+        <Typography variant='body2'>
           <strong>End Date: </strong>
-          {cycle.endDate ? cycle.endDate.toDateString() : 'Active'}
+          {cycle.endDate}
         </Typography>
 
-        <Typography variant={bodyOnly ? 'body2' : 'subtitle1'}>
+        <Typography variant='body2'>
           <strong>Current # Associates: </strong>
           {cycle.currentNumberOfAssociates}
         </Typography>
@@ -75,9 +59,9 @@ const CycleInfo = (props: CycleInfoProps) => {
   ) : (
     <Paper className={styles.Paper}>
       <div className={styles.Header}>
-        <Typography variant='h2'>{formattedName}</Typography>
+        <Typography variant='h3'>{formattedName}</Typography>
 
-        <Typography variant='h5' color='textSecondary'>
+        <Typography variant='h6' color='textSecondary'>
           {cycle.type}
         </Typography>
       </div>

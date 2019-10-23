@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { History } from 'history';
+import MaterialTable, { MTableToolbar } from 'material-table';
+
+import AssociateInfo from '../../components/associate-info/AssociateInfo';
 import Breadcrumbs from '../../components/breadcrumbs/Breadcrumbs';
 import CycleInfo from '../../components/cycle-info/CycleInfo';
 import RadarGraph from '../../components/radar-graph/RadarGraph';
-import TraditionalCycleProgress from '../../components/progression/traditional-cycle-progess/TraditionalCycleProgress';
+import Toggle from '../../components/toggle/Toggle';
 
 import {
   getUrlParams,
   getItemInArrayByName,
   formatPercentile,
-  calcPercentiles,
-  calcScoreAvg,
-  combineScores
+  calcPercentiles
 } from '../../shared/dataService';
+import CONSTS from '../../shared/constants';
 import styles from './Cycle.module.css';
 import {
   Cycle,
@@ -22,13 +24,11 @@ import {
   Associate
 } from '../../models/types';
 import { AppState } from '../../redux/reducers/rootReducer';
-import MLCycleProgress from '../../components/progression/ml-cycle-progress/MLCycleProgress';
-import AssociatesTable from '../../components/associates-table/AssociatesTable';
 
 interface CycleProps {
+  allCycleAggregations: CycleAggregation;
   cycleAggregations: CycleAggregation[];
   cycles: Cycle[];
-  lookup: any;
   history: History;
 }
 
@@ -42,29 +42,8 @@ class CycleView extends Component<CycleProps, CycleState> {
     showInactive: false
   };
 
-  calcAvgForCycleType = (
-    cycleAggregations: CycleAggregation[],
-    cycleName: string
-  ) => {
-    let filteredCycles = [];
-    if (cycleName[0] === 'm') {
-      filteredCycles = cycleAggregations.filter(
-        (aggregation: CycleAggregation) => aggregation.name[0] === 'm'
-      );
-    } else {
-      filteredCycles = cycleAggregations.filter(
-        (aggregation: CycleAggregation) => aggregation.name[0] !== 'm'
-      );
-    }
-    return {
-      projects: calcScoreAvg(combineScores(filteredCycles, 'projects')),
-      quizzes: calcScoreAvg(combineScores(filteredCycles, 'quizzes')),
-      softSkills: calcScoreAvg(combineScores(filteredCycles, 'softSkills')),
-      exercises: calcScoreAvg(combineScores(filteredCycles, 'exercises'))
-    };
-  };
-
   createTableData = (
+    allCycleAggregations: CycleAggregation,
     cycleAggregations: CycleAggregation,
     cycle: Cycle,
     showInactive: boolean
@@ -78,24 +57,27 @@ class CycleView extends Component<CycleProps, CycleState> {
       if (associates.includes(aggregation.name)) {
         tableData.push({
           name: aggregation.name,
-          exerciseAvg: `${aggregation.exercises}% / ${formatPercentile(
+          attemptPass: `${aggregation.attemptPass}% / ${formatPercentile(
             calcPercentiles(
-              cycleAggregations.exerciseScores,
-              aggregation.exercises
+              allCycleAggregations.attemptPassScores,
+              aggregation.attemptPass
             )
           )}`,
           projectAvg: `${aggregation.projects}% / ${formatPercentile(
             calcPercentiles(
-              cycleAggregations.projectScores,
+              allCycleAggregations.projectScores,
               aggregation.projects
             )
           )}`,
           quizAvg: `${aggregation.quizzes}% / ${formatPercentile(
-            calcPercentiles(cycleAggregations.quizScores, aggregation.quizzes)
+            calcPercentiles(
+              allCycleAggregations.quizScores,
+              aggregation.quizzes
+            )
           )}`,
           softSkillsAvg: `${aggregation.softSkills}% / ${formatPercentile(
             calcPercentiles(
-              cycleAggregations.softSkillsScores,
+              allCycleAggregations.softSkillsScores,
               aggregation.softSkills
             )
           )}`
@@ -118,85 +100,124 @@ class CycleView extends Component<CycleProps, CycleState> {
   };
 
   render() {
-    const { cycleAggregations, cycles, lookup, history } = this.props;
+    const {
+      allCycleAggregations,
+      cycleAggregations,
+      cycles,
+      history
+    } = this.props;
+    const { showInactive } = this.state;
     const { url, cycle: cycleName } = getUrlParams(history);
     const cycle = getItemInArrayByName(cycles, cycleName);
-    const aggregation: CycleAggregation = getItemInArrayByName(
-      cycleAggregations,
-      cycleName
-    );
-    const typeAvg = this.calcAvgForCycleType(cycleAggregations, cycleName);
+    const aggregation = getItemInArrayByName(cycleAggregations, cycleName);
 
     return (
-      <>
-        <div style={{ margin: 'auto' }}>
-          <Breadcrumbs path={url} root='cycle' />
-        </div>
+      <div className={styles.Wrapper}>
+        <Breadcrumbs path={url} />
 
-        <div className={styles.Wrapper}>
-          <div className={styles.Container}>
-            <CycleInfo cycleName={lookup[cycleName]} cycle={cycle} />
+        <CycleInfo cycleName={CONSTS[cycleName]} cycle={cycle} />
 
-            {cycleName[0] === 'm' ? (
-              <MLCycleProgress
-                cycle={cycle}
-                title='Cycle Progress'
-                subtitle='Count per Module'
-              />
-            ) : (
-              <TraditionalCycleProgress item={cycle} title='Cycle Progress' />
+        <RadarGraph
+          title='Running Averages of Assessments'
+          subtitle='Compared to Training Average'
+          index='avg'
+          data={[
+            {
+              avg: 'Projects',
+              'Cycle Average': aggregation.projects,
+              'Training Average': allCycleAggregations.projects
+            },
+            {
+              avg: 'Quizzes',
+              'Cycle Average': aggregation.quizzes,
+              'Training Average': allCycleAggregations.quizzes
+            },
+            {
+              avg: 'Soft Skills',
+              'Cycle Average': aggregation.softSkills,
+              'Training Average': allCycleAggregations.softSkills
+            },
+            {
+              avg: 'Attempt/Pass',
+              'Cycle Average': aggregation.attemptPass,
+              'Training Average': allCycleAggregations.attemptPass
+            }
+          ]}
+          keys={['Cycle Average', 'Training Average']}
+        />
+
+        <div className={styles.Paper}>
+          <MaterialTable
+            title='Associate Assessment Average & Percentile'
+            columns={[
+              { title: 'Associate', field: 'name' },
+              { title: 'Projects', field: 'projectAvg' },
+              { title: 'Quizzes', field: 'quizAvg' },
+              { title: 'Soft Skills', field: 'softSkillsAvg' },
+              { title: 'Attempt/Pass', field: 'attemptPass' }
+            ]}
+            data={this.createTableData(
+              allCycleAggregations,
+              aggregation,
+              cycle,
+              showInactive
             )}
-
-            <RadarGraph
-              title='Assessments'
-              subtitle='Project, Quiz, and Soft Skill Averages'
-              index='avg'
-              data={[
-                {
-                  avg: 'Projects',
-                  'Cycle Average': aggregation.projects,
-                  [cycle.type]: typeAvg.projects
-                },
-                {
-                  avg: 'Quizzes',
-                  'Cycle Average': aggregation.quizzes,
-                  [cycle.type]: typeAvg.quizzes
-                },
-                {
-                  avg: 'Soft Skills',
-                  'Cycle Average': aggregation.softSkills,
-                  [cycle.type]: typeAvg.softSkills
-                },
-                {
-                  avg: 'Exercises',
-                  'Cycle Average': aggregation.exercises,
-                  [cycle.type]: typeAvg.exercises
+            options={{
+              sorting: true,
+              pageSize: 10,
+              pageSizeOptions: [10, 20, 50]
+            }}
+            components={{
+              Toolbar: props => (
+                <>
+                  <MTableToolbar {...props} />
+                  <Toggle
+                    checked={showInactive}
+                    onChange={this.toggleHandler}
+                    leftLabel='Active'
+                    rightLabel='Inactive'
+                  />
+                </>
+              )
+            }}
+            detailPanel={[
+              {
+                tooltip: 'Show Details',
+                render: (rowData: any) => (
+                  <AssociateInfo
+                    bodyOnly
+                    associate={getItemInArrayByName(
+                      cycle.associates,
+                      rowData.name
+                    )}
+                  />
+                )
+              }
+            ]}
+            actions={[
+              {
+                icon: 'search',
+                tooltip: 'View Associate',
+                onClick: (event, rowData) => {
+                  this.props.history.push(
+                    `/cycle/${cycleName}/associate/${rowData.name
+                      .split(' ')
+                      .join('-')}`
+                  );
                 }
-              ]}
-              keys={['Cycle Average', cycle.type]}
-            />
-          </div>
-
-          <div className={styles.Container}>
-            <div style={{margin: '0 32px'}}>
-            <AssociatesTable
-              associates={cycle.associates}
-              cycleAggregations={[aggregation]}
-              lookup={lookup}
-              history={history}
-            />
-            </div>
-          </div>
+              }
+            ]}
+          />
         </div>
-      </>
+      </div>
     );
   }
 }
 
 const mapStateToProps = (state: AppState) => ({
+  allCycleAggregations: state.metrics.allCycleAggregations,
   cycleAggregations: state.metrics.cycleAggregations,
-  cycles: state.metrics.cycles,
-  lookup: state.metadata.cycleNameLookup
+  cycles: state.metrics.cycles
 });
 
 export default connect(mapStateToProps)(CycleView);

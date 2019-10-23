@@ -1,169 +1,69 @@
-export enum AssessmentType {
-  EXERCISE = 'Exercise',
-  PROJECT = 'Project (Score)',
-  QUIZ = 'Quiz',
-  SOFT_SKILLS = 'Soft Skill Assessment'
-}
-
-export enum AttendanceType {
-  EXCUSED_ABSENCE = 'Excused Absence',
-  EXCUSED_LATE = 'Excused Late Arrival',
-  OPTIONAL = 'Optional Attendance',
-  UNEXCUSED_ABSENCE = 'Unexcused Absence',
-  UNEXCUSED_LATE = 'Unexcused Late Arrival'
-}
-
-export enum ModuleType {
-  BASICS = 'Development Basics and Front End',
-  DATABASES = 'Databases',
-  FINAL = 'Final Project',
-  FRONTEND = 'Front End Frameworks (React)',
-  GROUP = 'Group Project',
-  LOGIC_LAYER = 'Logic Layer (Java)'
-}
-
-export enum StaffRole {
-  TRAINER = 'Trainer',
-  TA = 'TA'
-}
-
-export interface Assessment {
-  associate: string;
-  attemptNumber: number;
-  cycle: string;
-  date: Date;
-  maxScore: number;
-  module?: ModuleType;
-  name: string;
-  rawScore: number;
-  score: number;
-  type: string;
-}
-
-export interface AssessmentAggregation {
-  average: number;
-  cycle: string;
-  median: number;
-  module: string;
-  name: string;
-  scores: number[];
-  sd: number;
-  type: AssessmentType;
-}
-
-export interface AssessmentTypeAggregation {
-  projects: AssessmentAggregation[];
-  quizzes: AssessmentAggregation[];
-  softSkills: AssessmentAggregation[];
-}
-
 export interface Aggregation {
-  assessments: number;
-  attendance: number;
-  combined: number;
-  composite: number;
-  cycle: string;
-  exercises: number;
-  moduleTime?: number;
+  attemptPass: number;
   name: string;
   projects: number;
   quizzes: number;
   softSkills: number;
 }
 
-export interface Attendance {
-  events: AttendanceEvent[];
-  count: {
-    'Excused Absence': number;
-    'Unexcused Absence': number;
-    'Excused Late Arrival': number;
-    'Unexcused Late Arrival': number;
-    'Optional Attendance': number;
-  };
-}
-
-export class Associate implements Person {
+export class Associate {
   active: boolean;
-  attendance: Attendance;
+  attendance: Attendance[];
   cycle: string;
-  daysInCycle: number;
-  endDate: Date | null;
+  endDate: string | null;
   exercises: Metric[];
   exitReason: string | null;
   metrics: Metric[];
   name: string;
   modules: Module[];
-  projects: Assessment[];
-  quizzes: Assessment[];
-  softSkills: Assessment[];
-  startDate: Date;
+  projects: Metric[];
+  quizzes: Metric[];
+  softSkills: Metric[];
+  startDate: string;
 
   constructor() {
     this.active = false;
-    this.attendance = {
-      events: [],
-      count: {
-        [AttendanceType.EXCUSED_ABSENCE]: 0,
-        [AttendanceType.UNEXCUSED_ABSENCE]: 0,
-        [AttendanceType.EXCUSED_LATE]: 0,
-        [AttendanceType.UNEXCUSED_LATE]: 0,
-        [AttendanceType.OPTIONAL]: 0
-      }
-    };
+    this.attendance = [];
     this.cycle = '';
-    this.daysInCycle = 0;
     this.endDate = null;
     this.exercises = [];
     this.exitReason = null;
     this.metrics = [];
     this.name = '';
-    this.modules = [
-      {
-        daysInModule: 0,
-        endDate: null,
-        startDate: null,
-        type: 'Development Basics and Front End'
-      },
-      {
-        daysInModule: 0,
-        endDate: null,
-        startDate: null,
-        type: 'Databases'
-      },
-      {
-        daysInModule: 0,
-        endDate: null,
-        startDate: null,
-        type: 'Logic Layer (Java)'
-      },
-      {
-        daysInModule: 0,
-        endDate: null,
-        startDate: null,
-        type: 'Front End Frameworks (React)'
-      },
-      {
-        daysInModule: 0,
-        endDate: null,
-        startDate: null,
-        type: 'Group Project'
-      },
-      {
-        daysInModule: 0,
-        endDate: null,
-        startDate: null,
-        type: 'Final Project'
-      }
-    ];
+    this.modules = [{
+      type: 'Development Basics and Front End',
+      startDate: null,
+      endDate: null
+    }, {
+      type: 'Databases',
+      startDate: null,
+      endDate: null
+    }, {
+      type: 'Logic Layer (Java)',
+      startDate: null,
+      endDate: null
+    }, {
+      type: 'Front End Frameworks (React)',
+      startDate: null,
+      endDate: null
+    }, {
+      type: 'Group Project',
+      startDate: null,
+      endDate: null
+    }, {
+      type: 'Final Project',
+      startDate: null,
+      endDate: null
+    }];
     this.projects = [];
     this.quizzes = [];
     this.softSkills = [];
-    this.startDate = new Date();
+    this.startDate = '';
   }
 }
 
-export interface AttendanceEvent {
-  date: Date;
+export interface Attendance {
+  date: string;
   type: string;
 }
 
@@ -171,12 +71,13 @@ export class Cycle {
   active: boolean;
   associates: Associate[];
   currentNumberOfAssociates: number;
-  endDate: Date | null;
+  endDate: string | null;
+  metrics: Metric[];
   name: string;
-  fileId: string;
-  staff: Staff[];
-  startDate: Date;
+  startDate: string;
   totalNumberOfAssociates: number;
+  trainers: string[];
+  TAs: string[];
   type: string;
 
   constructor() {
@@ -184,22 +85,19 @@ export class Cycle {
     this.associates = [];
     this.currentNumberOfAssociates = 0;
     this.endDate = null;
+    this.metrics = [];
     this.name = '';
-    this.fileId = '';
-    this.staff = [];
-    this.startDate = new Date();
+    this.startDate = '';
     this.totalNumberOfAssociates = 0;
+    this.trainers = [];
+    this.TAs = [];
     this.type = '';
   }
 }
 
 export interface CycleAggregation extends Aggregation {
   aggregations: Aggregation[];
-  assessmentsScores: number[];
-  attendanceScores: number[];
-  combinedScores: number[];
-  exerciseScores: number[];
-  moduleTimeScores: number[];
+  attemptPassScores: number[];
   projectScores: number[];
   quizScores: number[];
   softSkillsScores: number[];
@@ -211,43 +109,10 @@ export interface Metric {
   'Interaction Type': string;
   Person: string;
   Score: string;
-  [key: string]: any;
 }
 
 export interface Module {
-  daysInModule: number;
-  endDate: Date | null;
-  modulePause?: Date;
-  moduleResume?: Date;
-  startDate: Date | null;
+  endDate: string | null;
+  startDate: string | null;
   type: string;
-}
-
-export interface Person {
-  active: boolean;
-  cycle: string;
-  endDate: Date | null;
-  metrics: Metric[];
-  name: string;
-  startDate: Date;
-}
-
-export class Staff implements Person {
-  active: boolean;
-  cycle: string;
-  endDate: Date | null;
-  metrics: Metric[];
-  name: string;
-  role: StaffRole;
-  startDate: Date;
-
-  constructor() {
-    this.active = false;
-    this.cycle = '';
-    this.endDate = null;
-    this.metrics = [];
-    this.name = '';
-    this.role = StaffRole.TRAINER;
-    this.startDate = new Date();
-  }
 }
